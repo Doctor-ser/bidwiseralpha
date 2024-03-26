@@ -258,7 +258,7 @@ const fetchWinningUser = async (productId) => {
     }
   } catch (error) {
     console.error('Error placing bid:', error);
-    alert('An error occurred while placing bid');
+    /*alert('An error occurred while placing bid');*/
   }
 };
   
