@@ -18,7 +18,6 @@ import MyProfile from './components/MyProfile';
 
 //hello
 //hii ashwin 12345
-//hii alfin evan 1234
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
