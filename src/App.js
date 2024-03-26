@@ -17,7 +17,11 @@ import MyProfile from './components/MyProfile';
 
 
 //hello
+<<<<<<< HEAD
 //hii ash
+=======
+//hii ashwin 12345
+>>>>>>> 75defcb54b258a04fde3b0b9d99ff5780cca0b33
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
