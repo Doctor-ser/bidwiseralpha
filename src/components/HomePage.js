@@ -10,9 +10,9 @@ const HomePage = ({ darkMode }) => {
       <div className='main'>
         <div className='row'>
           <div className='col-md-6'>
-            <h1 className="display-4">Welcome to BidBot</h1>
+            <h1 className="display-4">Welcome to bidwiser</h1>
             <p className="lead">
-              Explore a seamless online auction experience with BidBot. List your items
+              Explore a seamless online auction experience with bidwiser. List your items
               with detailed descriptions and starting bids. Bid on exciting items and
               enjoy features like automated bidding and auction ending times.
             </p>
