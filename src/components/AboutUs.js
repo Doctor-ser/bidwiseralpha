@@ -2,11 +2,10 @@ import React from 'react';
 
 const AboutUs = ({ darkMode }) => {
   const teamMembers = [
-    { name: 'Hriday Sehgal', roll: '21BHI10024', linkedin: 'linkedin.com/in/hridaysehgal' },
-    { name: 'Aditi Sahu', roll: '21BHI10031', linkedin: 'www.linkedin.com/in/aditi-sahu-41b910251/' },
-    { name: 'Yeshodeep Dohre', roll: '21BCG10113', linkedin: 'www.linkedin.com/in/yeshodeep-dohre-b740bb241/' },
-    { name: 'Isha Gurnani', roll: '21BCE10944', linkedin: 'www.linkedin.com/in/isha-gurnani-2495b3229/' },
-    { name: 'Sanskar Sinha', roll: '21BCG10110', linkedin: 'www.linkedin.com/in/sanskar-sinha/' },
+    { name: 'Alfin Joji   ', linkedin: 'www.linkedin.com/in/alfin-joji-736068228/' },
+    { name: 'Ashwin V Mathew   ', linkedin: 'www.linkedin.com/in/ashwin-v-mathew' },
+    { name: 'Johan George   ', linkedin: 'www.linkedin.com/in/johan-george-kuruvilla-a4927a227' },
+    { name: 'Evan T Abraham   ', linkedin: 'www.linkedin.com/in/evan-t-abraham-7696a5227' }
   ];
 
 
@@ -16,16 +15,16 @@ const AboutUs = ({ darkMode }) => {
         <div className="card-body">
           <h2 className={`card-title ${darkMode ? 'text-light' : ''}`}>About Us</h2>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
-            We are Team 369, working on Project 09 for our MERN Stack internship.
+            WE ARE GROUP 9, WORKING ON PROJECT ONLINE AUCTION SYSTEM.
           </p>
 
           <h4 className={`card-subtitle mb-3 ${darkMode ? 'text-light' : ''}`}>Team Members:</h4>
           <ul className={`list-group ${darkMode ? 'list-group-flush' : ''}`}>
             {teamMembers.map((member) => (
               <li key={member.roll} className={`list-group-item ${darkMode ? 'bg-dark text-light' : ''}`}>
-                {member.name} ({member.roll}) -{' '}
+                {member.name} 
                 <a href={`https://${member.linkedin}`} target="_blank" rel="noopener noreferrer">
-                  LinkedIn
+                    LinkedIn
                 </a>
               </li>
             ))}
@@ -37,15 +36,12 @@ const AboutUs = ({ darkMode }) => {
               <div className="card-body" >
                 <p className={`card-text ${darkMode ? 'text-light' : 'text-dark'}`}>
                   <strong>Frontend:</strong> HTML, CSS, Bootstrap, JavaScript, React.js <br />
-                  <strong>Backend:</strong> Node.js, Express.js <br />
-                  <strong>Database:</strong> MongoDB
+                  <br/> <strong>Backend:</strong> Node.js, Express.js <br />
+                  <br/> <strong>Database:</strong> MongoDB
                 </p>
               </div>
             </div>
           </div>
-
-
-     
         </div>
       </div>
     </div>

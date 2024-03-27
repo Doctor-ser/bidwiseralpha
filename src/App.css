@@ -88,6 +88,9 @@ body {
   .logo-image {
     max-width: 110px; /* Adjust the max-width as needed */
     height: auto;
+    border-radius: 50%;
+    /*zoom*/
+    
   }
 
   
