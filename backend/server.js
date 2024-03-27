@@ -38,10 +38,13 @@ app.use((req, res, next) => {
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
+  host:"smtp.gmail.com",
   service: 'gmail',
+port:465,
+secure:true,
   auth: {
-    user: process.env.EMAIL_USER, // Some fake encrypted Gmail email address
-    pass: process.env.EMAIL_PASSWORD,  // Some fake Encrypted Password
+    user: "johxngeorxe@gmail.com", // Some fake encrypted Gmail email address
+    pass: "nraetzgwnhfmppbh", // Some fake Encrypted Password
   },
 });
 
