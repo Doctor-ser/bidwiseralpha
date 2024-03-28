@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Link , useNavigate} from 'react-router-dom';
-import logoImage from './bidbot.png'; // Replace with the actual path to your logo image
+import logoImage from './bidwiser.png'; // Replace with the actual path to your logo image
 import { useAuth } from './AuthContext';
 
 const MoonSVG = () => (

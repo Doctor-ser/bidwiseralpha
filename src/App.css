@@ -84,14 +84,23 @@ body {
   background-color: #888;
 }
 
+.logo-image {
+  max-width: 110px;  /* Adjust the max-width as needed */
+  height: auto;
+  border-radius: 50%;
+  transition: transform 0.4s ease-in-out; /* Smooth transition */
+  /* Center the image within its container */
+  display: block;
+  margin: 0 auto;
+  margin-top: 30px;
+}
 
-  .logo-image {
-    max-width: 110px; /* Adjust the max-width as needed */
-    height: auto;
-    border-radius: 50%;
-    /*zoom*/
-    
-  }
+.logo-image:hover {
+  transform: scale(1.4); /* Increase size by 50% on hover */
+  /* Maintain centering when zoomed */
+  transform-origin: 50% 50%; /* Set origin for zoom at image center */
+}
+
 
   
 
