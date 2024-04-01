@@ -135,7 +135,7 @@ app.post('/api/forgotPassword', async (req, res) => {
     from: 'kidsycartoons@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
-    text: `Dear user, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidBot.`,
+    text: `Dear user, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System Bidwiser.`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -161,7 +161,8 @@ const bidSchema = new mongoose.Schema({
   startingBid: Number,
   currentBid: Number, // Add this field
   endTime: Date,
-  userId: String, // Add this field to associate a product with a user
+  userId: String,
+   // Add this field to associate a product with a user
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
@@ -177,7 +178,8 @@ app.post('/api/addBid', (req, res) => {
     startingBid,
     currentBid, // Save the current bid
     endTime,
-    userId: req.body.userId, // Include the userId
+    userId: req.body.userId,
+     // Include the userId
   });
 
   newBid.save((err, bid) => {
@@ -338,6 +340,7 @@ app.post('/api/placeBid', async (req, res) => {
     };
     // Save the updated product
     await product.save();
+
     await addUserBid();
 
     // Fetch winning user details
@@ -349,9 +352,12 @@ app.post('/api/placeBid', async (req, res) => {
      const mailOptions = {
       from: 'kidsycartoons@gmail.com',
       to: winningUser.userId, // Use userId as the email address
-      subject: 'Congratulations! You are currently the highest bidder',
+      subject: 'CONGRATULATIONS!! You are currently the Highest Bidder',
       text: 
-      `Dear user, We have received your bid for the product "${product.name}" with a bid amount of ${bidAmount} and you are currently winning the bid. Your bid is the highest amongst all users. We thank you for using our Online Auction System BidBot.`,
+      `Dear ${winningUser.userId},
+
+      We have received your bid for the product  "${product.name}"  with a bid amount of  "₹${bidAmount}"  and you are currently winning the bid. You have placed the highest bid among all users.
+      We thank you for using our Online Auction System Bidwiser.`, 
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -475,8 +481,8 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   const mailOptions = {
     from: 'kidsycartoons@gmail.com',
     to: email,
-    subject: 'Welcome to BidBot - Online Auction System',
-    text: `Dear user, Welcome to BidBot, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidBot!`,
+    subject: 'Welcome to Bidwiser - Online Auction System',
+    text: `Dear user, Welcome to Bidwiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing Bidwiser!`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

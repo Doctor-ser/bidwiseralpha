@@ -1,11 +1,43 @@
-import React from 'react';
-import './homepage.css'
+import React, { useState, useEffect } from 'react';
+import './homepage.css';
 import { Link } from 'react-router-dom';
 
-
 const HomePage = ({ darkMode }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [
+    'https://wallpapercave.com/wp/wp9015587.jpg',
+    'https://wallpapercave.com/wp/wp8987916.jpg',
+    'https://wallpapercave.com/uwp/uwp3554900.jpeg',
+    'https://wallpapercave.com/wp/wp12023119.jpg',
+    'https://wallpapercave.com/uwp/uwp4259964.png',
+    'https://wallpapercave.com/wp/wp5332711.jpg',
+    'https://wallpapercave.com/wp/wp13479603.jpg',
+    'https://wallpapercave.com/wp/wp12758397.jpg'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prevIndex =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
     <div className={`homepage-container ${darkMode ? 'dark-mode' : ''}`}>
+        <div className='banner'>
+          <img src={images[currentImageIndex]} alt="Banner" className="banner-image" />
+          <div className="banner-text">
+            <h1>Welcome to bidwiser</h1>
+            <p>
+              Explore a seamless online auction experience with bidwiser. List your items
+              with detailed descriptions and starting bids. Bid on exciting items and
+              enjoy features like automated bidding and auction ending times.
+            </p>
+          </div>
+        </div>
 
       <div className='main'>
         <div className='row'>
@@ -18,43 +50,39 @@ const HomePage = ({ darkMode }) => {
             </p>
           </div>
           <div className='col-md-6'>
-            <img src="https://blog.admixer.com/wp-content/uploads/2020/03/hidder-bid-cover.jpg" height="400vh" width="600vh"></img>
+            <img src={images[currentImageIndex]} alt="Banner" height="400" width="600" />
           </div>
         </div>
-      </div>
+      
       <hr className="my-4" />
-      <div className='key-feat'>
+      {/*<div className='key-feat'>
         <h1 className="display-4">Key Features</h1>
         <div className='row'>
           <div className='col-md-6'>
             <ul>
-              <li>Add products with detailed descriptions, starting bids, and bid ending times.</li>
-              <li>Delete and modify bids with real-time updates to the connected MongoDB database.</li>
-              <li>Experience automated bidding where the highest bidder wins after the auction ends.</li>
-              <li>Enjoy a secure authentication system ensuring only logged-in users can participate.</li>
-              <li>Utilize the "Forgot Password" feature for a hassle-free password recovery process, receiving a new password directly to your email.</li>
-              <li>Automatic logout after 5 minutes of inactivity for enhanced security.</li>
+             
             </ul>
-            <Link to="/bidding" className="btn btn-primary add-bids-button">
-              Add Bids
-            </Link>
+            
           </div>
           <div className='col-md-6'>
             <ul>
-            <li>Receive email notifications for successful bid placements and congratulatory messages when you are currently winning a bid.</li>
-            <li>Explore transparency with a detailed "Your Bids" section, showcasing your bid history, product details, and current bid status.</li>
-            <li>Efficiently search for products by name or bid amount on the Products and Your Bids pages.</li>
-            <li>Filter Your Bids page to view all bids or only winning bids for better organization.</li>
-            <li>Check your bidding statistics on the My Profile page, including total bids placed, number of bids won, win rate, average bid amount, etc.</li>
-            </ul>&nbsp;&nbsp;&nbsp;
-            <Link to="/product" className="btn btn-primary">
-              Explore Products
-            </Link>
+              {/* Your key features 
+            </ul>
+            
           </div>
         </div>
-      </div>
+      </div>*/}
+      <section class="shop-banner">
+    	<div class="container">
+        	<h3>Get Amazing deals at Great Price <br/> with <span class="orange-text">BIDWISER....</span></h3><br/>
+            <div class="sale-percent"><span>Place<br/>Your</span>BIDS NOW!!!<span></span></div>
+            <Link to="/product" className="btn btn-primary">
+              Place Bids
+            </Link>
+        </div>
+    </section>
     </div>
-
+    </div>
   );
 };
 
