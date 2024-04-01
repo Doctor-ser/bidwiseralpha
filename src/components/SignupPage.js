@@ -21,7 +21,7 @@ const SignupPage = ({ darkMode }) => {
       const res = await axios.post(url,obj);
      
       if (res.status === 200) {
-        //sendWelcomeEmail(email);
+        sendWelcomeEmail(email);
         alert("User added successfully");
       } else {
         console.log("promise rejected")

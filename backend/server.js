@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer'); 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { Server } = require('socket.io');
+
+
 
 const app = express();
 mongoose.set("strictQuery", true)
@@ -36,6 +39,165 @@ app.use((req, res, next) => {
   next();
 });
 
+
+//Feedback
+const feedbackSchema = new mongoose.Schema({
+  rating: Number,
+  comment: String,
+  userId: String // Add userId to associate feedback with a user
+});
+
+const Feedback = mongoose.model('Feedback', feedbackSchema);
+
+// Endpoint to handle feedback submission
+app.post('/api/feedback', async (req, res) => {
+  try {
+    // Extract feedback data from request body
+    const { rating, comment, userId } = req.body;
+
+    // Create new feedback document
+    const newFeedback = new Feedback({
+      rating,
+      comment,
+      userId
+    });
+
+    // Save feedback to the database
+    await newFeedback.save();
+
+    // Respond with success message
+    res.status(200).json({ message: 'Feedback submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    // Respond with error status and message
+    res.status(500).json({ message: 'Failed to submit feedback. Please try again later.' });
+  }
+}); 
+
+
+//average rating
+app.get('/api/feedback/average', async (req, res) => {
+  try {
+    // Calculate average rating using MongoDB aggregation
+    const result = await Feedback.aggregate([
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' }
+        }
+      }
+    ]);
+
+    // Extract the average rating from the result
+    const averageRating = result.length > 0 ? result[0].averageRating : 0;
+
+    // Respond with the average rating
+    res.status(200).json({ averageRating });
+  } catch (error) {
+    console.error('Error calculating average rating:', error);
+    // Respond with error status and message
+    res.status(500).json({ message: 'Failed to calculate average rating. Please try again later.' });
+  }
+});
+
+//top messages
+app.get('/api/topRatedComments', async (req, res) => {
+  try {
+    // Fetch last 5 top-rated comments based on rating and insertion time
+    const topRatedComments = await Feedback.find()
+      .sort({ rating: -1, _id: -1 })
+      .limit(5);
+    console.log(topRatedComments);
+    res.json({ topRatedComments });
+  } catch (error) {
+    console.error('Error fetching top-rated comments:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
+
+
+//chat
+
+
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const app = express();
+// app.use(express.json());
+// const PORT = 3000;
+// const MONGO_URI = 'mongodb://localhost:27017/bidwiser';
+// mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch(err => console.error('Error connecting to MongoDB:', err));
+
+const messageSchema = new mongoose.Schema({
+  senderEmail: String,
+  message: String,
+  productId: String,
+});
+
+const Message = mongoose.model('Message', messageSchema);
+
+app.post('/api/send-message', async (req, res) => {
+  try {
+    const { content, user, productId } = req.body;
+
+    // Extract sender email from the user object
+    const senderEmail = user.email;
+
+    // Create a new message document
+    const newMessage = new Message({
+      senderEmail,
+      message: content,
+      productId,
+    });
+
+    // Save the new message to the database
+    await newMessage.save();
+
+    console.log('Message saved:', newMessage);
+    
+    // Respond with success message
+    io.emit('new-message');
+    res.json({ message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    
+    // Respond with error status and message
+    res.status(500).json({ message: 'Error sending message' });
+  }
+});
+
+
+//fetch messages
+app.get('/api/get-messages', async (req, res) => {
+  try {
+    const { productId } = req.query;
+
+    const messages = await Message.find({ productId }).sort({ createdAt: 1 }); // Filter by productId and sort by creation time
+    console.log(messages);
+    console.log("all messages printed");
+
+    // Extract senderEmail and message from each message object
+    const simplifiedMessages = messages.map(message => ({
+      senderEmail: message.senderEmail,
+      message: message.message
+    }));
+
+    res.json(simplifiedMessages);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ message: 'Error fetching messages' });
+  }
+});
+
+
+
+
+
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
   host:"smtp.gmail.com",
@@ -43,10 +205,11 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: "johxngeorxe@gmail.com", // Some fake encrypted Gmail email address
-    pass: "nraetzgwnhfmppbh", // Some fake Encrypted Password
-  },
+    user: "johxngeorxe@gmail.com", //  email address
+    pass: "nraetzgwnhfmppbh", //  Encrypted Password
+  },
 });
+
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -86,6 +249,8 @@ app.post('/api/signup', async(req, res) => {
     
 });
 
+
+
 app.post('/api/login', async(req, res) => {
   const { email, password } = req.body;
 
@@ -108,6 +273,8 @@ app.post('/api/login', async(req, res) => {
     return res.status(200).json({ message: 'Login successful' });
   });
 });
+
+
 
 app.post('/api/forgotPassword', async (req, res) => {
   const { email } = req.body;
@@ -132,10 +299,10 @@ app.post('/api/forgotPassword', async (req, res) => {
 
   // Send an email with the new password
   const mailOptions = {
-    from: 'kidsycartoons@gmail.com', // Sender email address
+    from: 'johxngeorxe@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
-    text: `Dear user, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System Bidwiser.`,
+    text: `Dear user, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidWiser.`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -161,8 +328,7 @@ const bidSchema = new mongoose.Schema({
   startingBid: Number,
   currentBid: Number, // Add this field
   endTime: Date,
-  userId: String,
-   // Add this field to associate a product with a user
+  userId: String, // Add this field to associate a product with a user
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
@@ -178,8 +344,7 @@ app.post('/api/addBid', (req, res) => {
     startingBid,
     currentBid, // Save the current bid
     endTime,
-    userId: req.body.userId,
-     // Include the userId
+    userId: req.body.userId, // Include the userId
   });
 
   newBid.save((err, bid) => {
@@ -340,17 +505,16 @@ app.post('/api/placeBid', async (req, res) => {
     };
     // Save the updated product
     await product.save();
-
     await addUserBid();
 
     // Fetch winning user details
     const winningUser = await UserBid.findOne({ productId: product._id, isWinningBid: true });
     
     console.log('Place Bid Response:', { message: 'Bid placed successfully' });
-
+    console.log('Winning User:', winningUser.userId);
      // Send email to the winning user
-     const mailOptions = {
-      from: 'kidsycartoons@gmail.com',
+      const mailOptions = {
+      from: 'johxngeorxe@gmail.com',
       to: winningUser.userId, // Use userId as the email address
       subject: 'CONGRATULATIONS!! You are currently the Highest Bidder',
       text: 
@@ -359,6 +523,7 @@ app.post('/api/placeBid', async (req, res) => {
       We have received your bid for the product  "${product.name}"  with a bid amount of  "₹${bidAmount}"  and you are currently winning the bid. You have placed the highest bid among all users.
       We thank you for using our Online Auction System Bidwiser.`, 
     };
+
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -479,10 +644,10 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
 
   // Send welcome email logic here
   const mailOptions = {
-    from: 'kidsycartoons@gmail.com',
+    from: 'johxngeorxe@gmail.com',
     to: email,
-    subject: 'Welcome to Bidwiser - Online Auction System',
-    text: `Dear user, Welcome to Bidwiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing Bidwiser!`,
+    subject: 'Welcome to BidWiser - Online Auction System',
+    text: `Dear user, Welcome to BidWiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidWiser!`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -496,8 +661,25 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   });
 });
 
-
+const { createServer } = require('node:http');
+const { create } = require('domain');
 const port = process.env.PORT || 5500;
-app.listen(port, () => {
+
+const server = createServer(app);
+
+  const io = new Server(server, { cors: { origin: 'http://localhost:3000' } }); 
+server.listen(port, () => {
   console.log("Server is started on port " + port);
+});
+
+
+//socket.io server side events
+io.on('connection', (socket) => {
+  console.log('A user connected with id : ' + socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+  
 });
