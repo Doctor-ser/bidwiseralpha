@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Link , useNavigate} from 'react-router-dom';
-import logoImage from './bidwiser.png'; // Replace with the actual path to your logo image
+import logoImage from './bidwiser.png'; 
 import { useAuth } from './AuthContext';
 
 const MoonSVG = () => (
@@ -111,7 +111,7 @@ const Navbar = ({ darkMode,toggleDarkMode }) => {
               </Link>
             </li>
             {/* Always display the dark mode toggle button */}
-            <li className="nav-item">
+            <li className="nav-item-dark">
               <button
                 className="btn btn-sm"
                 onClick={toggleDarkMode}

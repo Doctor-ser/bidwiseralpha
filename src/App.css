@@ -59,8 +59,8 @@ body {
 }
 
 .nav a:hover {
-  background-color: #ddd;
-  color: black;
+  background-color: #555; /* Darker background color on hover */
+  border-radius: 2px; /* Add border radius on hover */
 }
 
 .nav button {
@@ -85,46 +85,87 @@ body {
 }
 
 .logo-image {
-  max-width: 110px;  /* Adjust the max-width as needed */
+  max-width: 160px;  /* Adjust the max-width as needed */
   height: auto;
-  border-radius: 50%;
   transition: transform 0.4s ease-in-out; /* Smooth transition */
-  /* Center the image within its container */
-  display: block;
-  margin: 0 auto;
-  margin-top: 30px;
+  margin: 0 auto; /* Center the logo horizontally */
+  display: block; /* Make it a block element */
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .logo-image:hover {
-  transform: scale(1.4); /* Increase size by 50% on hover */
-  /* Maintain centering when zoomed */
+  transform: scale(1.2); /* Increase size by 50% on hover */
   transform-origin: 50% 50%; /* Set origin for zoom at image center */
 }
 
 
-  
 
-  /* Navbar.css */
+/* Navbar.css */
 
+.navbar {
+  background-color: #f7f7f7;
+  color: white;
+  border-bottom: 1px solid #e5e7eb; /* Adding a separating line */
+  display: flex; /* Use flexbox layout */
+  justify-content: space-between; /* Align items to the start and end of the navbar */
+  align-items: center; /* Align items vertically centered */
+
+}
+
+
+.navbar-nav .nav-item .nav-link {
+  font-family: 'DM Sans', sans-serif; /* Use DM Sans font */
+  transition: background-color 0.4s ease; /* Smooth transition for hover effect */
+  position: relative; /* Position relative for pseudo-element */
+  margin-top: 20px;
+  margin-right: 20px;
+
+}
+
+.navbar-nav .nav-item .nav-link::after {
+  content: ''; /* Add an empty pseudo-element for the underline */
+  position: absolute;
+  left: 0;
+  bottom: -3px; /* Adjust as needed */
+  width: 0;
+  height: 2px;
+  background-color: transparent;
+  transition: width 0.4s ease; /* Smooth transition for underline effect */
+}
+
+
+.navbar-nav .nav-item .nav-link:hover::after,
+.navbar-nav .nav-item .nav-link:active::after,
+.navbar-nav .nav-item .nav-link:focus::after {
+  background-color: #555; /* Change background color on hover */
+  width: 100%;
+} 
 
 .navbar-toggler-icon {
-  background-color: #fff; /* Color of the toggle icon */
-}
-a
-.nav-link {
-  color: #fff;
+  background-color: #262626; /* Color of the toggle icon */
+  
 }
 
-.nav-link:hover {
-  color: #eee;
+
+.navbar-nav .nav-link {
+  color: #767676;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #262626; /* Lighter text color on hover */
 }
 
 .navbar-toggler {
   border: none;
+  
+}
+.nav-item-dark{
+  margin-top: 20px;
 }
 
 .btn-toggle-dark {
-  background-color: #555;
+  background-color: #2f2e2e;
   color: #fff;
 }
 
@@ -135,6 +176,7 @@ a
 .dark-mode .navbar {
   background-color: #333;
   color: white;
+  border-bottom-color: #444; /* Adjusting border color for dark mode */
 }
 
 .dark-mode .navbar-toggler-icon {
@@ -160,4 +202,3 @@ a
 .dark-mode .btn-toggle-dark:hover {
   background-color: #777; /* Adjust as needed */
 }
-
