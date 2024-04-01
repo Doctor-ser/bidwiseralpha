@@ -8,13 +8,14 @@ import { useNavigate,Link } from 'react-router-dom';
 
 const ProductsPage = ({ darkMode, email }) => {
   const [products, setProducts] = useState([]);
-  const [bidAmount, setBidAmount] = useState('');
+  const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userBids, setUserBids] = useState([]); // New state to store user's bids
   const [modifyProductId, setModifyProductId] = useState(null);
   const [winningUsers, setWinningUsers] = useState({});
   const [productDetails, setProductDetails] = useState({});
+  const [flag,setflag]=useState(0);
   const navigate = useNavigate();
 
   
@@ -136,6 +137,29 @@ const fetchWinningUser = async (productId) => {
       message: `Bid ends on: ${endDateFormatted}, ${hours}h ${minutes}m ${seconds}s left`,
     };
   };
+  const handleChatClick = (productId) => {
+    return () => {
+      // Find the product associated with the productId
+      const product = products.find((p) => p._id === productId);
+  
+      // Check if the product exists and if the bidding has ended
+      if (!product || (product.endTime && new Date(product.endTime) < new Date())) {
+        alert('Bidding for this product has already ended.');
+        return;
+      }
+  
+      // Check if the user is logged in
+      if (!auth.loggedIn) {
+        alert('Please log in to start a chat.');
+        // Optionally, you can redirect to the login page
+        navigate('/login');
+        return;
+      }
+  
+      // If the user is logged in and the bidding is active, navigate to the chat page
+      navigate(`/chat/${productId}`);
+    };
+  };
 
   const handleBid = async (productId, currentBid,startingBid) => {
     // Check if the user is logged in
@@ -209,7 +233,8 @@ const fetchWinningUser = async (productId) => {
         alert('User ID not found.');
         return;
       }
-  
+      window.location.href="/product";
+
       const response = await axios.post('http://127.0.0.1:5500/api/placeBid', {
         productId: selectedProduct.productId,
         userId:userId,// Use userId consistently
@@ -229,6 +254,7 @@ const fetchWinningUser = async (productId) => {
           p._id === selectedProduct.productId ? { ...p, currentBid: Number(bidAmount) } : p
         );
         console.log('Updated Products:', updatedProducts);
+        
   
         // Fetch user bids after placing a bid
       const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
@@ -256,9 +282,12 @@ const fetchWinningUser = async (productId) => {
     } else {
       alert('Failed to place bid', response.data);
     }
-  } catch (error) {
-    console.error('Error placing bid:', error);
-    /*alert('An error occurred while placing bid');*/
+  } 
+  
+  
+  catch (error) {
+    // console.error('Error placing bid:', error);
+    // alert('An error occurred while placing bid'+error);
   }
 };
   
@@ -313,6 +342,10 @@ const fetchWinningUser = async (productId) => {
     setFilteredProducts(filtered);
   }, [products, searchTerm]);
 
+   
+
+
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -355,7 +388,6 @@ const fetchWinningUser = async (productId) => {
                   <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
                   <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
                   <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
-
                   <p className="card-text">
   {product.endTime &&
     (() => {
@@ -376,11 +408,17 @@ const fetchWinningUser = async (productId) => {
                     
                   </>
                 )}
-                
-                  <button className="btn btn-primary" onClick={() => handleBid(product._id, product.currentBid,product.startingBid)}>
-                    Place Bid
-                  </button> &nbsp;
+
                   
+                  <button className="btn btn-primary" style={{ height: '50px' }} onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
+                    Place Bid
+                  </button>
+                  &nbsp;
+                  <button className="chat-btn" onClick={handleChatClick(product._id)}>
+                    Chat
+                  </button>
+
+
                 </div>
               </div>
             </div>
@@ -400,8 +438,9 @@ const fetchWinningUser = async (productId) => {
               </div>
               <div className="modal-body">
                 <p>Current Bid: &#8377;{selectedProduct.currentBid}</p>
-                <input
-                  type="number"
+              
+                <p style={{display:"none"}}>{ bidAmount==0 && flag==0 ?(setBidAmount(selectedProduct.currentBid+10),showBidModal&&setflag(1)):showBidModal&&bidAmount}</p>
+                 <input type="number"
                   placeholder="Enter your bid amount"
                   className="form-control"
                   value={bidAmount}

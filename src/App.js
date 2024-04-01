@@ -14,22 +14,31 @@ import AboutUs from './components/AboutUs';
 import Footer from './components/Footer';
 import UserBidsPage from './components/UserBidsPage';
 import MyProfile from './components/MyProfile';
+import { useParams } from 'react-router-dom';
+import Chat from './components/Chat';
+import Feedback from './components/feedback';
+const io  = require('socket.io-client');
 
 
-//hello
-//hii ash
-//hi evan
-//hi alfin
-//HI JOHAN
+
+
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const [loadMessage,setLoadMessage] = useState(false);
   const { email } = useAuth(); // Get the user's email from useAuth
+  const socket = io('http://localhost:5500');
+  socket.on('connect', () => { console.log("Connected to server"); });
+  socket.on('new-message',()=>{
+    // alert("nigga")
+    setLoadMessage(prev => !prev);
+  })
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
+  
   return (
     <Router>
       <AuthProvider>
@@ -43,6 +52,8 @@ const App = () => {
           <Route path="/bidding" element={<BiddingPage  darkMode={darkMode}/>} />
           <Route path="/aboutus" element={<AboutUs  darkMode={darkMode}/>} />
           <Route path="/my-profile" element={<MyProfile darkMode={darkMode} email={email} />} />
+          <Route path="/feedback" element={<Feedback darkMode={darkMode} email={email} />} />
+          <Route path="/chat/:productId" element={<Chat darkMode={darkMode} loadMessage={loadMessage} setLoadMessage={setLoadMessage} email={email} />} />
         </Routes>
         <Footer darkMode={darkMode} />
       </AuthProvider>

@@ -89,6 +89,12 @@ const Navbar = ({ darkMode,toggleDarkMode }) => {
                     Logout
                   </Link>
                 </li>
+                {/* Add a link chat */}
+                <li className="nav-item">
+            <Link className="nav-link" to="/feedback">
+              Feedback
+            </Link>
+          </li>
               </>
             ) : (
               <>

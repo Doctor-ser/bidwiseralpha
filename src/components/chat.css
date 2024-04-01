@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif; /* Choose your preferred font family */
+  }
+  
+  .chat-container {
+    width: 600px; /* Adjust width as needed */
+    margin: 50px auto; /* Center the chat container */
+    border: 1px solid #ddd; /* Add a thin border */
+    border-radius: 5px; /* Add rounded corners */
+    background-color: #fff; /* Set background color */
+  }
+  h2 {
+    padding: 20px; /* Add some padding to the header */
+    border-bottom: 1px solid #ddd; /* Add a border below the header */
+    text-align: center; /* Center the header text */
+  }
+  .message-list {
+    height: 300px; /* Set the height of the message list */
+    overflow-y: scroll; /* Enable scrolling for long message lists */
+    padding: 20px;
+  }
+  
+  .message {
+    margin-bottom: 10px; /* Add spacing between messages */
+    padding: 10px 15px; /* Add padding to each message box */
+    border-radius: 5px; /* Add rounded corners to messages */
+    background-color: #eee; /* Set background color for messages */
+    height: 80px;
+  }
+  
+  .message p {
+    margin: 0; /* Remove default margin from paragraph */
+    font-size: 16px; /* Set font size for messages */
+  }
+  .input-container {
+    display: flex; /* Arrange input and button horizontally */
+    justify-content: space-between; /* Space items evenly */
+    padding: 20px;
+  }
+  
+  input[type="text"] {
+    flex: 1; /* Make input field fill available space */
+    padding: 10px;
+    border: 1px solid #ccc; /* Add a border to the input field */
+    border-radius: 5px; /* Add rounded corners */
+    font-size: 16px; /* Set font size for input field */
+  }
+  
+  button {
+    padding: 10px 20px;
+    border: none; /* Remove default button border */
+    border-radius: 5px; /* Add rounded corners */
+    background-color: #4CAF50; /* Set button background color */
+    color: #fff; /* Set button text color */
+    cursor: pointer; /* Indicate clickable behavior */
+  }
+  .message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .profile-container {
+    margin-right: 10px;
+  }
+  
+  .profile-image {
+    width: 20px; /* Adjust the width as needed */
+    height: 20px /* Adjust the height as needed */
+     /* Create a circular profile image */
+  }
+  
+  .profile-info {
+    margin: 0;
+    font-size: 14px;
+    color: gray;
+  }
+  
+  .message-content {
+    margin: 0;
+  }
+  
