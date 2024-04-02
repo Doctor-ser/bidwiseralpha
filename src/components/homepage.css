@@ -1,3 +1,7 @@
+.display-4{
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
 .btn-primary{
   color: white;
   border-radius: 0;
