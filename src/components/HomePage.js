@@ -6,10 +6,13 @@ const HomePage = ({ darkMode }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
     'https://wallpapercave.com/wp/wp9015587.jpg',
+    'https://wallpapercave.com/wp/wp6827492.jpg',
+    'https://dlcdnwebimgs.asus.com/files/media/2D9FA79D-3209-484C-AF03-F216728A289C/v2/images/large/1x/kv.webp',
     'https://wallpapercave.com/wp/wp8987916.jpg',
+    'https://wallpapercave.com/wp/wp8257248.jpg',
     'https://wallpapercave.com/uwp/uwp3554900.jpeg',
     'https://wallpapercave.com/wp/wp12023119.jpg',
-    'https://wallpapercave.com/uwp/uwp4259964.png',
+    'https://wallpapercave.com/wp/wp12468061.jpg',
     'https://wallpapercave.com/wp/wp5332711.jpg',
     'https://wallpapercave.com/wp/wp13479603.jpg',
     'https://wallpapercave.com/wp/wp12758397.jpg'
