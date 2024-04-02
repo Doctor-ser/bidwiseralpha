@@ -78,7 +78,7 @@ const HomePage = ({ darkMode }) => {
     	<div class="container">
         	<h3>Get Amazing deals at Great Price <br/> with <span class="orange-text">BIDWISER....</span></h3><br/>
             <div class="sale-percent"><span>Place<br/>Your</span>BIDS NOW!!!<span></span></div>
-            <Link to="/product" className="btn btn-primary">
+            <Link to="/product" className="btn btn-primary1">
               Place Bids
             </Link>
         </div>
