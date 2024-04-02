@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { Card, Form, Button, Row, Col } from 'react-bootstrap'; // Import Bootstrap components
+import "./homepage.css";
 
 const UserBidsPage = () => {
   const [userBids, setUserBids] = useState([]);
@@ -68,7 +69,7 @@ const UserBidsPage = () => {
           </Form>
         </Col>
         <Col md={2}>
-          <Button variant="primary" onClick={handleSearch}>
+          <Button variant="primary" className="btn-search" onClick={handleSearch}>
             Search
           </Button>
         </Col>
