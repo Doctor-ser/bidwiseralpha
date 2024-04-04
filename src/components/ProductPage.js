@@ -38,14 +38,21 @@ const fetchWinningUser = async (productId) => {
   }
 };
 
-  useEffect(() => {
-    const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
+//update the timer of banner
 
-    // Start the countdown timer
-    $('#countdown').countdown(finalDate, function(event) {
-      $(this).html(event.strftime('%D days %H:%M:%S'));
-    });
-  }, []); // Run once when component mounts
+useEffect(() => {
+  const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
+
+  // Start the countdown timer
+  $('#countdown').countdown(finalDate, function(event) {
+    // Update the content of each count span with the corresponding value
+    $('#days').text(event.strftime('%D'));
+    $('#hours').text(event.strftime('%H'));
+    $('#minutes').text(event.strftime('%M'));
+    $('#seconds').text(event.strftime('%S'));
+  });
+}, []); // Run once when component mounts
+
 
   useEffect(() => {
 
@@ -399,7 +406,7 @@ const fetchWinningUser = async (productId) => {
                             <div class="price-box">
                                 <div class="inner-price">
                                       <span class="price">
-                                          <strong>30%</strong> <br/> off per kg
+                                          <strong>Top!!</strong> <br/> Deal
                                       </span>
                                 </div>
                             </div>
@@ -410,36 +417,34 @@ const fetchWinningUser = async (productId) => {
                     </div>
                       {/*Content Column*/}
                       <div class="content-column col-lg-6">
-                 <h3><span class="orange-text">Deal</span> of the month</h3>
-                          <h4>Hikan Strwaberry</h4>
+                        <h3><span class="orange-text">Deal</span> of the Day</h3>
+                          <h4>Triumph</h4>
                           <div class="text">Quisquam minus maiores repudiandae nobis, minima saepe id, fugit ullam similique! Beatae, minima quisquam molestias facere ea. Perspiciatis unde omnis iste natus error sit voluptatem accusant</div>
                           {/*Countdown Timer*/}
-                          <div class="time-counter">
-                            <div class="time-countdown clearfix" data-countdown="2020/2/01">
-                            <div class="categories__deal__countdown__timer" id="countdown"/>
-                              <div class="counter-column">
-                                <div class="inner">
-                                  <span class="count">00</span>Days
-                                </div>
-                              </div>
-                                  <div class="counter-column">
-                                    <div class="inner">
-                                      <span class="count">00</span>Hours
-                                    </div>
-                                  </div>  
-                                  <div class="counter-column">
-                                    <div class="inner">
-                                      <span class="count">00</span>Mins
-                                    </div>
-                                    </div>  
-                                  <div class="counter-column">
-                                    <div class="inner">
-                                      <span class="count">00</span>Secs
+                          <div className="time-counter">
+                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="days">00</span>Days
                                     </div>
                                   </div>
-                            </div>
-                            </div>
-                            
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="hours">00</span>Hours
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="minutes">00</span>Mins
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="seconds">00</span>Secs
+                                    </div>
+                                  </div>
+                                </div>
+                          </div>
                         <a href="cart.html" class="cart-btn mt-3"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
                       </div>
                 </div>
@@ -500,8 +505,7 @@ const fetchWinningUser = async (productId) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h2 className="modal-title">Place Bid</h2>
-                <button type="button" className="close" onClick={closeModal}>
-                  &times;
+                <button type="button" className="btn-close" onClick={closeModal}>
                 </button>
               </div>
               <div className="modal-body">
@@ -516,11 +520,8 @@ const fetchWinningUser = async (productId) => {
                 />
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary" onClick={placeBid}>
+                <button className="btn-primary2" onClick={placeBid}>
                   Place Bid
-                </button>
-                <button className="btn btn-secondary" onClick={closeModal}>
-                  Close
                 </button>
               </div>
             </div>
