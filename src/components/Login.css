@@ -6,7 +6,6 @@
   max-width: 400px;
   margin: 50px auto;
   padding: 20px;
-  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -40,22 +39,20 @@
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .login-btn {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #666666;
   color: #fff;
   border: none;
-  border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
 }
 
 .login-btn:hover {
-  background-color: #0056b3;
+  background-color: #4d4d4d;
 }
 
 /* Add a little more space between the form and the "New user?" link */
@@ -68,7 +65,6 @@
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 
@@ -97,27 +93,18 @@
     padding: 8px;
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 5px;
   }
   
-  .login-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+
   
   .login-btn:hover {
-    background-color: #0056b3;
+    background-color: #4d4d4d;
   }
 /* Add this to your CSS to style the link in dark mode */
 .forgot-password {
   color: #007bff; /* Set the color to the default hyperlink color */
   text-decoration: underline;
+  cursor: pointer;
 }
 .dark-mode .forgot-password {
   color: #007bff; /* Set the color to the default hyperlink color */

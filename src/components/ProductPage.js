@@ -4,7 +4,8 @@ import './Product.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useNavigate,Link } from 'react-router-dom';
-
+import $ from 'jquery';
+import 'jquery-countdown';
 
 const ProductsPage = ({ darkMode, email }) => {
   const [products, setProducts] = useState([]);
@@ -37,8 +38,25 @@ const fetchWinningUser = async (productId) => {
   }
 };
 
+//update the timer of banner
+
+useEffect(() => {
+  const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
+
+  // Start the countdown timer
+  $('#countdown').countdown(finalDate, function(event) {
+    // Update the content of each count span with the corresponding value
+    $('#days').text(event.strftime('%D'));
+    $('#hours').text(event.strftime('%H'));
+    $('#minutes').text(event.strftime('%M'));
+    $('#seconds').text(event.strftime('%S'));
+  });
+}, []); // Run once when component mounts
+
 
   useEffect(() => {
+
+
     // Fetch products from MongoDB database when the component mounts
     const fetchProducts = async () => {
       try {
@@ -376,6 +394,65 @@ const fetchWinningUser = async (productId) => {
             onChange={handleSearch}
           />
         </div>
+
+
+        {/* cart banner section */}
+        <section class="cart-banner pt-100 pb-100">
+            <div class="container">
+                <div class="row clearfix">
+                    {/*Image Column*/}
+                    <div class="image-column col-lg-6">
+                        <div class="image">
+                            <div class="price-box">
+                                <div class="inner-price">
+                                      <span class="price">
+                                          <strong>Top!!</strong> <br/> Deal
+                                      </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6'>
+                              <img src=/*{images[currentImageIndex]}*/"https://wallpapercave.com/wp/wp6827492.jpg" alt="Banner" height="400" width="600" />        
+                            </div>
+                        </div>
+                    </div>
+                      {/*Content Column*/}
+                      <div class="content-column col-lg-6">
+                        <h3><span class="orange-text">Deal</span> of the Day</h3>
+                          <h4>Triumph</h4>
+                          <div class="text">Quisquam minus maiores repudiandae nobis, minima saepe id, fugit ullam similique! Beatae, minima quisquam molestias facere ea. Perspiciatis unde omnis iste natus error sit voluptatem accusant</div>
+                          {/*Countdown Timer*/}
+                          <div className="time-counter">
+                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="days">00</span>Days
+                                    </div>
+                                  </div>
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="hours">00</span>Hours
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="minutes">00</span>Mins
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="seconds">00</span>Secs
+                                    </div>
+                                  </div>
+                                </div>
+                          </div>
+                        <a href="cart.html" class="cart-btn mt-3"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                      </div>
+                </div>
+            </div>
+          </section>
+          {/* end cart banner section */}
+
+
         <div className="row">
           {/* Display filtered products instead of all products */}
           {filteredProducts.map((product, index) => (
@@ -388,20 +465,16 @@ const fetchWinningUser = async (productId) => {
                   <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
                   <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
                   <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                  <p className="card-text">
-  {product.endTime &&
-    (() => {
-      const remainingTime = calculateRemainingTime(product.endTime);
-      if (remainingTime.ended) {
-        return `Bid has ended`;
-      } else {
-        return `Bid ends on: ${remainingTime.message}`;
-      }
-    })()}
-</p>
+                  <p className="card-text">{product.endTime && (() => {const remainingTime = calculateRemainingTime(product.endTime);
+                  if (remainingTime.ended) {
+                    return `Bid has ended`;
+                  } else {
+                    return `Bid ends on: ${remainingTime.message}`;
+                  }
+                  })()}
+                  </p>
                   {/* Display highest bid and winning user after bid has ended */}
-                {product.endTime && new Date(product.endTime) < new Date() && (
-                  <>
+                {product.endTime && new Date(product.endTime) < new Date() && ( <>
                     
                     <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
                     <p className="card-text">Bid Won By:  {winningUsers[product._id] ? winningUsers[product._id] : 'No Winner'}</p>
@@ -410,7 +483,7 @@ const fetchWinningUser = async (productId) => {
                 )}
 
                   
-                  <button className="btn btn-primary" style={{ height: '50px' }} onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
+                  <button className="btn-primary2" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
                     Place Bid
                   </button>
                   &nbsp;
@@ -432,8 +505,7 @@ const fetchWinningUser = async (productId) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h2 className="modal-title">Place Bid</h2>
-                <button type="button" className="close" onClick={closeModal}>
-                  &times;
+                <button type="button" className="btn-close" onClick={closeModal}>
                 </button>
               </div>
               <div className="modal-body">
@@ -448,11 +520,8 @@ const fetchWinningUser = async (productId) => {
                 />
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary" onClick={placeBid}>
+                <button className="btn-primary2" onClick={placeBid}>
                   Place Bid
-                </button>
-                <button className="btn btn-secondary" onClick={closeModal}>
-                  Close
                 </button>
               </div>
             </div>

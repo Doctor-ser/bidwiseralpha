@@ -60,7 +60,6 @@ body {
 
 .nav a:hover {
   background-color: #555; /* Darker background color on hover */
-  border-radius: 2px; /* Add border radius on hover */
 }
 
 .nav button {

@@ -55,25 +55,7 @@ const HomePage = ({ darkMode }) => {
             <img src={images[currentImageIndex]} alt="Banner" height="400" width="600" />
           </div>
         </div>
-      
-      <hr className="my-4" />
-      {/*<div className='key-feat'>
-        <h1 className="display-4">Key Features</h1>
-        <div className='row'>
-          <div className='col-md-6'>
-            <ul>
-             
-            </ul>
-            
-          </div>
-          <div className='col-md-6'>
-            <ul>
-              {/* Your key features 
-            </ul>
-            
-          </div>
-        </div>
-      </div>*/}
+    
       <section class="shop-banner">
     	<div class="container">
         	<h3>Get Amazing deals at Great Price <br/> with <span class="orange-text">BIDWISER....</span></h3><br/>
