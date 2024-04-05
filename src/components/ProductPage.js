@@ -161,6 +161,28 @@ const fetchWinningUser = async (productId) => {
     };
   };
 
+
+  //pro-feedback
+  const goToProductFeedback = async(prodid) =>{
+      window.location.href=`/ProductFeedback/${prodid}`;
+      console.log("You are the winner of this product");
+  }
+
+  //mail to winner of each product
+  const sendEmailToWinner = async (productName, winningBid, productId) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:5500/api/sendEmailToWinner', {
+            productName,
+            winningBid,
+            productId
+        });
+        console.log('Email sent to winner:', response.data.message);
+    } catch (error) {
+        console.error('Error sending email to winner:', error);
+    }
+};
+
+
   const handleBid = async (productId, currentBid,startingBid) => {
     // Check if the user is logged in
     if (!auth.loggedIn) {
@@ -386,6 +408,7 @@ const fetchWinningUser = async (productId) => {
                   <h5 className="card-text">Product Name : {product.name}</h5>
                   <p className="card-text">Product Description : {product.description}</p>
                   <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
+                  <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
                   <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
                   <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
                   <p className="card-text">
@@ -393,7 +416,16 @@ const fetchWinningUser = async (productId) => {
     (() => {
       const remainingTime = calculateRemainingTime(product.endTime);
       if (remainingTime.ended) {
+        const winnerUserId = winningUsers[product._id];
+        const winningBid = product.currentBid;
+
+        if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
+              sendEmailToWinner(product.name, winningBid, product._id);
+              localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
+        }
+  
         return `Bid has ended`;
+
       } else {
         return `Bid ends on: ${remainingTime.message}`;
       }
@@ -405,7 +437,6 @@ const fetchWinningUser = async (productId) => {
                     
                     <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
                     <p className="card-text">Bid Won By:  {winningUsers[product._id] ? winningUsers[product._id] : 'No Winner'}</p>
-                    
                   </>
                 )}
 
@@ -417,7 +448,13 @@ const fetchWinningUser = async (productId) => {
                   <button className="chat-btn" onClick={handleChatClick(product._id)}>
                     Chat
                   </button>
-
+                  &nbsp;
+                  {/* Render feedback button only if bid has ended and current user is the winner */}
+                  {product.endTime && new Date(product.endTime) < new Date() && winningUsers[product._id] === auth.userId && (
+                  <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
+                  Product Feedback
+                  </button>
+                  )}
 
                 </div>
               </div>

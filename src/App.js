@@ -17,6 +17,8 @@ import MyProfile from './components/MyProfile';
 import { useParams } from 'react-router-dom';
 import Chat from './components/Chat';
 import Feedback from './components/feedback';
+import ProductFeedback from './components/productfeedback';
+import SellerInfo from './components/sellerinfo';
 const io  = require('socket.io-client');
 
 
@@ -53,6 +55,8 @@ const App = () => {
           <Route path="/aboutus" element={<AboutUs  darkMode={darkMode}/>} />
           <Route path="/my-profile" element={<MyProfile darkMode={darkMode} email={email} />} />
           <Route path="/feedback" element={<Feedback darkMode={darkMode} email={email} />} />
+          <Route path="/productfeedback/:productId" element={<ProductFeedback darkMode={darkMode} email={email} />} />
+          <Route path="/sellerinfo/:userId" element={<SellerInfo darkMode={darkMode} email={email} />} />
           <Route path="/chat/:productId" element={<Chat darkMode={darkMode} loadMessage={loadMessage} setLoadMessage={setLoadMessage} email={email} />} />
         </Routes>
         <Footer darkMode={darkMode} />
