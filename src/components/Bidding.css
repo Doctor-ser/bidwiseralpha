@@ -32,7 +32,6 @@
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
   }
   
@@ -44,7 +43,6 @@
     margin: 10px 0;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
   }
   
   .product h3 {
@@ -68,7 +66,6 @@
     background-color: #dc3545;
     color: #fff;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
   }
   

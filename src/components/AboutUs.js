@@ -15,7 +15,7 @@ const AboutUs = ({ darkMode }) => {
         <div className="card-body">
           <h2 className={`card-title ${darkMode ? 'text-light' : ''}`}>About Us</h2>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
-            WE ARE GROUP 9, WORKING ON PROJECT ONLINE AUCTION SYSTEM.
+            WE ARE GROUP 8, WORKING ON PROJECT ONLINE AUCTION SYSTEM.
           </p>
 
           <h4 className={`card-subtitle mb-3 ${darkMode ? 'text-light' : ''}`}>Team Members:</h4>
