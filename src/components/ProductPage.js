@@ -7,7 +7,8 @@ import { useNavigate,Link } from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-countdown';
 
-const ProductsPage = ({ darkMode, email }) => {
+
+const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [products, setProducts] = useState([]);
   const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
@@ -18,6 +19,7 @@ const ProductsPage = ({ darkMode, email }) => {
   const [productDetails, setProductDetails] = useState({});
   const [flag,setflag]=useState(0);
   const navigate = useNavigate();
+  
 
   
   
@@ -26,18 +28,20 @@ const ProductsPage = ({ darkMode, email }) => {
   const userId = auth.userId 
 
     // Fetch winning user details
-const fetchWinningUser = async (productId) => {
-  try {
-    const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
-    setWinningUsers((prevWinningUsers) => ({
-      ...prevWinningUsers,
-      [productId]: winningUserResponse.data.winningBid.userId,
-    }));
-  } catch (error) {
-    console.error('Error fetching winning user details:', error);
-  }
-};
+    const fetchWinningUser = async (productId) => {
+      try {
+        const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
+        setWinningUsers((prevWinningUsers) => ({
+          ...prevWinningUsers,
+          [productId]: winningUserResponse.data.winningBid.userId,
+        }));
+      } catch (error) {
+        console.error('Error fetching winning user details:', error);
+      }
+    };
 
+
+   
 //update the timer of banner
 
 useEffect(() => {
@@ -54,65 +58,39 @@ useEffect(() => {
 }, []); // Run once when component mounts
 
 
-  useEffect(() => {
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5500/api/getBids');
+      setProducts(response.data.bids);
+      console.log('Products:', response.data.bids);
 
-
-    // Fetch products from MongoDB database when the component mounts
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:5500/api/getBids');
-        setProducts(response.data.bids);
-        console.log('Products:', response.data.bids);
-        
-        // Call fetchWinningUser for each product
-        const winningUserPromises = response.data.bids.map(async (product) => {
-          const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${product._id}`);
-          return { productId: product._id, userId: winningUserResponse.data.winningBid.userId };
-        });
-  
-        const winningUsersArray = await Promise.all(winningUserPromises);
-  
-        // Convert the array to an object with product IDs as keys
-        const winningUsersObject = winningUsersArray.reduce((acc, item) => {
-          acc[item.productId] = item.userId;
-          return acc;
-        }, {});
-  
-        setWinningUsers(winningUsersObject);
-
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log('Request aborted:', error.message);
-        }else{
+      // Call fetchWinningUser for each product
+      const winningUserPromises = response.data.bids.map(async (product) => {
+        await fetchWinningUser(product._id);
+      });
+      await Promise.all(winningUserPromises);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Request aborted:', error.message);
+      } else {
         console.error('Error fetching bids:', error);
       }
-    };
-  }
+    }
+  };
   fetchProducts();
+  // Refresh products every 5 seconds
+  const intervalId = setInterval(fetchProducts, 5000);
+  // Clear interval on component unmount to prevent memory leaks
+  return () => clearInterval(intervalId);
+  
+}, [bidChange]);
 
-    // Fetch user bids
-    const fetchUserBids = async () => {
-      try {
-        // Check if email exists before making the API call
-      if (userId){
-        //const timestamp = new Date().getTime();
-        const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
-        console.log('User Bids:', userBidsResponse.data.userBids);
-        console.log('User Bids Response:', userBidsResponse);
-        setUserBids(userBidsResponse.data.userBids);
-      }
-      } catch (error) {
-        console.error('Error fetching user bids:', error);
-      }
-      
-    };
-
-    
-    fetchUserBids();
-
-    
-    
-  }, [userId]); // Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
+const renderWinningUser = (productId) => {
+  const winnerUserId = winningUsers[productId];
+  return winnerUserId ? `Won By: ${winnerUserId}` : 'No Winner';
+};
+// Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
 
   useEffect(() => {
   
@@ -181,10 +159,10 @@ useEffect(() => {
 
 
   //pro-feedback
-  const goToProductFeedback = async(prodid) =>{
-      window.location.href=`/ProductFeedback/${prodid}`;
-      console.log("You are the winner of this product");
-  }
+  // const goToProductFeedback = async(prodid) =>{
+  //     window.location.href=`/ProductFeedback/${prodid}`;
+  //     console.log("You are the winner of this product");
+  // }
 
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
@@ -263,6 +241,10 @@ useEffect(() => {
     try {
       const userId = auth.userId;
       // Use userId consistently
+      if(userId===product.userId){
+        alert(`You are the seller of ${product.name} you cannot place bid for your products`);
+        return; 
+      }
       
       if (Number(bidAmount) <= product.currentBid) {
         alert(`Bid amount must be greater than the current bid of ${product.currentBid}`);
@@ -273,7 +255,7 @@ useEffect(() => {
         alert('User ID not found.');
         return;
       }
-      window.location.href="/product";
+      //window.location.href="/product";
 
       const response = await axios.post('http://127.0.0.1:5500/api/placeBid', {
         productId: selectedProduct.productId,
@@ -286,48 +268,39 @@ useEffect(() => {
       
 
   
-      if (response.status === 200 ) {
+      if (response.status === 200) {
         // Fetch winning user details after placing a bid
         await fetchWinningUser(selectedProduct.productId);
-
+  
+        // Update the bid amount for the product in the state
         const updatedProducts = products.map((p) =>
           p._id === selectedProduct.productId ? { ...p, currentBid: Number(bidAmount) } : p
         );
-        console.log('Updated Products:', updatedProducts);
-        
+        setProducts(updatedProducts); // Update product state with new bid amount
   
         // Fetch user bids after placing a bid
-      const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
-      setUserBids(updatedUserBidsResponse.data.userBids);
-
-      // Update the bid for the product
-      const updatedProductResponse = await axios.get(`http://127.0.0.1:5500/api/getBids/${selectedProduct.productId}`);
-      const updatedProduct = updatedProductResponse.data.bids[0];
-
-      if (!updatedProduct) {
-        console.error('Error updating product: Product not found');
-        alert('An error occurred while updating the product');
-        return;
+        const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
+        setUserBids(updatedUserBidsResponse.data.userBids);
+  
+        // Clear the bid modal
+        setShowBidModal(false);
+        setBidAmount('');
+  
+        // Optionally, you can force a re-render by toggling a state variable
+        // This will ensure that the updated bid amount is immediately reflected in the UI
+        setflag((prevFlag) => prevFlag + 1);
+      } 
+      else if(response.data.message === 'You are already the winning bidder'){
+      alert(response.data.message);
       }
-      
-      // Update only the relevant product card
-      setProducts((prevProducts) =>
-        prevProducts.map((p) =>
-          p._id === selectedProduct.productId ? { ...p, currentBid: updatedProduct.currentBid } : p
-        )
-      );
-
-      setShowBidModal(false);
-      setBidAmount(''); // Clear bidAmount after successful bid
-    } else {
-      alert('Failed to place bid', response.data);
-    }
-  } 
+      else {
+        alert('Failed to place bid', response.data);
+      }  } 
   
   
   catch (error) {
-    // console.error('Error placing bid:', error);
-    // alert('An error occurred while placing bid'+error);
+    console.error('Error placing bid:', error);
+    alert('You are currently the highest bidder');
   }
 };
   
@@ -512,7 +485,7 @@ useEffect(() => {
                 {product.endTime && new Date(product.endTime) < new Date() && ( <>
                     
                     <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
-                    <p className="card-text">Bid Won By:  {winningUsers[product._id] ? winningUsers[product._id] : 'No Winner'}</p>
+                    <p className="card-text">Bid Won By: {renderWinningUser(product._id)}</p>
                   </>
                 )}
 
@@ -525,12 +498,12 @@ useEffect(() => {
                     Chat
                   </button>
                   &nbsp;
-                  {/* Render feedback button only if bid has ended and current user is the winner */}
+                  {/* Render feedback button only if bid has ended and current user is the winner
                   {product.endTime && new Date(product.endTime) < new Date() && winningUsers[product._id] === auth.userId && (
                   <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
                   Product Feedback
                   </button>
-                  )}
+                  )} */}
 
                 </div>
               </div>

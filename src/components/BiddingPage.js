@@ -104,26 +104,30 @@ const BiddingPage = ({ darkMode }) => {
 
   const handleDeleteProduct = async (productId) => {
     if (loggedIn) {
-      try {
-        const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
-        if (response.status === 200) {
-          alert('Bid deleted successfully');
-          // Update state immediately after successful deletion
-          setProducts((prevProducts) =>
-            prevProducts.filter((product) => product._id !== productId)
-          );
-        } else {
-          alert('Failed to delete bid');
+        try {
+            const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
+            console.log('Response from server:', response); // Log the response for debugging
+            if (response.status === 200) {
+                alert('Bid deleted successfully');
+                // Update state immediately after successful deletion
+                setProducts((prevProducts) =>
+                    prevProducts.filter((product) => product._id !== productId)
+                );
+            } else if (response.status === 400) {
+                // Display specific error message sent from the server
+                alert(response.data.message);
+            } else {
+                alert('Failed to delete bid');
+            }
+        } catch (error) {
+            console.error('Error deleting bid:', error);
+            alert('Product bid time expired. Deletion not possible.');
         }
-      } catch (error) {
-        console.error('Error deleting bid:', error);
-        alert('An error occurred while deleting bid');
-      }
     } else {
-      alert('Please login first');
-      navigate('/login'); // Redirect to login page
+        alert('Please login first');
+        navigate('/login'); // Redirect to login page
     }
-  };
+};
 
   const handleModifyBid = (productId, newBid) => {
     setModifyProductId(productId); // Set the product being modified
