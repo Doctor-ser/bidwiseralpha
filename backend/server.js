@@ -24,6 +24,18 @@ mongoose.connection.on('error', (err) => {
   console.error('Error connecting to MongoDB:', err);
 });
 
+mongoose.connection.once("open",()=>{
+
+  const userBidsChangeStream =  mongoose.connection.collection('userbids').watch();
+  // Listen for change events in the userbids collection
+userBidsChangeStream.on('change', (change) => {
+  // Emit a Socket.IO event when a change is detected
+  io.emit('userBidChange'); // You can customize the event name and data as per your requirement
+});
+
+})
+
+
 const corsOptions = {//for localhost on local machine use http://localhost:3000
   origin: 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
   credentials: true,
@@ -627,68 +639,51 @@ app.post('/api/placeBid', async (req, res) => {
       return res.status(400).json({ message: 'Bid amount must be greater than the current bid' });
     }
 
-
     // Identify the previous winning bid and mark it as not winning
     const previousWinningBid = await UserBid.findOne({ productId, isWinningBid: true });
     if (previousWinningBid) {
+      const previousWinnerUserId = previousWinningBid.userId;
+      const previousWinningBidAmount = previousWinningBid.bidAmount;
+      const productName = previousWinningBid.productName;
+
+      // Send email to the previous winner
+      const mailOptions = {
+        from: 'johxngeorxe@gmail.com',
+        to: previousWinnerUserId, // Assuming userId contains the email
+        subject: 'You have been outbid!',
+        text: `Hello,\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+
+      // Mark the previous winning bid as not winning
       previousWinningBid.isWinningBid = false;
       await previousWinningBid.save();
     }
 
     // Update the current bid for the product
     product.currentBid = bidAmount;
-
     await product.save();
 
+    // Add user bid
+    const newUserBid = new UserBid({
+      productId,
+      userId,
+      bidAmount,
+      productName: product.name,
+      bidId: product._id,
+      isWinningBid: true, // Mark the current bid as winning
+      timestamp: new Date(), // Add this line to include the timestamp
+    });
 
+    await newUserBid.save();
 
-  // Add user bid
-  const addUserBid = async () => {
-  const newUserBid = new UserBid({
-    productId,
-    userId,
-    bidAmount,
-    productName: product.name,
-    bidId: product._id,
-    isWinningBid: true, // Mark the current bid as winning
-    timestamp: new Date(), // Add this line to include the timestamp
-  });
-
-  await newUserBid.save();
-    };
-    // Save the updated product
-    await product.save();
-    await addUserBid();
-
-    // Fetch winning user details
-    const winningUser = await UserBid.findOne({ productId: product._id, isWinningBid: true });
-    
-    console.log('Place Bid Response:', { message: 'Bid placed successfully' });
-    console.log('Winning User:', winningUser.userId);
-     // Send email to the winning user
-    //   const mailOptions = {
-    //   from: 'johxngeorxe@gmail.com',
-    //   to: winningUser.userId, // Use userId as the email address
-    //   subject: 'CONGRATULATIONS!! You are currently the Highest Bidder',
-    //   text: 
-    //   `Dear ${winningUser.userId},
-
-    //   We have received your bid for the product  "${product.name}"  with a bid amount of  "₹${bidAmount}"  and you are currently winning the bid. You have placed the highest bid among all users.
-    //   We thank you for using our Online Auction System Bidwiser.`, 
-    // };
-
-
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error('Error sending email:', error);
-    //     // Handle the error and respond to the client
-    //     return res.status(500).json({ message: 'Internal server error' });
-    //   }
-
-    //   console.log('Email sent:', info.response);
-    //   // Respond to the client that the bid was placed successfully
-    //   res.status(200).json({ message: 'Bid placed successfully' });
-    // });
     res.status(200).json({ message: 'Bid placed successfully' });
   } catch (error) {
     console.error('Error placing bid:', error);
@@ -696,6 +691,7 @@ app.post('/api/placeBid', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 // Add a new endpoint to get winning bid details for a specific product
 app.get('/api/getWinningBid/:productId', async (req, res) => {
@@ -822,9 +818,11 @@ const port = process.env.PORT || 5500;
 const server = createServer(app);
 
   const io = new Server(server, { cors: { origin: 'http://localhost:3000' } }); 
+
 server.listen(port, () => {
   console.log("Server is started on port " + port);
 });
+
 
 
 //socket.io server side events
