@@ -12,6 +12,7 @@ const BiddingPage = ({ darkMode }) => {
     startingBid: '',
     currentBid: '',
     endTime: '',
+    
   });
   
   const { loggedIn, userId } = useAuth();
@@ -19,7 +20,7 @@ const BiddingPage = ({ darkMode }) => {
   const [bidAmount, setBidAmount] = useState(localStorage.getItem('bidAmount') || ''); // Use local storage for bid amount
   const [modifyProductId, setModifyProductId] = useState(null); // Track the product being modified
   const [currentBid, setCurrentBid] = useState(localStorage.getItem('currentBid') || '');
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
  
 
   // Fetch products from the server when the component mounts
@@ -34,7 +35,7 @@ const BiddingPage = ({ darkMode }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
+  },[] ); // The empty dependency array ensures that this effect runs only once when the component mounts
 
   
 
@@ -43,11 +44,41 @@ const BiddingPage = ({ darkMode }) => {
     setNewProduct({ ...newProduct, [name]: value });
   };
 
-  function handleChange(e) {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
-}
-
+  const handleChange = (event) => {
+    
+    setFile(event.target.files[0])
+    
+  };
+  const handleImageProduct = async () => {
+    console.log('image', file);
+    if (!file) {
+      alert('Please upload an image first.');
+      return;
+    }
+  
+    try {
+      // Create FormData object to send file
+      const formData = new FormData();
+      formData.append('image', file); // Append the file to FormData
+  
+      const response = await axios.post('http://127.0.0.1:5500/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set content type for FormData
+        },
+        
+      });
+      
+      if (response.status === 200) {
+        alert('Image uploaded successfully');
+      } else {
+        alert('Failed to upload image');
+      }
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      alert('An error occurred while uploading image');
+    }
+  };
+  
   const handleAddProduct = async () => {
     if (loggedIn) {
       const { startingBid, currentBid , name, description,endTime } = newProduct;
@@ -86,6 +117,7 @@ const BiddingPage = ({ darkMode }) => {
           const updatedProducts = [...products, { ...response.data.bid }];
           setProducts(updatedProducts);
           localStorage.setItem('products', JSON.stringify(updatedProducts)); // Store in localStorage
+          
         } else {
           alert('Failed to add bid');
         }
@@ -99,6 +131,10 @@ const BiddingPage = ({ darkMode }) => {
     }
   };
   
+  const handleAddAndImageProduct = () => {
+    handleAddProduct();
+    handleImageProduct();
+  };
   
   
 
@@ -234,9 +270,9 @@ const BiddingPage = ({ darkMode }) => {
       <div>
             <h3>Add Image:</h3>
             <input type="file" onChange={handleChange} />
-            <img src={file} />
+            
         </div>
-      <button onClick={handleAddProduct}>Add Product</button>
+      <button onClick={handleAddAndImageProduct}>Add Product</button>
       <pre></pre>
 
       <h3>Products you have added :</h3> <pre></pre>
