@@ -19,6 +19,7 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [productDetails, setProductDetails] = useState({});
   const [flag,setflag]=useState(0);
   const navigate = useNavigate();
+  
 
   
   
@@ -39,6 +40,8 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
       }
     };
 
+
+   
 //update the timer of banner
 
 useEffect(() => {
@@ -76,6 +79,11 @@ useEffect(() => {
     }
   };
   fetchProducts();
+  // Refresh products every 5 seconds
+  const intervalId = setInterval(fetchProducts, 5000);
+  // Clear interval on component unmount to prevent memory leaks
+  return () => clearInterval(intervalId);
+  
 }, [bidChange]);
 
 const renderWinningUser = (productId) => {
@@ -151,10 +159,10 @@ const renderWinningUser = (productId) => {
 
 
   //pro-feedback
-  const goToProductFeedback = async(prodid) =>{
-      window.location.href=`/ProductFeedback/${prodid}`;
-      console.log("You are the winner of this product");
-  }
+  // const goToProductFeedback = async(prodid) =>{
+  //     window.location.href=`/ProductFeedback/${prodid}`;
+  //     console.log("You are the winner of this product");
+  // }
 
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
@@ -233,6 +241,10 @@ const renderWinningUser = (productId) => {
     try {
       const userId = auth.userId;
       // Use userId consistently
+      if(userId===product.userId){
+        alert(`You are the seller of ${product.name} you cannot place bid for your products`);
+        return; 
+      }
       
       if (Number(bidAmount) <= product.currentBid) {
         alert(`Bid amount must be greater than the current bid of ${product.currentBid}`);
@@ -243,7 +255,7 @@ const renderWinningUser = (productId) => {
         alert('User ID not found.');
         return;
       }
-      window.location.href="/product";
+      //window.location.href="/product";
 
       const response = await axios.post('http://127.0.0.1:5500/api/placeBid', {
         productId: selectedProduct.productId,
@@ -277,14 +289,18 @@ const renderWinningUser = (productId) => {
         // Optionally, you can force a re-render by toggling a state variable
         // This will ensure that the updated bid amount is immediately reflected in the UI
         setflag((prevFlag) => prevFlag + 1);
-      } else {
+      } 
+      else if(response.data.message === 'You are already the winning bidder'){
+      alert(response.data.message);
+      }
+      else {
         alert('Failed to place bid', response.data);
       }  } 
   
   
   catch (error) {
-    // console.error('Error placing bid:', error);
-    // alert('An error occurred while placing bid'+error);
+    console.error('Error placing bid:', error);
+    alert('You are currently the highest bidder');
   }
 };
   
@@ -526,10 +542,10 @@ const renderWinningUser = (productId) => {
                   <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
                   Product Feedback
                   </button>
-                  )}
-
+                  )} */}
+{/* 
                 </div>
-              </div> */}
+              </div>  */}
             </div>
           ))}
         </div>
