@@ -648,6 +648,31 @@ app.post('/api/placeBid', async (req, res) => {
     // Identify the previous winning bid and mark it as not winning
     const previousWinningBid = await UserBid.findOne({ productId, isWinningBid: true });
     if (previousWinningBid) {
+      const previousWinnerUserId = previousWinningBid.userId;
+      if (previousWinnerUserId === userId) {
+        console.log("You are already the winning bidder");
+        return res.status(400).json({ message: 'You are already the winning bidder' });
+      }
+      const previousWinningBidAmount = previousWinningBid.bidAmount;
+      const productName = previousWinningBid.productName;
+
+      // Send email to the previous winner
+      // const mailOptions = {
+      //   from: 'johxngeorxe@gmail.com',
+      //   to: previousWinnerUserId, // Assuming userId contains the email
+      //   subject: 'You have been outbid!',
+      //   text: `Hello,\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
+      // };
+
+      // transporter.sendMail(mailOptions, (error, info) => {
+      //   if (error) {
+      //     console.error('Error sending email:', error);
+      //   } else {
+      //     console.log('Email sent:', info.response);
+      //   }
+      // });
+
+      // Mark the previous winning bid as not winning
       previousWinningBid.isWinningBid = false;
       await previousWinningBid.save();
     }
