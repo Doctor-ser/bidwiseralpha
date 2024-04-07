@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import { Card, Form, Button, Row, Col } from 'react-bootstrap'; // Import Bootstrap components
-import "./homepage.css";
+import { Card, Form, Button, Row, Col } from 'react-bootstrap';
+import './homepage.css';
 
 const UserBidsPage = () => {
   const [userBids, setUserBids] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [filteredBids, setFilteredBids] = useState([]);
-  const [filterOption, setFilterOption] = useState('all'); // 'all' or 'winning'
+  const [filterOption, setFilterOption] = useState('all');
   const auth = useAuth();
   const userId = auth.userId;
 
@@ -18,43 +18,53 @@ const UserBidsPage = () => {
         if (userId) {
           const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
           setUserBids(userBidsResponse.data.userBids);
-          setFilteredBids(userBidsResponse.data.userBids);
-
-          // Filter bids based on the selected option
-          const filtered =
-            filterOption === 'winning'
-              ? userBidsResponse.data.userBids.filter((bid) => bid.isWinningBid)
-              : userBidsResponse.data.userBids;
-
-          setFilteredBids(filtered);
+          filterBids(userBidsResponse.data.userBids);
         }
       } catch (error) {
         console.error('Error fetching user bids:', error);
       }
     };
-
     fetchUserBids();
+    const intervalId = setInterval(fetchUserBids, 5000); // Refresh every 5 seconds
+
+    return () => clearInterval(intervalId); // Clear interval on component unmount
   }, [userId, filterOption]);
 
-  const handleSearch = () => {
-    const filtered = userBids.filter((bid) => {
-      // Customize the conditions based on your search requirements
-      return (
-        bid.productName.toLowerCase().includes(searchInput.toLowerCase()) ||
-        bid.bidAmount.toString().includes(searchInput)
-        // Add more conditions as needed
-      );
-    });
+  const filterBids = (bids) => {
+    let filtered = bids;
+    if (searchInput) {
+      filtered = bids.filter((bid) => {
+        return (
+          bid.productName.toLowerCase().includes(searchInput.toLowerCase()) ||
+          bid.bidAmount.toString().includes(searchInput)
+        );
+      });
+    }
+
+    if (filterOption === 'winning') {
+      filtered = filtered.filter((bid) => bid.isWinningBid);
+    } else if (filterOption === 'won') {
+      filtered = filtered.filter((bid) => bid.isWinningBid && bid.mailsend);
+    }
+
     setFilteredBids(filtered);
+  };
+
+  const handleSearch = () => {
+    filterBids(userBids);
   };
 
   const handleFilterChange = (option) => {
     setFilterOption(option);
   };
 
+  const goToProductFeedback = (prodId) => {
+    window.location.href = `/ProductFeedback/${prodId}`;
+  };
+
   return (
     <div className="container mt-4">
-      <h2>Your Bids</h2><pre></pre>
+      <h2>Your Bids</h2>
       <Row className="mb-4">
         <Col md={8}>
           <Form>
@@ -79,6 +89,7 @@ const UserBidsPage = () => {
               <Form.Select onChange={(e) => handleFilterChange(e.target.value)} value={filterOption}>
                 <option value="all">All bids</option>
                 <option value="winning">Winning bids</option>
+                <option value="won">Won bids</option>
               </Form.Select>
             </Form.Group>
           </Form>
@@ -95,7 +106,7 @@ const UserBidsPage = () => {
                   <strong>Product ID:</strong> {bid.productId}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Bid Amount:</strong> &#8377;{bid.bidAmount}
+                  <strong>Bid Amount:</strong> ₹{bid.bidAmount}
                 </Card.Text>
                 <Card.Text>
                   <strong>Bid Placed At:</strong> {new Date(bid.timestamp).toLocaleString()}
@@ -106,6 +117,13 @@ const UserBidsPage = () => {
                 <Card.Text>
                   <strong>Winning Bid:</strong> {bid.isWinningBid ? 'Yes' : 'No'}
                 </Card.Text>
+                {bid.isWinningBid && bid.mailsend && (
+  <Button variant="primary" className="feedback-btn" onClick={() => goToProductFeedback(bid.productId)}>
+    Product Feedback
+  </Button>
+)}
+
+
               </Card.Body>
             </Card>
           </div>

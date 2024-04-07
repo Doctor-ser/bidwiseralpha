@@ -296,6 +296,8 @@ const User = mongoose.model('User', userSchema);
 app.use(bodyParser.urlencoded({ extended: true , limit: '100mb' }));
 app.use(bodyParser.json({ limit: '100mb' }));
 
+
+
 app.post('/api/signup', async(req, res) => {
   const { username, email, password } = req.body;
   //console.log(req.body)
@@ -459,11 +461,14 @@ app.put('/api/modifyBid/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 app.delete('/api/deleteBid/:id', async (req, res) => {
   try {
     const bidId = req.params.id;
+    const bid = await Bid.findById(bidId);
 
+    if (bid.endTime && new Date(bid.endTime) < new Date()) {
+      return res.status(400).json({ message: 'Bidding for this product has already ended. Deletion not allowed.' });
+    }
     const deletedBid = await Bid.findByIdAndRemove(bidId);
 
     if (!deletedBid) {
@@ -476,6 +481,7 @@ app.delete('/api/deleteBid/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 //feedback product details fetch
 app.get('/api/product/:productId', async (req, res) => {
@@ -603,15 +609,15 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
       return res.status(400).json({ message: 'Email already sent to winner' });
     }
 
-    const mailOptions = {
-      from: 'johxngeorxe@gmail.com',
-      to: winnerEmail,
-      subject: 'Congratulations! You are the winning bidder',
-      text: `Dear ${winnerEmail},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nYour Auction Platform`
-    };
+    // const mailOptions = {
+    //   from: 'johxngeorxe@gmail.com',
+    //   to: winnerEmail,
+    //   subject: 'Congratulations! You are the winning bidder',
+    //   text: `Dear ${winnerEmail},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nYour Auction Platform`
+    // };
 
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent to winner:', winnerEmail);
+    // await transporter.sendMail(mailOptions);
+    // console.log('Email sent to winner:', winnerEmail);
 
     // Update mailsend flag to true
     await UserBid.updateOne({ _id: winningUserBid._id }, { $set: { mailsend: true } });
@@ -687,7 +693,7 @@ app.get('/api/getUserBids/:userId', async (req, res) => {
 //place bid 
 app.post('/api/placeBid', async (req, res) => {
   const { productId, userId, bidAmount } = req.body;
-
+  console.log("Recieved data",req.body);
   try {
     // Fetch the product
     const product = await Bid.findById(productId);
@@ -705,24 +711,28 @@ app.post('/api/placeBid', async (req, res) => {
     const previousWinningBid = await UserBid.findOne({ productId, isWinningBid: true });
     if (previousWinningBid) {
       const previousWinnerUserId = previousWinningBid.userId;
+      if (previousWinnerUserId === userId) {
+        console.log("You are already the winning bidder");
+        return res.status(400).json({ message: 'You are already the winning bidder' });
+      }
       const previousWinningBidAmount = previousWinningBid.bidAmount;
       const productName = previousWinningBid.productName;
 
       // Send email to the previous winner
-      const mailOptions = {
-        from: 'johxngeorxe@gmail.com',
-        to: previousWinnerUserId, // Assuming userId contains the email
-        subject: 'You have been outbid!',
-        text: `Hello,\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
-      };
+      // const mailOptions = {
+      //   from: 'johxngeorxe@gmail.com',
+      //   to: previousWinnerUserId, // Assuming userId contains the email
+      //   subject: 'You have been outbid!',
+      //   text: `Hello,\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
+      // };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error('Error sending email:', error);
-        } else {
-          console.log('Email sent:', info.response);
-        }
-      });
+      // transporter.sendMail(mailOptions, (error, info) => {
+      //   if (error) {
+      //     console.error('Error sending email:', error);
+      //   } else {
+      //     console.log('Email sent:', info.response);
+      //   }
+      // });
 
       // Mark the previous winning bid as not winning
       previousWinningBid.isWinningBid = false;
