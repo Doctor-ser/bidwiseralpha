@@ -4,9 +4,11 @@ import './Product.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useNavigate,Link } from 'react-router-dom';
+import $ from 'jquery';
+import 'jquery-countdown';
 
 
-const ProductsPage = ({ darkMode, email }) => {
+const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [products, setProducts] = useState([]);
   const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
@@ -25,76 +27,62 @@ const ProductsPage = ({ darkMode, email }) => {
   const userId = auth.userId 
 
     // Fetch winning user details
-const fetchWinningUser = async (productId) => {
-  try {
-    const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
-    setWinningUsers((prevWinningUsers) => ({
-      ...prevWinningUsers,
-      [productId]: winningUserResponse.data.winningBid.userId,
-    }));
-  } catch (error) {
-    console.error('Error fetching winning user details:', error);
-  }
-};
-
-
-  useEffect(() => {
-    // Fetch products from MongoDB database when the component mounts
-    const fetchProducts = async () => {
+    const fetchWinningUser = async (productId) => {
       try {
-        const response = await axios.get('http://127.0.0.1:5500/api/getBids');
-        setProducts(response.data.bids);
-        console.log('Products:', response.data.bids);
-        
-        // Call fetchWinningUser for each product
-        const winningUserPromises = response.data.bids.map(async (product) => {
-          const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${product._id}`);
-          return { productId: product._id, userId: winningUserResponse.data.winningBid.userId };
-        });
-  
-        const winningUsersArray = await Promise.all(winningUserPromises);
-  
-        // Convert the array to an object with product IDs as keys
-        const winningUsersObject = winningUsersArray.reduce((acc, item) => {
-          acc[item.productId] = item.userId;
-          return acc;
-        }, {});
-  
-        setWinningUsers(winningUsersObject);
-
+        const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
+        setWinningUsers((prevWinningUsers) => ({
+          ...prevWinningUsers,
+          [productId]: winningUserResponse.data.winningBid.userId,
+        }));
       } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log('Request aborted:', error.message);
-        }else{
+        console.error('Error fetching winning user details:', error);
+      }
+    };
+
+//update the timer of banner
+
+useEffect(() => {
+  const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
+
+  // Start the countdown timer
+  $('#countdown').countdown(finalDate, function(event) {
+    // Update the content of each count span with the corresponding value
+    $('#days').text(event.strftime('%D'));
+    $('#hours').text(event.strftime('%H'));
+    $('#minutes').text(event.strftime('%M'));
+    $('#seconds').text(event.strftime('%S'));
+  });
+}, []); // Run once when component mounts
+
+
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5500/api/getBids');
+      setProducts(response.data.bids);
+      console.log('Products:', response.data.bids);
+
+      // Call fetchWinningUser for each product
+      const winningUserPromises = response.data.bids.map(async (product) => {
+        await fetchWinningUser(product._id);
+      });
+      await Promise.all(winningUserPromises);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Request aborted:', error.message);
+      } else {
         console.error('Error fetching bids:', error);
       }
-    };
-  }
+    }
+  };
   fetchProducts();
+}, [bidChange]);
 
-    // Fetch user bids
-    const fetchUserBids = async () => {
-      try {
-        // Check if email exists before making the API call
-      if (userId){
-        //const timestamp = new Date().getTime();
-        const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
-        console.log('User Bids:', userBidsResponse.data.userBids);
-        console.log('User Bids Response:', userBidsResponse);
-        setUserBids(userBidsResponse.data.userBids);
-      }
-      } catch (error) {
-        console.error('Error fetching user bids:', error);
-      }
-      
-    };
-
-    
-    fetchUserBids();
-
-    
-    
-  }, [userId]); // Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
+const renderWinningUser = (productId) => {
+  const winnerUserId = winningUsers[productId];
+  return winnerUserId ? `Won By: ${winnerUserId}` : 'No Winner';
+};
+// Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
 
   useEffect(() => {
   
@@ -160,6 +148,28 @@ const fetchWinningUser = async (productId) => {
       navigate(`/chat/${productId}`);
     };
   };
+
+
+  //pro-feedback
+  const goToProductFeedback = async(prodid) =>{
+      window.location.href=`/ProductFeedback/${prodid}`;
+      console.log("You are the winner of this product");
+  }
+
+  //mail to winner of each product
+  const sendEmailToWinner = async (productName, winningBid, productId) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:5500/api/sendEmailToWinner', {
+            productName,
+            winningBid,
+            productId
+        });
+        console.log('Email sent to winner:', response.data.message);
+    } catch (error) {
+        console.error('Error sending email to winner:', error);
+    }
+};
+
 
   const handleBid = async (productId, currentBid,startingBid) => {
     // Check if the user is logged in
@@ -246,43 +256,30 @@ const fetchWinningUser = async (productId) => {
       
 
   
-      if (response.status === 200 ) {
+      if (response.status === 200) {
         // Fetch winning user details after placing a bid
         await fetchWinningUser(selectedProduct.productId);
-
+  
+        // Update the bid amount for the product in the state
         const updatedProducts = products.map((p) =>
           p._id === selectedProduct.productId ? { ...p, currentBid: Number(bidAmount) } : p
         );
-        console.log('Updated Products:', updatedProducts);
-        
+        setProducts(updatedProducts); // Update product state with new bid amount
   
         // Fetch user bids after placing a bid
-      const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
-      setUserBids(updatedUserBidsResponse.data.userBids);
-
-      // Update the bid for the product
-      const updatedProductResponse = await axios.get(`http://127.0.0.1:5500/api/getBids/${selectedProduct.productId}`);
-      const updatedProduct = updatedProductResponse.data.bids[0];
-
-      if (!updatedProduct) {
-        console.error('Error updating product: Product not found');
-        alert('An error occurred while updating the product');
-        return;
-      }
-      
-      // Update only the relevant product card
-      setProducts((prevProducts) =>
-        prevProducts.map((p) =>
-          p._id === selectedProduct.productId ? { ...p, currentBid: updatedProduct.currentBid } : p
-        )
-      );
-
-      setShowBidModal(false);
-      setBidAmount(''); // Clear bidAmount after successful bid
-    } else {
-      alert('Failed to place bid', response.data);
-    }
-  } 
+        const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
+        setUserBids(updatedUserBidsResponse.data.userBids);
+  
+        // Clear the bid modal
+        setShowBidModal(false);
+        setBidAmount('');
+  
+        // Optionally, you can force a re-render by toggling a state variable
+        // This will ensure that the updated bid amount is immediately reflected in the UI
+        setflag((prevFlag) => prevFlag + 1);
+      } else {
+        alert('Failed to place bid', response.data);
+      }  } 
   
   
   catch (error) {
@@ -376,51 +373,163 @@ const fetchWinningUser = async (productId) => {
             onChange={handleSearch}
           />
         </div>
+
+
+        {/* cart banner section */}
+        <section class="cart-banner pt-100 pb-100">
+            <div class="container">
+                <div class="row clearfix">
+                    {/*Image Column*/}
+                    <div class="image-column col-lg-6">
+                        <div class="image">
+                            <div class="price-box">
+                                <div class="inner-price">
+                                      <span class="price">
+                                          <strong>Top!!</strong> <br/> Deal
+                                      </span>
+                                </div>
+                            </div>
+                            <div className='col-md-6'>
+                              <img src=/*{images[currentImageIndex]}*/"https://wallpapercave.com/wp/wp6827492.jpg" alt="Banner" height="400" width="600" />        
+                            </div>
+                        </div>
+                    </div>
+                      {/*Content Column*/}
+                      <div class="content-column col-lg-6">
+                        <h3><span class="orange-text">Deal</span> of the Day</h3>
+                          <h4>Triumph</h4>
+                          <div class="text">Quisquam minus maiores repudiandae nobis, minima saepe id, fugit ullam similique! Beatae, minima quisquam molestias facere ea. Perspiciatis unde omnis iste natus error sit voluptatem accusant</div>
+                          {/*Countdown Timer*/}
+                          <div className="time-counter">
+                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="days">00</span>Days
+                                    </div>
+                                  </div>
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="hours">00</span>Hours
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="minutes">00</span>Mins
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="seconds">00</span>Secs
+                                    </div>
+                                  </div>
+                                </div>
+                          </div>
+                        <a href="cart.html" class="cart-btn mt-3"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                      </div>
+                </div>
+            </div>
+          </section>
+          {/* end cart banner section */}
+
+
         <div className="row">
           {/* Display filtered products instead of all products */}
           {filteredProducts.map((product, index) => (
+       
             <div key={product._id} className="col-md-4 mb-4">
-              <div className="card">
+                  <div class='container-fluid'>
+                      <div class="card mx-auto col-md-3 col-10 mt-5">
+                            <img class='mx-auto img-thumbnail'
+                                src="https://wallpapercave.com/wp/wp8257248.jpg"
+                                width="auto" height="auto"/>
+                            <div class="card-body text-center mx-auto">
+                                <div class='cvp'>
+                                    <h5 class="card-title font-weight-bold">{product.name}</h5>
+                                    <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
+                                    <p className="card-text">{product.endTime &&
+                                        (() => {
+                                            const remainingTime = calculateRemainingTime(product.endTime);
+                                            if (remainingTime.ended) {
+                                              const winnerUserId = winningUsers[product._id];
+                                              const winningBid = product.currentBid;
+
+                                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
+                                                    sendEmailToWinner(product.name, winningBid, product._id);
+                                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
+                                              }
+                                        
+                                              return `Bid has ended`;
+
+                                            } else {
+                                              return `${remainingTime.message}`;
+                                            }
+                                        })()
+                                      }
+                                  </p>
+                                  <a href="#" class="btn details px-auto">View Details</a><br />
+                                  <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
+                                      Place Bid
+                                  </button>
+                                </div>
+                            </div>
+                      </div>
+                  </div>
+
+              {/*<div className="card">
                 
-                <div className="card-body">
+                 <div className="card-body"> 
                   <h5 className="card-text">Product Name : {product.name}</h5>
                   <p className="card-text">Product Description : {product.description}</p>
                   <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
+                  <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
                   <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
                   <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                  <p className="card-text">
-  {product.endTime &&
-    (() => {
-      const remainingTime = calculateRemainingTime(product.endTime);
-      if (remainingTime.ended) {
-        return `Bid has ended`;
-      } else {
-        return `Bid ends on: ${remainingTime.message}`;
-      }
-    })()}
-</p>
-                  {/* Display highest bid and winning user after bid has ended */}
-                {product.endTime && new Date(product.endTime) < new Date() && (
-                  <>
-                    
-                    <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
-                    <p className="card-text">Bid Won By:  {winningUsers[product._id] ? winningUsers[product._id] : 'No Winner'}</p>
-                    
-                  </>
-                )}
+                  <p className="card-text">{product.endTime &&
+                        (() => {
+                            const remainingTime = calculateRemainingTime(product.endTime);
+                            if (remainingTime.ended) {
+                              const winnerUserId = winningUsers[product._id];
+                              const winningBid = product.currentBid;
+
+                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
+                                    sendEmailToWinner(product.name, winningBid, product._id);
+                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
+                              }
+                        
+                              return `Bid has ended`;
+
+                            } else {
+                              return `Bid ends on: ${remainingTime.message}`;
+                            }
+                        })()
+                      }
+                  </p>
+                  {/* Display highest bid and winning user after bid has ended */}{/*
+                    {product.endTime && new Date(product.endTime) < new Date() && ( <>
+                        
+                        <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
+                        <p className="card-text">Bid Won By: {renderWinningUser(product._id)}</p>
+                      </>
+                    )}
 
                   
-                  <button className="btn btn-primary" style={{ height: '50px' }} onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
+                  <button className="btn-primary2" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
                     Place Bid
                   </button>
                   &nbsp;
                   <button className="chat-btn" onClick={handleChatClick(product._id)}>
                     Chat
                   </button>
-
+                  &nbsp;
+                  {/* Render feedback button only if bid has ended and current user is the winner */}{/*
+                  {product.endTime && new Date(product.endTime) < new Date() && winningUsers[product._id] === auth.userId && (
+                  <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
+                  Product Feedback
+                  </button>
+                  )}
 
                 </div>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
@@ -432,8 +541,7 @@ const fetchWinningUser = async (productId) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h2 className="modal-title">Place Bid</h2>
-                <button type="button" className="close" onClick={closeModal}>
-                  &times;
+                <button type="button" className="btn-close" onClick={closeModal}>
                 </button>
               </div>
               <div className="modal-body">
@@ -442,17 +550,14 @@ const fetchWinningUser = async (productId) => {
                 <p style={{display:"none"}}>{ bidAmount==0 && flag==0 ?(setBidAmount(selectedProduct.currentBid+10),showBidModal&&setflag(1)):showBidModal&&bidAmount}</p>
                  <input type="number"
                   placeholder="Enter your bid amount"
-                  className="form-control"
+                  className="form-control1"
                   value={bidAmount}
                   onChange={(e) => setBidAmount(e.target.value)}
                 />
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary" onClick={placeBid}>
+                <button className="btn-primary2" onClick={placeBid}>
                   Place Bid
-                </button>
-                <button className="btn btn-secondary" onClick={closeModal}>
-                  Close
                 </button>
               </div>
             </div>
