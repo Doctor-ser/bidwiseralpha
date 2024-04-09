@@ -32,15 +32,21 @@ const LoginPage = ({ darkMode }) => {
         localStorage.setItem('loggedIn', true); // Set login status to true in local storage
         localStorage.setItem('userId', email); // Set user ID in local storage
         localStorage.setItem('username', response.data.username); // Set username in local storage
-
+  
         // Fetch user bids on login
-      const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${email}`);
-      console.log('User Bids:', userBidsResponse.data.userBids);
-      
-      // Set user bids in the context state
-      setUserBids(userBidsResponse.data.userBids);
-
-        navigate('/bidding');
+        const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${email}`);
+        console.log('User Bids:', userBidsResponse.data.userBids);
+  
+        // Set user bids in the context state
+        setUserBids(userBidsResponse.data.userBids);
+  
+        // Redirect based on userType
+        if (response.data.userType === 'user') {
+          navigate('/product');
+        } else if (response.data.userType === 'admin') {
+          navigate('/admin');
+          console.log('Admin logged in');
+        }
       } else {
         alert('Invalid credentials. Please try again.');
       }
@@ -48,22 +54,24 @@ const LoginPage = ({ darkMode }) => {
       console.error('Error:', error);
   
       // Move the error handling inside the try block
-    if (error.response && error.response.status === 401) {
-      if (error.response.data.message === 'Email does not exist') {
-        alert('Email does not exist.');
-      } else if (error.response.data.message === 'Incorrect password') {
-        alert('Incorrect password.');
+      if (error.response && error.response.status === 401) {
+        if (error.response.data.message === 'Email does not exist') {
+          alert('Email does not exist.');
+        } else if (error.response.data.message === 'Incorrect password') {
+          alert('Incorrect password.');
+        } else {
+          alert('Invalid credentials. Please try again.');
+        }
       } else {
-        alert('Invalid credentials. Please try again.');
+        alert('An error occurred. Please try again later.');
       }
-    } else {
-      alert('An error occurred. Please try again later.');
     }
-  }
-};
+  };
 
 const handleForgotPassword = async () => {
   try {
+
+    
     const response = await axios.post('http://127.0.0.1:5500/api/forgotPassword', { email });
 
     if (response.data.message === 'Email sent successfully') {
