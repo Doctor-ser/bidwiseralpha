@@ -19,6 +19,10 @@ import Chat from './components/Chat';
 import Feedback from './components/feedback';
 import ProductFeedback from './components/productfeedback';
 import SellerInfo from './components/sellerinfo';
+import AdminPage from './admin/adminpage';  
+import ProductsPage from './admin/productpage';  
+import Userpage from './admin/users';
+import Feedbackadmin from './admin/fetchfeedback';
 const io  = require('socket.io-client');
 
 
@@ -33,7 +37,7 @@ const App = () => {
   const socket = io('http://localhost:5500');
   socket.on('connect', () => { console.log("Connected to server"); });
   socket.on('new-message',()=>{
-    // alert("nigga")
+    
     setLoadMessage(prev => !prev);
   })
 
@@ -65,6 +69,10 @@ const App = () => {
           <Route path="/productfeedback/:productId" element={<ProductFeedback darkMode={darkMode} email={email} />} />
           <Route path="/sellerinfo/:userId" element={<SellerInfo darkMode={darkMode} email={email} />} />
           <Route path="/chat/:productId" element={<Chat darkMode={darkMode} loadMessage={loadMessage} setLoadMessage={setLoadMessage} email={email} />} />
+          <Route path="/admin" element={<AdminPage darkMode={darkMode} email={email} />} />
+          <Route path="/admin/products" element={<ProductsPage darkMode={darkMode} email={email} />} />
+          <Route path="/admin/users" element={<Userpage darkMode={darkMode} email={email} />} />
+          <Route path="/admin/feedbacks" element={<Feedbackadmin darkMode={darkMode} email={email} />} />
         </Routes>
         <Footer darkMode={darkMode} />
       </AuthProvider>

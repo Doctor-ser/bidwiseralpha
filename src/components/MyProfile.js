@@ -13,10 +13,16 @@ const MyProfile = ({ darkMode, email }) => {
  const [winningBids, setWinningBids] = useState(0);
  const [averageBidAmount, setAverageBidAmount] = useState(0);
  const [winningRate, setWinningRate] = useState(0);
+ const [username, setUsername] = useState('');
 
+ 
  useEffect(() => {
    const fetchProfileStatistics = async () => {
      try {
+
+      const userResponse = await axios.get(`http://127.0.0.1:5500/api/getUserByEmail/${userId}`);
+      setUsername(userResponse.data.username);
+
        const bidsResponse = await axios.get(`http://127.0.0.1:5500/api/getTotalBids/${userId}`);
        setTotalBids(bidsResponse.data.totalBids);
 
@@ -53,7 +59,7 @@ const MyProfile = ({ darkMode, email }) => {
         <div className="card-body">
           <h2 className={`card-title ${darkMode ? 'text-light' : ''}`}>My Profile</h2><pre></pre>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
-            Welcome, User!
+           Welcome, <strong>{username}</strong>!
           </p>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
             Your Email : {userId}

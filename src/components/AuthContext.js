@@ -37,16 +37,20 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     let sessionTimeout;
-
+  
     if (loggedIn) {
       sessionTimeout = setTimeout(() => {
         setLoggedIn(false);
         setUserId(null);
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('userId');
+        alert('Session expired. Please login again.');
+        // Navigate to the login page
+        // You can use your preferred method for navigation, like react-router-dom
+        window.location.href = '/login'; // This will redirect to the login page
       }, 300000); // 5 minutes in milliseconds
     }
-
+  
     return () => clearTimeout(sessionTimeout);
   }, [loggedIn]);
 
