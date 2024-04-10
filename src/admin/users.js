@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from './navbar';
-import Footer from './footer';
 
 const AdminPage = () => {
   const [email, setEmail] = useState('');

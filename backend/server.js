@@ -324,22 +324,25 @@ app.get('/api/feedbacks', async (req, res) => {
   res.send(feedbacks);
 });
 
-//change password for admin
+
 //change password for admin
 app.post('/api/changePassword', async (req, res) => {
-  const { email, oldPassword, newPassword } = req.body;
-
+  const { userId, oldPassword, newPassword } = req.body;
+  const email=userId;
+  console.log(req.body);
   try {
       // Find the user by email
       const user = await User.findOne({ email });
-
+      console.log(user);
       // Check if the user exists
       if (!user) {
+        console.log("user not found");
           return res.status(404).json({ message: 'User not found' });
       }
 
       // Check if the old password matches the one stored in the database
       if (user.password !== oldPassword) {
+        console.log("invalid password");
           return res.status(401).json({ message: 'Invalid old password' });
       }
 
@@ -348,7 +351,7 @@ app.post('/api/changePassword', async (req, res) => {
 
       // Save the updated user
       await user.save();
-
+      console.log("password changed");
       res.status(200).json({ message: 'Password successfully changed' });
   } catch (error) {
       console.error('Error changing password:', error);

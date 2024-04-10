@@ -4,8 +4,7 @@ import '../components/Product.css';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import Navbar from './navbar';
-import Footer from './footer';
+
 import 'jquery-countdown';
 
 const ProductsPage = ({ darkMode, email, bidChange }) => {
