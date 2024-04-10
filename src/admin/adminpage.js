@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './navbar';
-import Footer from './footer';
+
 
 const AdminPage = () => {
+
     const [username, setUsername] = useState('');
     const { userId } = useAuth();
     const [newAdminData, setNewAdminData] = useState({ username: '', email: '', password: '' });
@@ -63,14 +63,14 @@ const AdminPage = () => {
             alert(response.data.message);
         } catch (error) {
             console.error('Error changing password:', error);
-            // Optionally, you can show an error message to the user
+            alert("current entered password is incorrect");
         }
     };
     
 
     return (
         <div>
-            <Navbar />
+            
             <div className="admin-page">
                 <div className="sidebar">
                     <h2>Admin Actions</h2>
@@ -130,7 +130,7 @@ const AdminPage = () => {
                     )}
                 </div>
             </div>
-            <Footer />
+            
         </div>
     );
 };

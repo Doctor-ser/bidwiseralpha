@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
-import Navbar from './navbar';
-import Footer from './footer';
 
 function FettchFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -43,7 +41,7 @@ function FettchFeedback() {
 
   return (
     <div className="App">
-        <Navbar/>
+        
       <h1>Feedbacks</h1>
       <div>
         <label htmlFor="filter">Filter by:</label>
@@ -56,7 +54,7 @@ function FettchFeedback() {
       <div className="feedbacks">
         {renderFeedbacks()}
       </div>
-      <Footer/>
+      
     </div>
   );
 }

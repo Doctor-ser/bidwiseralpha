@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './homepage.css';
 import { Link } from 'react-router-dom';
 
+
+
 const HomePage = ({ darkMode }) => {
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
     'https://cdn.mos.cms.futurecdn.net/AEYvg9hJbdXFmWL4XKPiHk.jpg',

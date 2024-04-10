@@ -4,8 +4,7 @@ import '../components/Product.css';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import Navbar from './navbar';
-import Footer from './footer';
+
 import 'jquery-countdown';
 
 const ProductsPage = ({ darkMode, email, bidChange }) => {
@@ -118,7 +117,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
 
   return (
     <div className={`products-page ${darkMode ? 'dark-mode' : ''}`}>
-      <Navbar />
+      
       <div className="container mt-5">
         {/* Sorting dropdown menu */}
         <div style={{ marginBottom: '20px' }}>
@@ -168,7 +167,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
           ))}
         </div>
       </div>
-      <Footer />
+      
     </div>
   );
 };

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from './navbar';
-import Footer from './footer';
 
 const AdminPage = () => {
   const [email, setEmail] = useState('');
@@ -52,7 +50,7 @@ const AdminPage = () => {
 
   return (
     <div>
-      <Navbar /> {/* Include the Navbar component */}
+    
       <h1>Admin Page</h1>
       <div>
         <label>Email:</label>
@@ -83,7 +81,7 @@ const AdminPage = () => {
         </div>
       )}
       {errorMessage && <p>{errorMessage}</p>}
-      <Footer /> {/* Include the Footer component */}
+     
     </div>
   );
 };
