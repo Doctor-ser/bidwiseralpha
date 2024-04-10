@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { Link , useNavigate } from 'react-router-dom'; // Assuming you're using React Router for navigation 
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useAuth } from './AuthContext';
 import './Login.css';
 
-
-const LoginPage = ({ darkMode }) => {
+const LoginPage = ({ darkMode, userType, setUserType }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setLoggedIn,setUserId,setUserBids, setUsername} = useAuth();
-
+  const { setLoggedIn, setUserId, setUserBids, setUsername } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,36 +22,39 @@ const LoginPage = ({ darkMode }) => {
       console.log('Response:', response);
   
       if (response.data.message === 'Login successful') {
-        // Login successful logic
         alert('Login successful!');
         setLoggedIn(true);
-        setUserId(email); // Set userId to the user's email
-        setUsername(response.data.username); // Set the username from the response
-        localStorage.setItem('loggedIn', true); // Set login status to true in local storage
-        localStorage.setItem('userId', email); // Set user ID in local storage
-        localStorage.setItem('username', response.data.username); // Set username in local storage
+        setUserId(email);
+       
+        setUsername(response.data.username);
+        localStorage.setItem('loggedIn', true);
+        localStorage.setItem('userId', email);
+        localStorage.setItem('username', response.data.username);
   
-        // Fetch user bids on login
         const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${email}`);
         console.log('User Bids:', userBidsResponse.data.userBids);
   
-        // Set user bids in the context state
         setUserBids(userBidsResponse.data.userBids);
   
-        // Redirect based on userType
         if (response.data.userType === 'user') {
+          localStorage.getItem('userType', 'user');
+          setUserType('user')
           navigate('/product');
         } else if (response.data.userType === 'admin') {
+          localStorage.setItem('userType', 'admin');
+          setUserType('admin')
           navigate('/admin');
           console.log('Admin logged in');
         }
+        
+        // // Triggering page refresh after successful login
+        // onLoginSuccess();
       } else {
         alert('Invalid credentials. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
   
-      // Move the error handling inside the try block
       if (error.response && error.response.status === 401) {
         if (error.response.data.message === 'Email does not exist') {
           alert('Email does not exist.');

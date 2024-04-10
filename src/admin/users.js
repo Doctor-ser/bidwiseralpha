@@ -52,7 +52,7 @@ const AdminPage = () => {
 
   return (
     <div>
-      <Navbar /> {/* Include the Navbar component */}
+    
       <h1>Admin Page</h1>
       <div>
         <label>Email:</label>
@@ -83,7 +83,7 @@ const AdminPage = () => {
         </div>
       )}
       {errorMessage && <p>{errorMessage}</p>}
-      <Footer /> {/* Include the Footer component */}
+     
     </div>
   );
 };

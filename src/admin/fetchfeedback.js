@@ -43,7 +43,7 @@ function FettchFeedback() {
 
   return (
     <div className="App">
-        <Navbar/>
+        
       <h1>Feedbacks</h1>
       <div>
         <label htmlFor="filter">Filter by:</label>
@@ -56,7 +56,7 @@ function FettchFeedback() {
       <div className="feedbacks">
         {renderFeedbacks()}
       </div>
-      <Footer/>
+      
     </div>
   );
 }

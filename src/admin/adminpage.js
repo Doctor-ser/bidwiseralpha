@@ -6,6 +6,11 @@ import Navbar from './navbar';
 import Footer from './footer';
 
 const AdminPage = () => {
+
+    // useEffect(()=>{
+
+    //     window.location.reload();
+    //   },[]);
     const [username, setUsername] = useState('');
     const { userId } = useAuth();
     const [newAdminData, setNewAdminData] = useState({ username: '', email: '', password: '' });
@@ -70,7 +75,7 @@ const AdminPage = () => {
 
     return (
         <div>
-            <Navbar />
+            
             <div className="admin-page">
                 <div className="sidebar">
                     <h2>Admin Actions</h2>
@@ -130,7 +135,7 @@ const AdminPage = () => {
                     )}
                 </div>
             </div>
-            <Footer />
+            
         </div>
     );
 };

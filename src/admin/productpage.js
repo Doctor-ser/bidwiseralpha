@@ -118,7 +118,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
 
   return (
     <div className={`products-page ${darkMode ? 'dark-mode' : ''}`}>
-      <Navbar />
+      
       <div className="container mt-5">
         {/* Sorting dropdown menu */}
         <div style={{ marginBottom: '20px' }}>
@@ -168,7 +168,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
           ))}
         </div>
       </div>
-      <Footer />
+      
     </div>
   );
 };

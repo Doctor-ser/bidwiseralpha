@@ -9,7 +9,7 @@ const MoonSVG = () => (
   </svg>
 );
 
-const AdminNavbar = ({ darkMode, toggleDarkMode }) => {
+const AdminNavbar = ({ darkMode, toggleDarkMode,setUserType }) => {
   const navigate = useNavigate();
   const { loggedIn, setLoggedIn, setUserId } = useAuth(); // Assuming you have an AuthContext
 
@@ -17,6 +17,9 @@ const AdminNavbar = ({ darkMode, toggleDarkMode }) => {
     // Clear user credentials from local storage
     localStorage.removeItem('loggedIn');
     localStorage.removeItem('userId');
+    localStorage.setItem('userType','user')
+    setUserType('user')
+
 
     // Reset context state
     setLoggedIn(false);
