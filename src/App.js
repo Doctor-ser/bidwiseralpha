@@ -67,10 +67,10 @@ const App = () => {
   //   footerComponent = <Fouter />;
   // }
   return (
+
     <Router>
       <AuthProvider userType={userType} setUserType={setUserType}>
-        {/* Conditionally render the Navbar */}
-        {userType == 'user'? <Navbar setUserType={setUserType}/> : <Naavbar setUserType={setUserType}/>}
+        {userType == 'user'? <Navbar setUserType={setUserType} darkMode={darkMode} toggleDarkMode={toggleDarkMode}/> : <Naavbar setUserType={setUserType} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
         <Routes>
           <Route path="/" element={<HomePage darkMode={darkMode} />} />
           <Route path="/login" element={<LoginPage darkMode={darkMode}  userType={userType} setUserType={setUserType}/>} />
