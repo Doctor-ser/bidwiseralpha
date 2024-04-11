@@ -18,7 +18,7 @@ const path = require('path');
 const app = express();
 mongoose.set("strictQuery", true)
 // Connect to MongoDB (replace this URI with your actual MongoDB URI)
-mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://evantabraham842:84RMVoCOAX6YDmSy@cluster0.v7ae8l8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 
 
@@ -89,6 +89,7 @@ const Image = mongoose.model('Image', new mongoose.Schema({
   uploadDate: { type: Date, default: Date.now },
   metadata: { userId: String },
   image: { type: Buffer },
+  imageUrl: String,
 }));
 
 // Endpoint to handle file upload
@@ -98,10 +99,11 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 
     const newImage = new Image({
       filename: req.file.originalname,
-      contentType: req.file.mimetype,
       size: req.file.size,
+      contentType: req.file.mimetype,
       metadata: { userId: req.body.userId },
       image: req.file.buffer,
+      imageUrl: req.body.imageUrl,
     });
 
     await newImage.save();
@@ -113,7 +115,26 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
   }
 });
 
+// Route to fetch image details based on imageUrl
+app.get('/api/images/:imageUrl', async (req, res) => {
+  try {
+    const imageUrl = req.params.imageUrl;
+    const imageDetails = await Image.findOne({ imageUrl });
 
+    if (!imageDetails) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    // Assuming your image data is stored in the "image" field as Buffer data
+    const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
+    const contentType = imageDetails.contentType;
+
+    res.json({ imageUrl, imageData, contentType });
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    res.status(500).json({ message: 'Failed to fetch image' });
+  }
+});
 //Feedback
 const feedbackSchema = new mongoose.Schema({
   rating: Number,
@@ -405,6 +426,7 @@ const bidSchema = new mongoose.Schema({
   currentBid: Number, // Add this field
   endTime: Date,
   userId: String, // Add this field to associate a product with a user
+  imageUrl: String,
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
@@ -412,7 +434,7 @@ const Bid = mongoose.model('Bid', bidSchema);
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/api/addBid', (req, res) => {
-  const { name, description, startingBid, endTime,currentBid } = req.body;
+  const { name, description, startingBid, endTime,currentBid,imageUrl } = req.body;
 
   const newBid = new Bid({
     name,
@@ -421,6 +443,7 @@ app.post('/api/addBid', (req, res) => {
     currentBid, // Save the current bid
     endTime,
     userId: req.body.userId, // Include the userId
+    imageUrl,
   });
 
   newBid.save((err, bid) => {

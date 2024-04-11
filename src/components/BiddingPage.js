@@ -12,6 +12,7 @@ const BiddingPage = ({ darkMode }) => {
     startingBid: '',
     currentBid: '',
     endTime: '',
+    imageUrl: '',
     
   });
   
@@ -49,7 +50,7 @@ const BiddingPage = ({ darkMode }) => {
     setFile(event.target.files[0])
     
   };
-  const handleImageProduct = async () => {
+  const handleImageProduct = async (imageUrl) => {
     console.log('image', file);
     if (!file) {
       alert('Please upload an image first.');
@@ -60,6 +61,8 @@ const BiddingPage = ({ darkMode }) => {
       // Create FormData object to send file
       const formData = new FormData();
       formData.append('image', file); // Append the file to FormData
+      console.log('image', imageUrl);
+      formData.append('imageUrl', imageUrl);
   
       const response = await axios.post('http://127.0.0.1:5500/api/upload', formData, {
         headers: {
@@ -81,10 +84,10 @@ const BiddingPage = ({ darkMode }) => {
   
   const handleAddProduct = async () => {
     if (loggedIn) {
-      const { startingBid, currentBid , name, description,endTime } = newProduct;
+      const { startingBid, currentBid , name, description,endTime,imageUrl } = newProduct;
 
       // Validate that all required fields are filled
-    if (!name || !description || !startingBid || !currentBid || !endTime) {
+    if (!name || !description || !startingBid || !currentBid || !endTime || !imageUrl) {
       alert('Please fill all the required bid details first.');
       return;
     }
@@ -117,6 +120,7 @@ const BiddingPage = ({ darkMode }) => {
           const updatedProducts = [...products, { ...response.data.bid }];
           setProducts(updatedProducts);
           localStorage.setItem('products', JSON.stringify(updatedProducts)); // Store in localStorage
+          handleImageProduct(imageUrl);
           
         } else {
           alert('Failed to add bid');
@@ -131,10 +135,10 @@ const BiddingPage = ({ darkMode }) => {
     }
   };
   
-  const handleAddAndImageProduct = () => {
-    handleAddProduct();
-    handleImageProduct();
-  };
+  //const handleAddAndImageProduct = () => {
+   // handleAddProduct();
+    //handleImageProduct();
+  //};
   
   
 
@@ -272,11 +276,15 @@ const BiddingPage = ({ darkMode }) => {
         <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
       </div>
       <div>
+        <label>Image URL</label>
+        <input type="text" name="imageUrl" value={newProduct.imageUrl || ''} onChange={handleInputChange} />
+      </div>
+      <div>
             <h3>Add Image:</h3>
             <input type="file" onChange={handleChange} />
             
         </div>
-      <button onClick={handleAddAndImageProduct}>Add Product</button>
+      <button onClick={handleAddProduct}>Add Product</button>
       <pre></pre>
 
       <h3>Products you have added :</h3> <pre></pre>
