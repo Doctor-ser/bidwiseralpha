@@ -310,6 +310,7 @@ margin-bottom: 0;
 
         .cart {
             background-color: #212121;
+            border-radius: 0;
             color: white;
             margin-top: 10px;
             font-size: 15px;
@@ -328,9 +329,8 @@ margin-bottom: 0;
             width: fit-content;
         }
 
-        .btn-p  {
-            width: 250px;
-        }
+
+
 
         .img-thumbnail {
             border: none;
