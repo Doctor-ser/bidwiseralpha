@@ -133,36 +133,7 @@ const renderWinningUser = (productId) => {
       message: `Bid ends on: ${endDateFormatted}, ${hours}h ${minutes}m ${seconds}s left`,
     };
   };
-  const handleChatClick = (productId) => {
-    return () => {
-      // Find the product associated with the productId
-      const product = products.find((p) => p._id === productId);
-  
-      // Check if the product exists and if the bidding has ended
-      if (!product || (product.endTime && new Date(product.endTime) < new Date())) {
-        alert('Bidding for this product has already ended.');
-        return;
-      }
-  
-      // Check if the user is logged in
-      if (!auth.loggedIn) {
-        alert('Please log in to start a chat.');
-        // Optionally, you can redirect to the login page
-        navigate('/login');
-        return;
-      }
-  
-      // If the user is logged in and the bidding is active, navigate to the chat page
-      navigate(`/chat/${productId}`);
-    };
-  };
 
-
-  //pro-feedback
-  // const goToProductFeedback = async(prodid) =>{
-  //     window.location.href=`/ProductFeedback/${prodid}`;
-  //     console.log("You are the winner of this product");
-  // }
 
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
@@ -386,7 +357,7 @@ const renderWinningUser = (productId) => {
     const remainingTimeB = calculateRemainingTime(b.endTime);
     return remainingTimeA - remainingTimeB;
   });
-
+  
   
 
   return (
@@ -426,8 +397,8 @@ const renderWinningUser = (productId) => {
                       {/*Content Column*/}
                       <div class="content-column col-lg-6">
                         <h3><span class="orange-text">Deal</span> of the Day</h3>
-                          <h4>Triumph</h4>
-                          <div class="text">Quisquam minus maiores repudiandae nobis, minima saepe id, fugit ullam similique! Beatae, minima quisquam molestias facere ea. Perspiciatis unde omnis iste natus error sit voluptatem accusant</div>
+                          <h4>product name</h4>
+                          <div class="text">description for product</div>
                           {/*Countdown Timer*/}
                           <div className="time-counter">
                                 <div className="time-countdown clearfix" data-countdown="" id="countdown">
@@ -495,7 +466,7 @@ const renderWinningUser = (productId) => {
                                         })()
                                       }
                                   </p>
-                                  <a href="#" class="btn details px-auto">View Details</a><br />
+                                  <Link to={`/products/${product._id}`} className="btn details px-auto">View Details</Link>
                                   <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
                                       Place Bid
                                   </button>
@@ -505,61 +476,6 @@ const renderWinningUser = (productId) => {
                   </div>
                   
 
-              {/*<div className="card">
-                
-                 <div className="card-body"> 
-                  <h5 className="card-text">Product Name : {product.name}</h5>
-                  <p className="card-text">Product Description : {product.description}</p>
-                  <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
-                  <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
-                  <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
-                  <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                  <p className="card-text">{product.endTime &&
-                        (() => {
-                            const remainingTime = calculateRemainingTime(product.endTime);
-                            if (remainingTime.ended) {
-                              const winnerUserId = winningUsers[product._id];
-                              const winningBid = product.currentBid;
-
-                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
-                                    sendEmailToWinner(product.name, winningBid, product._id);
-                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
-                              }
-                        
-                              return `Bid has ended`;
-
-                            } else {
-                              return `Bid ends on: ${remainingTime.message}`;
-                            }
-                        })()
-                      }
-                  </p>
-                  {/* Display highest bid and winning user after bid has ended */}{/*
-                    {product.endTime && new Date(product.endTime) < new Date() && ( <>
-                        
-                        <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
-                        <p className="card-text">Bid Won By: {renderWinningUser(product._id)}</p>
-                      </>
-                    )}
-
-                  
-                  <button className="btn-primary2" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
-                    Place Bid
-                  </button>
-                  &nbsp;
-                  <button className="chat-btn" onClick={handleChatClick(product._id)}>
-                    Chat
-                  </button>
-                  &nbsp;
-                  {/* Render feedback button only if bid has ended and current user is the winner */}{/*
-                  {product.endTime && new Date(product.endTime) < new Date() && winningUsers[product._id] === auth.userId && (
-                  <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
-                  Product Feedback
-                  </button>
-                  )} */}
-{/* 
-                </div>
-              </div>  */}
             </div>
           ))}
         </div>
@@ -601,71 +517,14 @@ const renderWinningUser = (productId) => {
                                         })()
                                       }
                                   </p>
-                                  <a href="#" class="btn details px-auto">View Details</a><br />
-                                  {/* <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
-                                      Place Bid
-                                  </button> */}
+                                  <Link to={`/products/${product._id}`} className="btn details px-auto">View Details</Link>
                                 </div>
                             </div>
                       </div>
                   </div>
                   
 
-              {/*<div className="card">
-                
-                 <div className="card-body"> 
-                  <h5 className="card-text">Product Name : {product.name}</h5>
-                  <p className="card-text">Product Description : {product.description}</p>
-                  <p className="card-text">Product added by: {product.userId ? product.userId : 'Unknown'}</p>
-                  <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
-                  <p className="card-text">Starting Bid: &#8377;{product.startingBid}</p>
-                  <p className="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                  <p className="card-text">{product.endTime &&
-                        (() => {
-                            const remainingTime = calculateRemainingTime(product.endTime);
-                            if (remainingTime.ended) {
-                              const winnerUserId = winningUsers[product._id];
-                              const winningBid = product.currentBid;
-
-                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
-                                    sendEmailToWinner(product.name, winningBid, product._id);
-                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
-                              }
-                        
-                              return `Bid has ended`;
-
-                            } else {
-                              return `Bid ends on: ${remainingTime.message}`;
-                            }
-                        })()
-                      }
-                  </p>
-                  {/* Display highest bid and winning user after bid has ended */}{/*
-                    {product.endTime && new Date(product.endTime) < new Date() && ( <>
-                        
-                        <p className="card-text">Highest Bid: &#8377;{product.currentBid}</p>
-                        <p className="card-text">Bid Won By: {renderWinningUser(product._id)}</p>
-                      </>
-                    )}
-
-                  
-                  <button className="btn-primary2" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
-                    Place Bid
-                  </button>
-                  &nbsp;
-                  <button className="chat-btn" onClick={handleChatClick(product._id)}>
-                    Chat
-                  </button>
-                  &nbsp;
-                  {/* Render feedback button only if bid has ended and current user is the winner */}{/*
-                  {product.endTime && new Date(product.endTime) < new Date() && winningUsers[product._id] === auth.userId && (
-                  <button className="feedback-btn" onClick={() => goToProductFeedback(product._id)}>
-                  Product Feedback
-                  </button>
-                  )} */}
-{/* 
-                </div>
-              </div>  */}
+              
             </div>
           ))}
         </div>

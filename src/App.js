@@ -24,6 +24,7 @@ import AdminPage from './admin/adminpage';
 import ProductsPage from './admin/productpage';  
 import Userpage from './admin/users';
 import Feedbackadmin from './admin/fetchfeedback';
+import ProductDetails from './components/productdetails';
 const io  = require('socket.io-client');
 
 const App = () => {
@@ -88,6 +89,7 @@ const App = () => {
           <Route path="/admin/products" element={<ProductsPage darkMode={darkMode} email={email} />} />
           <Route path="/admin/users" element={<Userpage darkMode={darkMode} email={email} />} />
           <Route path="/admin/feedbacks" element={<Feedbackadmin darkMode={darkMode} email={email} />} />
+          <Route path="/products/:productId" element={<ProductDetails darkMode={darkMode} email={email} />} />
         </Routes>
         {/* Conditionally render the Footer */}
         {userType == 'user'? <Footer/> : <Fouter/>}   
