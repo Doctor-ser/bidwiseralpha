@@ -13,6 +13,10 @@ const BiddingPage = ({ darkMode }) => {
     currentBid: '',
     endTime: '',
     imageUrl: '',
+<<<<<<< HEAD
+=======
+    
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
   });
   
   const { loggedIn, userId } = useAuth();
@@ -20,7 +24,7 @@ const BiddingPage = ({ darkMode }) => {
   const [bidAmount, setBidAmount] = useState(localStorage.getItem('bidAmount') || ''); // Use local storage for bid amount
   const [modifyProductId, setModifyProductId] = useState(null); // Track the product being modified
   const [currentBid, setCurrentBid] = useState(localStorage.getItem('currentBid') || '');
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
  
 
   // Fetch products from the server when the component mounts
@@ -35,7 +39,7 @@ const BiddingPage = ({ darkMode }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
+  },[] ); // The empty dependency array ensures that this effect runs only once when the component mounts
 
   
 
@@ -45,7 +49,13 @@ const BiddingPage = ({ darkMode }) => {
   };
 
   const handleChange = (event) => {
+<<<<<<< HEAD
     setFile(event.target.files[0])
+=======
+    
+    setFile(event.target.files[0])
+    
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
   };
   const handleImageProduct = async (imageUrl) => {
     console.log('image', file);
@@ -78,9 +88,16 @@ const BiddingPage = ({ darkMode }) => {
       alert('An error occurred while uploading image');
     }
   };
+<<<<<<< HEAD
   const handleAddProduct = async () => {
     if (loggedIn) {
       const { startingBid, currentBid , name, description,endTime,imageUrl  } = newProduct;
+=======
+  
+  const handleAddProduct = async () => {
+    if (loggedIn) {
+      const { startingBid, currentBid , name, description,endTime,imageUrl } = newProduct;
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
 
       // Validate that all required fields are filled
     if (!name || !description || !startingBid || !currentBid || !endTime || !imageUrl) {
@@ -117,6 +134,10 @@ const BiddingPage = ({ darkMode }) => {
           setProducts(updatedProducts);
           localStorage.setItem('products', JSON.stringify(updatedProducts)); // Store in localStorage
           handleImageProduct(imageUrl);
+<<<<<<< HEAD
+=======
+          
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
         } else {
           alert('Failed to add bid');
         }
@@ -130,6 +151,10 @@ const BiddingPage = ({ darkMode }) => {
     }
   };
   
+  //const handleAddAndImageProduct = () => {
+   // handleAddProduct();
+    //handleImageProduct();
+  //};
   
   
 

@@ -18,8 +18,30 @@ const path = require('path');
 const app = express();
 mongoose.set("strictQuery", true)
 // Connect to MongoDB (replace this URI with your actual MongoDB URI)
+<<<<<<< HEAD
 mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
+=======
+mongoose.connect("mongodb+srv://evantabraham842:84RMVoCOAX6YDmSy@cluster0.v7ae8l8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
+
+
+
+mongoose.connection.on('connected', () => {
+  console.log('Connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('Error connecting to MongoDB:', err);
+});
+
+
+
+
+
+
+
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB');
 });
@@ -59,6 +81,12 @@ conn.once('open', () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('images'); // Name of the collection (you can change it as needed)
 });
+<<<<<<< HEAD
+=======
+
+const storage = multer.memoryStorage(); // Store images in memory
+const upload = multer({ storage });
+>>>>>>> fb00f9ee3df1a279fbaff9e1202a07df1810679c
 
 const storage = multer.memoryStorage(); // Store images in memory
 const upload = multer({ storage });
@@ -119,6 +147,60 @@ app.get('/api/images/:imageUrl', async (req, res) => {
   }
 });
 
+// Define the Image model outside of route handlers
+const Image = mongoose.model('Image', new mongoose.Schema({
+  filename: String,
+  contentType: String,
+  size: Number,
+  uploadDate: { type: Date, default: Date.now },
+  metadata: { userId: String },
+  image: { type: Buffer },
+  imageUrl: String,
+}));
+
+// Endpoint to handle file upload
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    console.log('Uploaded image:', req.file);
+
+    const newImage = new Image({
+      filename: req.file.originalname,
+      size: req.file.size,
+      contentType: req.file.mimetype,
+      metadata: { userId: req.body.userId },
+      image: req.file.buffer,
+      imageUrl: req.body.imageUrl,
+    });
+
+    await newImage.save();
+
+    res.json({ image: newImage });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Failed to upload image' });
+  }
+});
+
+// Route to fetch image details based on imageUrl
+app.get('/api/images/:imageUrl', async (req, res) => {
+  try {
+    const imageUrl = req.params.imageUrl;
+    const imageDetails = await Image.findOne({ imageUrl });
+
+    if (!imageDetails) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    // Assuming your image data is stored in the "image" field as Buffer data
+    const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
+    const contentType = imageDetails.contentType;
+
+    res.json({ imageUrl, imageData, contentType });
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    res.status(500).json({ message: 'Failed to fetch image' });
+  }
+});
 //Feedback
 const feedbackSchema = new mongoose.Schema({
   rating: Number,
@@ -967,6 +1049,55 @@ app.post('/api/placeBid', async (req, res) => {
     product.currentBid = bidAmount;
     await product.save();
 
+
+
+  // Add user bid
+  const addUserBid = async () => {
+  const newUserBid = new UserBid({
+    productId,
+    userId,
+    bidAmount,
+    productName: product.name,
+    bidId: product._id,
+    isWinningBid: true, // Mark the current bid as winning
+    timestamp: new Date(), // Add this line to include the timestamp
+  });
+
+  await newUserBid.save();
+    };
+    // Save the updated product
+    await product.save();
+    await addUserBid();
+
+    // Fetch winning user details
+    const winningUser = await UserBid.findOne({ productId: product._id, isWinningBid: true });
+    
+    console.log('Place Bid Response:', { message: 'Bid placed successfully' });
+    console.log('Winning User:', winningUser.userId);
+     // Send email to the winning user
+    //   const mailOptions = {
+    //   from: 'johxngeorxe@gmail.com',
+    //   to: winningUser.userId, // Use userId as the email address
+    //   subject: 'CONGRATULATIONS!! You are currently the Highest Bidder',
+    //   text: 
+    //   `Dear ${winningUser.userId},
+
+    //   We have received your bid for the product  "${product.name}"  with a bid amount of  "₹${bidAmount}"  and you are currently winning the bid. You have placed the highest bid among all users.
+    //   We thank you for using our Online Auction System Bidwiser.`, 
+    // };
+
+
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.error('Error sending email:', error);
+    //     // Handle the error and respond to the client
+    //     return res.status(500).json({ message: 'Internal server error' });
+    //   }
+
+    //   console.log('Email sent:', info.response);
+    //   // Respond to the client that the bid was placed successfully
+    //   res.status(200).json({ message: 'Bid placed successfully' });
+    // });
     // Add user bid
     const newUserBid = new UserBid({
       productId,
