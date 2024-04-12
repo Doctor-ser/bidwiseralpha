@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../components/Product.css';
+import LazyLoad from 'react-lazyload';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
@@ -138,7 +139,13 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
               <div key={product._id} className="col-md-4 mb-4">
                 <div class='container-fluid'>
                   <div class="card mx-auto col-md-3 col-10 mt-5">
-                    <img class='mx-auto img-thumbnail' src="https://wallpapercave.com/wp/wp8257248.jpg" width="auto" height="auto" />
+                  <LazyLoad height={200} once>
+                      <img
+                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
+                      alt={product.name}
+                      className="mx-auto img-thumbnail"
+                      />
+                      </LazyLoad>
                     <div class="card-body text-center mx-auto">
                       <div class='cvp'>
                         <h5 class="card-title font-weight-bold">{product.name}</h5>

@@ -669,6 +669,52 @@ app.delete('/api/deleteBid/:id', async (req, res) => {
 });
 
 
+//topdealactive productfetch
+app.get('/api/active-products', async (req, res) => {
+  try {
+    // Get current timestamp
+    const currentTime = new Date();
+
+    // Find all active products (products without an end time or with an end time in the future)
+    const activeProducts = await Bid.find({ $or: [{ endTime: { $exists: false } }, { endTime: { $gte: currentTime } }] });
+
+    // Return the list of active products
+    res.json({ activeProducts });
+  } catch (error) {
+    console.error('Error fetching active products:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+//fetching topdeal
+app.get('/api/top-deal', async (req, res) => {
+  try {
+    // Aggregation pipeline to find the product with the most bids
+    const topDeal = await UserBid.aggregate([
+      // Group by productId and count the number of bids for each product
+      { $group: { _id: '$productId', bidCount: { $sum: 1 } } },
+      // Sort products by bid count in descending order
+      { $sort: { bidCount: -1 } },
+      // Limit to the first document, which will be the product with the most bids
+      { $limit: 1 }
+    ]);
+
+    // Get the productId of the top deal
+    const topProductId = topDeal[0]._id;
+
+    // Find the details of the top deal from the 'bids' collection
+    const topProductDetails = await Bid.findOne({ _id: topProductId });
+
+    // Return the top deal details
+    res.json({ topDeal: topProductDetails });
+  } catch (error) {
+    console.error('Error fetching top deal:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 //fetch the bid by product id
 app.get('/api/products/:productId', async (req, res) => {
   const productId = req.params.productId;

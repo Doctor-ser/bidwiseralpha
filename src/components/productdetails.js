@@ -10,6 +10,7 @@ const ProductDetails = () => {
   const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
   const [winnerMessage, setWinnerMessage] = useState('');
+  const [productImage, setProductImage] = useState(null);
   const auth = useAuth();
   const navigate = useNavigate();
   const { productId } = useParams(); // Get productId from URL params
@@ -21,7 +22,7 @@ const ProductDetails = () => {
       try {
         const response = await axios.get(`http://127.0.0.1:5500/api/products/${productId}`);
         setProduct(response.data.product);
-  
+        setProductImage(response.data.product.imageUrl);
         if (response.data.product.endTime) {
           const { ended, message } = calculateRemainingTime(response.data.product.endTime);
           setRemainingTime(ended ? message : `Bid ends in: ${message}`);
@@ -43,6 +44,9 @@ const ProductDetails = () => {
               console.error('Error fetching winner:', error);
               setWinnerMessage('No winner found for this product.');
             }
+  
+            // Clear interval when bidding ends
+            clearInterval(intervalId);
           }
         }
       } catch (error) {
@@ -63,6 +67,7 @@ const ProductDetails = () => {
     // Clear interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);
   }, [productId]);
+  
 
   const handleBid = async () => {
     if (!auth.loggedIn) {
@@ -74,7 +79,8 @@ const ProductDetails = () => {
         alert('Bidding for this product has already ended.');
         return;
       }
-
+      const nextBidAmount = product.currentBid + 10;
+      setBidAmount(nextBidAmount);
     setShowBidModal(true);
   };
 
@@ -189,6 +195,13 @@ const ProductDetails = () => {
     <div>
       {product ? (
         <div>
+          {productImage && (
+            <img
+            src={`http://127.0.0.1:5500/api/images/${productImage}`}
+            alt={product.name}
+            style={{ height: '200px', width: '400px' }}
+          />
+          )}
           <h2>{product.name}</h2>
           <p>Description: {product.description}</p>
           <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
