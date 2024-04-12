@@ -82,7 +82,7 @@ useEffect(() => {
   };
   fetchProducts();
   // Refresh products every 5 seconds
-  const intervalId = setInterval(fetchProducts, 5000);
+  const intervalId = setInterval(fetchProducts, 1000);
   // Clear interval on component unmount to prevent memory leaks
   return () => clearInterval(intervalId);
   
@@ -441,7 +441,7 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} style={{ width: '200px', height: '200px' }} /> 
+                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} class="mx-auto img-thumbnail" /> 
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
@@ -490,9 +490,7 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                            <img class='mx-auto img-thumbnail'
-                                src="https://wallpapercave.com/wp/wp8257248.jpg"
-                                width="auto" height="auto"/>
+                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} class="mx-auto img-thumbnail" /> 
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>

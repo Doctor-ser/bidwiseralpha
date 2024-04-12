@@ -207,7 +207,7 @@ const ProductDetails = () => {
           {/* Conditionally render buttons if there is remaining time or no winner */}
           {remainingTime || winnerMessage ? (
             <div>
-              <button className="btn-p cart px-auto" onClick={handleBid}>
+              <button className="btn-p cart px-auto" onClick={handleBid} style={{ width: 'auto' }}>
                 Place Bid
               </button>
               <button className="chat-btn" onClick={handleChatClick(productId)}>
