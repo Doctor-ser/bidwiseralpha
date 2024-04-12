@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children,userType,setUserType }) => {
 
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem('loggedIn') === 'true' || false
@@ -15,19 +15,24 @@ export const AuthProvider = ({ children }) => {
   );
 
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
+
+ 
   
 
   const [userBids, setUserBids] = useState([]); // Initialize userBids state
 
   useEffect(() => {
     // Fetch user data from local storage on mount
+  
     const storedLoggedIn = localStorage.getItem('loggedIn') === 'true' || false;
     const storedUserId = localStorage.getItem('userId') || null;
     
     
+    
+   
     setLoggedIn(storedLoggedIn);
     setUserId(storedUserId);
-  }, []);
+  }, [userType]);
 
   useEffect(() => {
     // Update the username state when it changes in local storage
@@ -37,21 +42,25 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     let sessionTimeout;
-
+  
     if (loggedIn) {
       sessionTimeout = setTimeout(() => {
         setLoggedIn(false);
         setUserId(null);
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('userId');
+        alert('Session expired. Please login again.');
+        // Navigate to the login page
+        // You can use your preferred method for navigation, like react-router-dom
+        window.location.href = '/login'; // This will redirect to the login page
       }, 300000); // 5 minutes in milliseconds
     }
-
+  
     return () => clearTimeout(sessionTimeout);
   }, [loggedIn]);
 
   return (
-    <AuthContext.Provider value={{ loggedIn, setLoggedIn, userId, setUserId, userBids, setUserBids,username,setUsername}}>
+    <AuthContext.Provider value={{ loggedIn, setLoggedIn, userId,setUserType, setUserId, userBids,userType, setUserBids,username,setUsername}}>
       {children}
     </AuthContext.Provider>
   );

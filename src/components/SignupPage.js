@@ -23,13 +23,14 @@ const SignupPage = ({ darkMode }) => {
       if (res.status === 200) {
         sendWelcomeEmail(email);
         alert("User added successfully");
+        window.location.href = "/login";
       } else {
         console.log("promise rejected")
         Promise.reject();
       }
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        alert("Email already exists in the database");
+        alert("Email already exists in the database.");
       } else {
         alert(err);
       }

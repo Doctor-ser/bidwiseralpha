@@ -222,17 +222,6 @@ app.get('/api/topRatedComments', async (req, res) => {
 
 //chat
 
-
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const app = express();
-// app.use(express.json());
-// const PORT = 3000;
-// const MONGO_URI = 'mongodb://localhost:27017/bidwiser';
-// mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Connected to MongoDB'))
-//   .catch(err => console.error('Error connecting to MongoDB:', err));
-
 const messageSchema = new mongoose.Schema({
   senderEmail: String,
   message: String,
@@ -314,7 +303,8 @@ secure:true,
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
-  password: String
+  password: String,
+  usertype: String
 });
 
 const User = mongoose.model('User', userSchema);
@@ -322,58 +312,201 @@ const User = mongoose.model('User', userSchema);
 app.use(bodyParser.urlencoded({ extended: true , limit: '100mb' }));
 app.use(bodyParser.json({ limit: '100mb' }));
 
+//fetch by email
+app.get('/api/getUserByEmail/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    // Find user by email in the Users collection and only return the username
+    const user = await User.findOne({ email }, { username: 1, _id: 0 });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Return only the username
+    res.status(200).json({ username: user.username });
+  } catch (error) {
+    console.error('Error fetching user by email:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
-app.post('/api/signup', async(req, res) => {
+//fetch user details
+app.get('/api/getUserDetails/:email', async (req, res) => {
+  const email = req.params.email;
+
+  try {
+    // Find user by email in the database
+    const user = await User.findOne({ email });
+
+    if (user) {
+      // User found, send user details
+      res.json({ userDetails: user });
+    } else {
+      // User not found
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    // Error occurred while fetching user
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//fetch user bids
+app.get('/api/getBidsByUser/:email', async (req, res) => {
+  const email = req.params.email;
+
+  try {
+    // Find bids by user email in the database
+    const bids = await Bid.find({ userId: email });
+
+    if (bids) {
+      // Bids found, send bid details
+      res.json({ userBids: bids });
+    } else {
+      // No bids found for the user
+      res.status(404).json({ message: 'No bids found for the user' });
+    }
+  } catch (error) {
+    // Error occurred while fetching bids
+    console.error('Error fetching user bids:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.delete('/api/users/:email', async (req, res) => {
+  const userEmail = req.params.email;
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email: userEmail });
+    
+    // If the user is not found, respond with an error message
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the user is an admin
+    if (user.usertype === 'admin') {
+      return res.status(403).json({ error: 'You cannot delete an admin' });
+    }
+
+    // If the user is a regular user, delete the user
+    await User.deleteOne({ email: userEmail });
+    
+    // Respond with a success message
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    // If an error occurs, respond with an error message
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+//fetch all feedbacks
+app.get('/api/feedbacks', async (req, res) => {
+  const feedbacks = await Feedback.find();
+  res.send(feedbacks);
+});
+
+
+//change password for admin
+app.post('/api/changePassword', async (req, res) => {
+  const { userId, oldPassword, newPassword } = req.body;
+  const email=userId;
+  console.log(req.body);
+  try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      console.log(user);
+      // Check if the user exists
+      if (!user) {
+        console.log("user not found");
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if the old password matches the one stored in the database
+      if (user.password !== oldPassword) {
+        console.log("invalid password");
+          return res.status(401).json({ message: 'Invalid old password' });
+      }
+
+      // Change the password
+      user.password = newPassword;
+
+      // Save the updated user
+      await user.save();
+      console.log("password changed");
+      res.status(200).json({ message: 'Password successfully changed' });
+  } catch (error) {
+      console.error('Error changing password:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+//add admin
+// Route to add admin
+app.post('/api/addAdmin', async (req, res) => {
   const { username, email, password } = req.body;
-  //console.log(req.body)
-  
   // Check if the email already exists in the database
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(409).json({ message: 'Email already exists in the database' });
+      return res.status(409).json({ message: 'Email already exists in the database' });
   }
-
-// If the email doesn't exist, proceed to create a new user
-  const newUser = new User({
-    username,
-    email,
-    password
+  // If the email doesn't exist, proceed to create a new admin
+  const newAdmin = new User({
+      username,
+      email,
+      password,
+      usertype: 'admin' // Set usertype to "admin"
   });
-
-  newUser.save((err, user) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.status(200).json({ message: 'User successfully registered!', user });
+  newAdmin.save((err, admin) => {
+      if (err) {
+          return res.status(500).send(err);
+      }
+      res.status(200).json({ message: 'Admin successfully added!', admin });
   });
-
-    
 });
 
 
 
-app.post('/api/login', async(req, res) => {
+
+app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
-  
-  // Check if user with provided email exists in the database
-  User.findOne({ email }, (err, user) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
 
+    // Check if user exists
     if (!user) {
       return res.status(401).json({ message: 'Email does not exist' });
     }
 
-    // Now, verify the password
+    // Verify the password
     if (user.password !== password) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    return res.status(200).json({ message: 'Login successful' });
-  });
+    // Check the usertype
+    if (user.usertype === 'user') {
+      // If the user is a regular user, redirect to the regular user page
+      return res.status(200).json({ message: 'Login successful', userType: 'user' });
+    } else if (user.usertype === 'admin') {
+      // If the user is an admin, redirect to the admin page
+      return res.status(200).json({ message: 'Login successful', userType: 'admin' });
+    } else {
+      // Handle other usertypes if needed
+      return res.status(401).json({ message: 'Unauthorized user' });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 
@@ -384,7 +517,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   try{ 
   // Check if the email exists in the database
   const user = await User.findOne({ email });
-
+  
   if (!user) {
     return res.status(404).json({ message: 'Email not found' });
   }
@@ -398,13 +531,15 @@ app.post('/api/forgotPassword', async (req, res) => {
   // Update the user's password in the database
   user.password = newPassword;
   await user.save();
-
+  
+  //fetch username 
+  const username = user.username;
   // Send an email with the new password
   const mailOptions = {
     from: 'johxngeorxe@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
-    text: `Dear user, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidWiser.`,
+    text: `Dear ${username}, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidWiser.`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -489,6 +624,8 @@ app.put('/api/modifyBid/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+//delete bid
 app.delete('/api/deleteBid/:id', async (req, res) => {
   try {
     const bidId = req.params.id;
@@ -631,7 +768,8 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     }
 
     const winnerEmail = winningUserBid.userId; // Extract the winner's email (userId)
-
+    const user = await User.findOne({ email: winnerEmail });
+    const username = user.username;
     // Check if the email has already been sent
     if (winningUserBid.mailsend) {
       return res.status(400).json({ message: 'Email already sent to winner' });
@@ -641,7 +779,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     //   from: 'johxngeorxe@gmail.com',
     //   to: winnerEmail,
     //   subject: 'Congratulations! You are the winning bidder',
-    //   text: `Dear ${winnerEmail},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nYour Auction Platform`
+      // text: `Dear ${username},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nBidWiser`
     // };
 
     // await transporter.sendMail(mailOptions);
@@ -739,6 +877,8 @@ app.post('/api/placeBid', async (req, res) => {
     const previousWinningBid = await UserBid.findOne({ productId, isWinningBid: true });
     if (previousWinningBid) {
       const previousWinnerUserId = previousWinningBid.userId;
+      const user = await User.findOne({ email: previousWinnerUserId });
+      const username = user.username;
       if (previousWinnerUserId === userId) {
         console.log("You are already the winning bidder");
         return res.status(400).json({ message: 'You are already the winning bidder' });
@@ -751,7 +891,7 @@ app.post('/api/placeBid', async (req, res) => {
       //   from: 'johxngeorxe@gmail.com',
       //   to: previousWinnerUserId, // Assuming userId contains the email
       //   subject: 'You have been outbid!',
-      //   text: `Hello,\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
+      //   text: `Hello '${username}',\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
       // };
 
       // transporter.sendMail(mailOptions, (error, info) => {
@@ -940,13 +1080,14 @@ app.get('/api/getWinningBids/:userId', async (req, res) => {
 // Add this endpoint to your server code
 app.post('/api/sendWelcomeEmail', async (req, res) => {
   const { email } = req.body;
-
+  const user = await User.findOne({ email });
+  const username =user.username;
   // Send welcome email logic here
   const mailOptions = {
     from: 'johxngeorxe@gmail.com',
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
-    text: `Dear user, Welcome to BidWiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidWiser!`,
+    text: `Dear '${username}', Welcome to BidWiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidWiser!`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
