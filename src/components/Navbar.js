@@ -63,7 +63,7 @@ const Navbar = ({ darkMode,toggleDarkMode }) => {
             {/* Always display the "Bidding" link */}
             <li className="nav-item">
               <Link className="nav-link" to="/bidding">
-                Bidding
+                Sell Your Product
               </Link>
             </li>
             {loggedIn ? (

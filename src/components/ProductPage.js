@@ -4,6 +4,7 @@ import './Product.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useNavigate,Link } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 import $ from 'jquery';
 import 'jquery-countdown';
 
@@ -19,8 +20,8 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [productDetails, setProductDetails] = useState({});
   const [flag,setflag]=useState(0);
   const navigate = useNavigate();
-  const [productImages, setProductImages] = useState({});
-
+  const [activeProducts, setActiveProducts] = useState([]);
+  const [topDeal, setTopDeal] = useState(null);
   
 
   
@@ -82,7 +83,8 @@ useEffect(() => {
   };
   fetchProducts();
   // Refresh products every 5 seconds
-  const intervalId = setInterval(fetchProducts, 1000);
+   
+  const intervalId = setInterval(fetchProducts, 5000);
   // Clear interval on component unmount to prevent memory leaks
   return () => clearInterval(intervalId);
   
@@ -360,7 +362,35 @@ const renderWinningUser = (productId) => {
     return remainingTimeA - remainingTimeB;
   });
   
+  //top deal
+  useEffect(() => {
+    const fetchActiveProductsAndTopDeal = async () => {
+      try {
+        const activeProductsResponse = await axios.get('http://127.0.0.1:5500/api/active-products');
+        const activeProducts = activeProductsResponse.data.activeProducts;
+        setActiveProducts(activeProducts);
   
+        // Check if there are multiple active products
+        if (activeProducts.length > 1) {
+          const topDealResponse = await axios.get('http://127.0.0.1:5500/api/top-deal');
+          const topDeal = topDealResponse.data.topDeal;
+          console.log('Top Deal:', topDeal);
+          setTopDeal(topDeal);
+        }
+        else if (activeProducts.length === 1) {
+          const singleActiveProduct = activeProducts[0];
+          setTopDeal(singleActiveProduct);
+          console.log('Top Deal:', singleActiveProduct.imageUrl);
+        }
+         else {
+          setTopDeal(null); // No top deal if there's only one active product
+        }
+      } catch (error) {
+        console.error('Error fetching active products and top deal:', error);
+      }
+    }; 
+    fetchActiveProductsAndTopDeal();
+  }, []);
 
   return (
     <div className={`products-page ${darkMode ? 'dark-mode' : ''}`}>
@@ -378,59 +408,44 @@ const renderWinningUser = (productId) => {
 
 
         {/* cart banner section */}
-        <section class="cart-banner pt-100 pb-100">
-            <div class="container">
-                <div class="row clearfix">
-                    {/*Image Column*/}
-                    <div class="image-column col-lg-6">
-                        <div class="image">
-                            <div class="price-box">
-                                <div class="inner-price">
-                                      <span class="price">
-                                          <strong>Top!!</strong> <br/> Deal
-                                      </span>
-                                </div>
-                            </div>
-                            <div className='col-md-6'>
-                              <img src=/*{images[currentImageIndex]}*/"https://wallpapercave.com/wp/wp6827492.jpg" alt="Banner" height="400" width="600" />        
-                            </div>
-                        </div>
-                    </div>
-                      {/*Content Column*/}
-                      <div class="content-column col-lg-6">
-                        <h3><span class="orange-text">Deal</span> of the Day</h3>
-                          <h4>product name</h4>
-                          <div class="text">description for product</div>
-                          {/*Countdown Timer*/}
-                          <div className="time-counter">
-                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="days">00</span>Days
-                                    </div>
-                                  </div>
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="hours">00</span>Hours
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="minutes">00</span>Mins
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="seconds">00</span>Secs
-                                    </div>
-                                  </div>
-                                </div>
-                          </div>
-                        <a href="cart.html" class="cart-btn mt-3"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-                      </div>
-                </div>
+        {topDeal && (
+  <section className="cart-banner pt-100 pb-100">
+    <div className="container">
+      <div className="row clearfix">
+        {/* Image Column */}
+        <div className="image-column col-lg-6">
+          <div className="image">
+            <div className="price-box">
+              <div className="inner-price">
+                <span className="price">
+                  <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
+                </span>
+              </div>
             </div>
-          </section>
+            <div className="col-md-6">
+              {topDeal.imageUrl ? (
+                <img src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
+              ) : (
+                <div>No image available</div>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Content Column */}
+        <div className="content-column col-lg-6">
+          <h3><span className="orange-text">Deal</span> of the Day</h3>
+          <h4>{topDeal.name}</h4>
+          <div className="text">{topDeal.description}</div>
+          {/* Countdown Timer */}
+          <div className="time-counter">
+            {/* Your countdown timer code here */}
+          </div>
+          <a href="cart.html" className="cart-btn mt-3"><i className="fas fa-shopping-cart"></i> Add to Cart</a>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
           {/* end cart banner section */}
 
         <div style={{display:'block'}}>Live Auctions</div>
@@ -441,7 +456,13 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} class="mx-auto img-thumbnail" /> 
+                      <LazyLoad height={200} once>
+                      <img
+                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
+                      alt={product.name}
+                      className="mx-auto img-thumbnail"
+                      />
+                      </LazyLoad>
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
@@ -479,9 +500,9 @@ const renderWinningUser = (productId) => {
             </div>
           ))}
         </div>
+
+
           <div style={{display:'block'}}>Bid ended</div>
-
-
         {/* bidended */}
         <div className="row">
           {/* Display filtered products instead of all products */}
@@ -490,7 +511,13 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} class="mx-auto img-thumbnail" /> 
+                      <LazyLoad height={200} once>
+                      <img
+                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
+                      alt={product.name}
+                      className="mx-auto img-thumbnail"
+                      />
+                      </LazyLoad>
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
