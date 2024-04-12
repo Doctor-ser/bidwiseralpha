@@ -8,34 +8,13 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { Server } = require('socket.io');
-const Grid = require('gridfs-stream');
-const multer =require('multer')
-const path = require('path');
-
 
 
 
 const app = express();
 mongoose.set("strictQuery", true)
 // Connect to MongoDB (replace this URI with your actual MongoDB URI)
-mongoose.connect("mongodb+srv://evantabraham842:84RMVoCOAX6YDmSy@cluster0.v7ae8l8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
-const conn = mongoose.connection;
-
-
-
-mongoose.connection.on('connected', () => {
-  console.log('Connected to MongoDB');
-});
-
-mongoose.connection.on('error', (err) => {
-  console.error('Error connecting to MongoDB:', err);
-});
-
-
-
-
-
-
+mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB');
@@ -71,70 +50,8 @@ app.use((req, res, next) => {
   res.header('Expires', 0);
   next();
 });
-let gfs;
-conn.once('open', () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('images'); // Name of the collection (you can change it as needed)
-});
-
-const storage = multer.memoryStorage(); // Store images in memory
-const upload = multer({ storage });
 
 
-// Define the Image model outside of route handlers
-const Image = mongoose.model('Image', new mongoose.Schema({
-  filename: String,
-  contentType: String,
-  size: Number,
-  uploadDate: { type: Date, default: Date.now },
-  metadata: { userId: String },
-  image: { type: Buffer },
-  imageUrl: String,
-}));
-
-// Endpoint to handle file upload
-app.post('/api/upload', upload.single('image'), async (req, res) => {
-  try {
-    console.log('Uploaded image:', req.file);
-
-    const newImage = new Image({
-      filename: req.file.originalname,
-      size: req.file.size,
-      contentType: req.file.mimetype,
-      metadata: { userId: req.body.userId },
-      image: req.file.buffer,
-      imageUrl: req.body.imageUrl,
-    });
-
-    await newImage.save();
-
-    res.json({ image: newImage });
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ message: 'Failed to upload image' });
-  }
-});
-
-// Route to fetch image details based on imageUrl
-app.get('/api/images/:imageUrl', async (req, res) => {
-  try {
-    const imageUrl = req.params.imageUrl;
-    const imageDetails = await Image.findOne({ imageUrl });
-
-    if (!imageDetails) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-
-    // Assuming your image data is stored in the "image" field as Buffer data
-    const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
-    const contentType = imageDetails.contentType;
-
-    res.json({ imageUrl, imageData, contentType });
-  } catch (error) {
-    console.error('Error fetching image:', error);
-    res.status(500).json({ message: 'Failed to fetch image' });
-  }
-});
 //Feedback
 const feedbackSchema = new mongoose.Schema({
   rating: Number,
@@ -306,6 +223,37 @@ const User = mongoose.model('User', userSchema);
 
 app.use(bodyParser.urlencoded({ extended: true , limit: '100mb' }));
 app.use(bodyParser.json({ limit: '100mb' }));
+
+//signup
+
+
+app.post('/api/signup', async(req, res) => {
+  const { username, email, password } = req.body;
+  //console.log(req.body)
+  
+  // Check if the email already exists in the database
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(409).json({ message: 'Email already exists in the database' });
+  }
+
+// If the email doesn't exist, proceed to create a new user
+  const newUser = new User({
+    username,
+    email,
+    password,
+    usertype: 'user'
+  });
+
+  newUser.save((err, user) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).json({ message: 'User successfully registered!', user });
+  });
+
+    
+});
 
 //fetch by email
 app.get('/api/getUserByEmail/:email', async (req, res) => {
@@ -561,7 +509,6 @@ const bidSchema = new mongoose.Schema({
   currentBid: Number, // Add this field
   endTime: Date,
   userId: String, // Add this field to associate a product with a user
-  imageUrl: String,
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
@@ -569,7 +516,7 @@ const Bid = mongoose.model('Bid', bidSchema);
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/api/addBid', (req, res) => {
-  const { name, description, startingBid, endTime,currentBid,imageUrl } = req.body;
+  const { name, description, startingBid, endTime,currentBid } = req.body;
 
   const newBid = new Bid({
     name,
@@ -578,7 +525,6 @@ app.post('/api/addBid', (req, res) => {
     currentBid, // Save the current bid
     endTime,
     userId: req.body.userId, // Include the userId
-    imageUrl,
   });
 
   newBid.save((err, bid) => {
@@ -639,6 +585,24 @@ app.delete('/api/deleteBid/:id', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+//fetch the bid by product id
+app.get('/api/products/:productId', async (req, res) => {
+  const productId = req.params.productId;
+
+  try {
+    const product = await Bid.findById(productId);
+    console.log(product);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    res.json({ success: true, product });
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
 
@@ -850,6 +814,34 @@ app.get('/api/getUserBids/:userId', async (req, res) => {
   }
 });
 
+//fetch the winner using product id if the mailsend true and isWinningBid true
+app.get('/api/products/:productId/winner', async (req, res) => {
+  const productId = req.params.productId;
+
+  try {
+    // Find the highest bid for the given product where isWinningBid is false and mailsend is false
+    const highestBid = await UserBid.findOne({ productId, isWinningBid: true}).sort({ bidAmount: -1 }).limit(1);
+
+    if (!highestBid) {
+      return res.status(404).json({ success: false, message: 'No bids found for this product' });
+    }
+
+    // Fetch the user information of the highest bidder
+    const winner = await User.findOne({ email: highestBid.userId });
+
+    if (!winner) {
+      return res.status(404).json({ success: false, message: 'Winner not found' });
+    }
+
+    // Return the winner's information
+    res.json({ success: true, winner: { email: winner.email, bidAmount: highestBid.bidAmount } });
+  } catch (error) {
+    console.error('Error fetching winner:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
 
 //place bid 
 app.post('/api/placeBid', async (req, res) => {
@@ -906,55 +898,6 @@ app.post('/api/placeBid', async (req, res) => {
     product.currentBid = bidAmount;
     await product.save();
 
-
-
-  // Add user bid
-  const addUserBid = async () => {
-  const newUserBid = new UserBid({
-    productId,
-    userId,
-    bidAmount,
-    productName: product.name,
-    bidId: product._id,
-    isWinningBid: true, // Mark the current bid as winning
-    timestamp: new Date(), // Add this line to include the timestamp
-  });
-
-  await newUserBid.save();
-    };
-    // Save the updated product
-    await product.save();
-    await addUserBid();
-
-    // Fetch winning user details
-    const winningUser = await UserBid.findOne({ productId: product._id, isWinningBid: true });
-    
-    console.log('Place Bid Response:', { message: 'Bid placed successfully' });
-    console.log('Winning User:', winningUser.userId);
-     // Send email to the winning user
-    //   const mailOptions = {
-    //   from: 'johxngeorxe@gmail.com',
-    //   to: winningUser.userId, // Use userId as the email address
-    //   subject: 'CONGRATULATIONS!! You are currently the Highest Bidder',
-    //   text: 
-    //   `Dear ${winningUser.userId},
-
-    //   We have received your bid for the product  "${product.name}"  with a bid amount of  "₹${bidAmount}"  and you are currently winning the bid. You have placed the highest bid among all users.
-    //   We thank you for using our Online Auction System Bidwiser.`, 
-    // };
-
-
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error('Error sending email:', error);
-    //     // Handle the error and respond to the client
-    //     return res.status(500).json({ message: 'Internal server error' });
-    //   }
-
-    //   console.log('Email sent:', info.response);
-    //   // Respond to the client that the bid was placed successfully
-    //   res.status(200).json({ message: 'Bid placed successfully' });
-    // });
     // Add user bid
     const newUserBid = new UserBid({
       productId,
