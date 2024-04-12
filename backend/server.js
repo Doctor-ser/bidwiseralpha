@@ -8,6 +8,9 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { Server } = require('socket.io');
+const Grid = require('gridfs-stream');
+const multer =require('multer')
+const path = require('path');
 
 
 
@@ -15,6 +18,9 @@ const app = express();
 mongoose.set("strictQuery", true)
 // Connect to MongoDB (replace this URI with your actual MongoDB URI)
 mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
+
+
 
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB');
@@ -50,6 +56,77 @@ app.use((req, res, next) => {
   res.header('Expires', 0);
   next();
 });
+
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('images'); // Name of the collection (you can change it as needed)
+});
+
+const storage = multer.memoryStorage(); // Store images in memory
+const upload = multer({ storage });
+
+
+// Define the Image model outside of route handlers
+const Image = mongoose.model('Image', new mongoose.Schema({
+  filename: String,
+  contentType: String,
+  size: Number,
+  uploadDate: { type: Date, default: Date.now },
+  metadata: { userId: String },
+  image: { type: Buffer },
+  imageUrl: String,
+}));
+
+// Endpoint to handle file upload
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    console.log('Uploaded image:', req.file);
+
+    const newImage = new Image({
+      filename: req.file.originalname,
+      size: req.file.size,
+      contentType: req.file.mimetype,
+      metadata: { userId: req.body.userId },
+      image: req.file.buffer,
+      imageUrl: req.body.imageUrl,
+    });
+
+    await newImage.save();
+
+    res.json({ image: newImage });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Failed to upload image' });
+  }
+});
+
+// Route to fetch image details based on imageUrl
+app.get('/api/images/:imageUrl', async (req, res) => {
+  try {
+    const imageUrl = req.params.imageUrl;
+    const imageDetails = await Image.findOne({ imageUrl });
+
+    if (!imageDetails) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    // Assuming your image data is stored in the "image" field as Buffer data
+    // const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
+    // const contentType = imageDetails.contentType;
+
+    // res.json({ imageUrl, imageData, contentType });
+    // const reader = new FileReader();
+    //     reader.readAsDataURL();
+    //     reader.onloadend = () => {
+    //       const imageData = reader.result;
+    res.write(imageDetails.image)
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    res.status(500).json({ message: 'Failed to fetch image' });
+  }
+});
+
 
 
 //Feedback
@@ -509,6 +586,8 @@ const bidSchema = new mongoose.Schema({
   currentBid: Number, // Add this field
   endTime: Date,
   userId: String, // Add this field to associate a product with a user
+  imageUrl: String,
+
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
@@ -516,7 +595,7 @@ const Bid = mongoose.model('Bid', bidSchema);
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/api/addBid', (req, res) => {
-  const { name, description, startingBid, endTime,currentBid } = req.body;
+  const { name, description, startingBid, endTime,currentBid,imageUrl } = req.body;
 
   const newBid = new Bid({
     name,
@@ -525,6 +604,7 @@ app.post('/api/addBid', (req, res) => {
     currentBid, // Save the current bid
     endTime,
     userId: req.body.userId, // Include the userId
+    imageUrl,
   });
 
   newBid.save((err, bid) => {
