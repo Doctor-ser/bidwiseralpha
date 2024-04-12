@@ -19,8 +19,6 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [productDetails, setProductDetails] = useState({});
   const [flag,setflag]=useState(0);
   const navigate = useNavigate();
-  const [productImages, setProductImages] = useState({});
-
   
 
   
@@ -65,35 +63,28 @@ useEffect(() => {
     try {
       const response = await axios.get('http://127.0.0.1:5500/api/getBids');
       setProducts(response.data.bids);
+      console.log('Products:', response.data.bids);
 
-      const imagePromises = response.data.bids.map(async (product) => {
-        const imageResponse = await axios.get(`http://127.0.0.1:5500/api/images/${product.imageUrl}`, {
-          responseType: 'blob',
-        });
-        
-        const reader = new FileReader();
-        reader.readAsDataURL(imageResponse.data);
-        reader.onloadend = () => {
-          const imageData = reader.result;
-          const imageUrl = imageData.toString();
-          
-          setProductImages((prevImages) => ({
-            ...prevImages,
-            [product._id]: imageUrl,
-            
-          }));
-          
-        };
+      // Call fetchWinningUser for each product
+      const winningUserPromises = response.data.bids.map(async (product) => {
+        await fetchWinningUser(product._id);
       });
-
-      await Promise.all(imagePromises);
+      await Promise.all(winningUserPromises);
     } catch (error) {
-      console.error('Error fetching bids:', error);
+      if (axios.isCancel(error)) {
+        console.log('Request aborted:', error.message);
+      } else {
+        console.error('Error fetching bids:', error);
+      }
     }
   };
-
   fetchProducts();
-}, []);
+  // Refresh products every 5 seconds
+  const intervalId = setInterval(fetchProducts, 5000);
+  // Clear interval on component unmount to prevent memory leaks
+  return () => clearInterval(intervalId);
+  
+}, [bidChange]);
 
 const renderWinningUser = (productId) => {
   const winnerUserId = winningUsers[productId];
@@ -385,7 +376,6 @@ const renderWinningUser = (productId) => {
 
 
         {/* cart banner section */}
-        {products.map((product, index) => (
         <section class="cart-banner pt-100 pb-100">
             <div class="container">
                 <div class="row clearfix">
@@ -400,8 +390,7 @@ const renderWinningUser = (productId) => {
                                 </div>
                             </div>
                             <div className='col-md-6'>
-                            <img src={productImages[product._id]} alt={product.name} style={{ width: '200px', height: '200px' }} />   
-                              {/* [selectedProduct.productId] ? productImages[selectedProduct.productId] : 'default-image-url'     */}
+                              <img src=/*{images[currentImageIndex]}*/"https://wallpapercave.com/wp/wp6827492.jpg" alt="Banner" height="400" width="600" />        
                             </div>
                         </div>
                     </div>
@@ -440,19 +429,19 @@ const renderWinningUser = (productId) => {
                 </div>
             </div>
           </section>
-          ))}
           {/* end cart banner section */}
 
         <div style={{display:'block'}}>Live Auctions</div>
         <div className="row">
           {/* Display filtered products instead of all products */}
-     
           {activeBidProducts.map((product) => (
        
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <img src={`http://127.0.0.1:5500/api/images/goodimage5,${productImages[product._id]}`} alt={product.name} style={{ width: '200px', height: '200px' }} /> 
+                            <img class='mx-auto img-thumbnail'
+                                src="https://wallpapercave.com/wp/wp8257248.jpg"
+                                width="auto" height="auto"/>
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
