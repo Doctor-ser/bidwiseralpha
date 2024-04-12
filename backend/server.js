@@ -126,10 +126,15 @@ app.get('/api/images/:imageUrl', async (req, res) => {
     }
 
     // Assuming your image data is stored in the "image" field as Buffer data
-    const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
-    const contentType = imageDetails.contentType;
+    // const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
+    // const contentType = imageDetails.contentType;
 
-    res.json({ imageUrl, imageData, contentType });
+    // res.json({ imageUrl, imageData, contentType });
+    // const reader = new FileReader();
+    //     reader.readAsDataURL();
+    //     reader.onloadend = () => {
+    //       const imageData = reader.result;
+    res.write(imageDetails.image)
   } catch (error) {
     console.error('Error fetching image:', error);
     res.status(500).json({ message: 'Failed to fetch image' });

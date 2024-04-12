@@ -66,27 +66,29 @@ useEffect(() => {
       const response = await axios.get('http://127.0.0.1:5500/api/getBids');
       setProducts(response.data.bids);
 
-      const imagePromises = response.data.bids.map(async (product) => {
-        const imageResponse = await axios.get(`http://127.0.0.1:5500/api/images/${product.imageUrl}`, {
-          responseType: 'blob',
-        });
+      // const imagePromises = response.data.bids.map(async (product) => {
+      //   const imageResponse = await axios.get(`http://127.0.0.1:5500/api/images/${product.imageUrl}`, {
+      //     responseType: 'blob',
+      //   });
         
-        const reader = new FileReader();
-        reader.readAsDataURL(imageResponse.data);
-        reader.onloadend = () => {
-          const imageData = reader.result;
-          const imageUrl = imageData.toString();
+      //   const reader = new FileReader();
+      //   reader.readAsDataURL(imageResponse.data);
+      //   console.log(imageResponse)
+      //   reader.onloadend = () => {
+      //     const imageData = reader.result;
+      //     const imageUrl = imageData
           
-          setProductImages((prevImages) => ({
-            ...prevImages,
-            [product._id]: imageUrl,
+          
+      //     setProductImages((prevImages) => ({
+      //       ...prevImages,
+      //       [product._id]: imageUrl,
             
-          }));
+      //     }));
           
-        };
-      });
+      //   };
+      // });
 
-      await Promise.all(imagePromises);
+      // await Promise.all(imagePromises);
     } catch (error) {
       console.error('Error fetching bids:', error);
     }
@@ -467,7 +469,7 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <img src={`http://127.0.0.1:5500/api/images/goodimage5,${productImages[product._id]}`} alt={product.name} style={{ width: '200px', height: '200px' }} /> 
+                      <img src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`} alt={product.name} style={{ width: '200px', height: '200px' }} /> 
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
