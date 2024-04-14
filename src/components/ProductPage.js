@@ -176,6 +176,7 @@ const renderWinningUser = (productId) => {
     alert('Bidding for this product has already ended.');
     return;
   }
+  
     setShowBidModal(true);
     setSelectedProduct({ productId, currentBid,startingBid });
 
@@ -436,11 +437,10 @@ const renderWinningUser = (productId) => {
           <h3><span className="orange-text">Deal</span> of the Day</h3>
           <h4>{topDeal.name}</h4>
           <div className="text">{topDeal.description}</div>
-          {/* Countdown Timer */}
-          <div className="time-counter">
-            {/* Your countdown timer code here */}
-          </div>
-          <a href="cart.html" className="cart-btn mt-3"><i className="fas fa-shopping-cart"></i> Add to Cart</a>
+          
+          <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
+        <i className="fas fa-shopping-cart"></i> View Details
+      </Link>
         </div>
       </div>
     </div>

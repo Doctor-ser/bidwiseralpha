@@ -595,15 +595,21 @@ const Bid = mongoose.model('Bid', bidSchema);
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/api/addBid', (req, res) => {
-  const { name, description, startingBid, endTime,currentBid,imageUrl } = req.body;
+  const { name, description, startingBid, endTime, currentBid, imageUrl } = req.body;
+
+  // Check if endTime is less than the current time
+  if (new Date(endTime) < new Date()) {
+    console.log("End time should be in the future");
+    return res.json('End time should be in the future');
+  }
 
   const newBid = new Bid({
     name,
     description,
     startingBid,
-    currentBid, // Save the current bid
+    currentBid,
     endTime,
-    userId: req.body.userId, // Include the userId
+    userId: req.body.userId,
     imageUrl,
   });
 
@@ -614,6 +620,8 @@ app.post('/api/addBid', (req, res) => {
     res.status(200).json({ message: 'Bid added successfully', bid });
   });
 });
+
+
 
 app.put('/api/modifyBid/:id', async (req, res) => {
   const bidId = req.params.id;
@@ -728,6 +736,24 @@ app.get('/api/products/:productId', async (req, res) => {
     res.json({ success: true, product });
   } catch (error) {
     console.error('Error fetching product details:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+//fetching seller
+//fetch the seller by product id
+app.get('/api/fetchsellerbyproid/:productId', async (req, res) => {
+  const productId = req.params.productId;
+
+  try {
+    const product = await Bid.findById(productId);
+    console.log(product);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    res.json({ success: true, seller: { userId: product.userId } });
+  } catch (error) {
+    console.error('Error fetching seller details:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
