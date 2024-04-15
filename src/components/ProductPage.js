@@ -166,30 +166,6 @@ const renderWinningUser = (productId) => {
     };
   };
 
-  //remaining time for topdeals
-  const calculateRemainingTimeTopdeals = (endTime) => {
-    const now = new Date();
-    const end = new Date(endTime);
-    const timeDiff = end - now;
-  
-    if (timeDiff <= 0) {
-      return {
-        ended: true,
-        message: 'Bid has ended',
-      };
-    }
-  
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-  
-    const endDateFormatted = formatDate(endTime);
-  
-    return {
-      ended: false,
-      message: `Bid ends on: ${endDateFormatted}, ${hours}h ${minutes}m ${seconds}s left`,
-    };
-  };
 
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
@@ -490,41 +466,38 @@ const renderWinningUser = (productId) => {
           <h3><span className="orange-text">Deal</span> of the Day</h3>
           <h4>{topDeal.name}</h4>
           <div className="text">{topDeal.description}</div>
-
-          <p className="card-text">{topDeal.endTime &&
-                                        (() => {
-                                            const remainingTime = calculateRemainingTime(topDeal.endTime);
-                                            
-                                              return `${remainingTime.message}`;
-                                            
-                                        })()
-                                      }
-                                  </p>
+          
           {/* counter */}
-          <div className="time-counter">
-                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="days">00</span>Days
-                                    </div>
-                                  </div>
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="hours">00</span>Hours
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="minutes">00</span>Mins
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="seconds">00</span>Secs
-                                    </div>
-                                  </div>
-                                </div>
-                          </div>
+{topDeal.endTime && (() => {
+    const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
+    return (
+        <div className="time-counter">
+            <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="days">{remainingTimec.days}</span>Days
+                    </div>
+                </div>
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="hours">{remainingTimec.hours}</span>Hours
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+})()}
+
 
           <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
         <i className="fas fa-shopping-cart"></i> View Details
