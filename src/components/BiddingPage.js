@@ -14,9 +14,7 @@ const BiddingPage = ({ darkMode }) => {
     description: '',
     startingBid: '',
     currentBid: '',
-    endTime: '',
-    imageUrl: '',
-
+    endTime: ''
   });
   
   const { loggedIn, userId } = useAuth();
@@ -41,7 +39,9 @@ const BiddingPage = ({ darkMode }) => {
     fetchProducts();
   }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
 
-  
+  function generateRandomString() {
+    return Math.random().toString(36).substring(7);
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,10 +87,10 @@ const BiddingPage = ({ darkMode }) => {
   
   const handleAddProduct = async () => {
     if (loggedIn) {
-      const { startingBid, currentBid , name, description,endTime,imageUrl } = newProduct;
+      const { startingBid, currentBid , name, description,endTime } = newProduct;
 
       // Validate that all required fields are filled
-    if (!name || !description || !startingBid || !currentBid || !endTime || !imageUrl) {
+    if (!name || !description || !startingBid || !currentBid || !endTime) {
       alert('Please fill all the required bid details first.');
       return;
     }
@@ -112,26 +112,28 @@ const BiddingPage = ({ darkMode }) => {
       }
   
       try {
+        const imageUrl = generateRandomString();
         const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,
           currentBid: numericCurrentBid || numericStartingBid, // Set currentBid to startingBid if not provided
+          imageUrl: imageUrl, // Assign the generated random string to imageUrl
         });
-  
-        if (response.status === 200) {
+        if (response.data === 'End time should be in the future') {
+          alert('End time should be in the future');
+        } else if (response.status === 200) {
           alert('Bid added successfully');
           const updatedProducts = [...products, { ...response.data.bid }];
           setProducts(updatedProducts);
           localStorage.setItem('products', JSON.stringify(updatedProducts)); // Store in localStorage
           handleImageProduct(imageUrl);
-          
-        } else {
-          alert('Failed to add bid');
         }
       } catch (err) {
         console.error('Error adding bid:', err);
         alert('An error occurred while adding bid');
       }
+      
+      
     } else {
       alert('Please login first');
       navigate('/login'); // Redirect to login page
@@ -279,9 +281,8 @@ const BiddingPage = ({ darkMode }) => {
             <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
           </div>
           <div>
-            <label>Image URL</label>
-            <input type="text" name="imageUrl" value={newProduct.imageUrl || ''} onChange={handleInputChange} />
-          </div>
+
+      </div>
           </div>
           <div className='img'>
           <div class="file-upload">
