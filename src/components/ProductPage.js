@@ -399,56 +399,59 @@ const renderWinningUser = (productId) => {
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Search by product name or bid : "
+            placeholder="Search by Product Name or Bid : "
             className="form-control"
             value={searchTerm}
             onChange={handleSearch}
           />
+          <button  className="btn btn-primary1 ms-2">Search</button>
         </div>
 
 
         {/* cart banner section */}
         {topDeal && (
-  <section className="cart-banner pt-100 pb-100">
-    <div className="container">
-      <div className="row clearfix">
-        {/* Image Column */}
-        <div className="image-column col-lg-6">
-          <div className="image">
-            <div className="price-box">
-              <div className="inner-price">
-                <span className="price">
-                  <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
-                </span>
-              </div>
-            </div>
-            <div className="col-md-6">
-              {topDeal.imageUrl ? (
-                <img src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
-              ) : (
-                <div>No image available</div>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Content Column */}
-        <div className="content-column col-lg-6">
-          <h3><span className="orange-text">Deal</span> of the Day</h3>
-          <h4>{topDeal.name}</h4>
-          <div className="text">{topDeal.description}</div>
-          {/* Countdown Timer */}
-          <div className="time-counter">
-            {/* Your countdown timer code here */}
-          </div>
-          <a href="cart.html" className="cart-btn mt-3"><i className="fas fa-shopping-cart"></i> Add to Cart</a>
-        </div>
-      </div>
-    </div>
-  </section>
-)}
+              <section className="cart-banner pt-100 pb-100">
+                <div className="container">
+                  <div className="row clearfix">
+                    {/* Image Column */}
+                    <div className="image-column col-lg-6">
+                      <div className="image">
+                        <div className="price-box">
+                          <div className="inner-price">
+                            <span className="price">
+                              <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          {topDeal.imageUrl ? (
+                            <img src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
+                          ) : (
+                            <div>No image available</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Content Column */}
+                    <div className="content-column col-lg-6">
+                      <h3><span className="orange-text">Deal</span> of the Day</h3>
+                      <h4>{topDeal.name}</h4>
+                      <div className="text">{topDeal.description}</div>
+                      {/* Countdown Timer */}
+                      <div className="time-counter">
+                        {/* Your countdown timer code here */}
+                      </div>
+                      <a href="cart.html" className="cart-btn mt-3"><i className="fas fa-shopping-cart"></i>View Details</a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
           {/* end cart banner section */}
 
-        <div style={{display:'block'}}>Live Auctions</div>
+        <div className='cap-head'>
+        <span class="text">Live Auctions</span>
+        </div>
         <div className="row">
           {/* Display filtered products instead of all products */}
           {activeBidProducts.map((product) => (
@@ -502,7 +505,10 @@ const renderWinningUser = (productId) => {
         </div>
 
 
-          <div style={{display:'block'}}>Bid ended</div>
+        <div className='cap-head'>
+        <span class="text">End Auctions</span>
+        </div>
+
         {/* bidended */}
         <div className="row">
           {/* Display filtered products instead of all products */}
