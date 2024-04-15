@@ -138,6 +138,30 @@ const renderWinningUser = (productId) => {
     };
   };
 
+  //remaining time for topdeals
+  const calculateRemainingTimeTopdeals = (endTime) => {
+    const now = new Date();
+    const end = new Date(endTime);
+    const timeDiff = end - now;
+  
+    if (timeDiff <= 0) {
+      return {
+        ended: true,
+        message: 'Bid has ended',
+      };
+    }
+  
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  
+    const endDateFormatted = formatDate(endTime);
+  
+    return {
+      ended: false,
+      message: `Bid ends on: ${endDateFormatted}, ${hours}h ${minutes}m ${seconds}s left`,
+    };
+  };
 
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
@@ -437,6 +461,15 @@ const renderWinningUser = (productId) => {
           <h3><span className="orange-text">Deal</span> of the Day</h3>
           <h4>{topDeal.name}</h4>
           <div className="text">{topDeal.description}</div>
+          <p className="card-text">{topDeal.endTime &&
+                                        (() => {
+                                            const remainingTime = calculateRemainingTime(topDeal.endTime);
+                                            
+                                              return `${remainingTime.message}`;
+                                            
+                                        })()
+                                      }
+                                  </p>
           {/* counter */}
           <div className="time-counter">
                                 <div className="time-countdown clearfix" data-countdown="" id="countdown">
