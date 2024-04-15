@@ -740,6 +740,26 @@ app.get('/api/products/:productId', async (req, res) => {
   }
 });
 
+//fetch bids price after winning the product by product id
+app.get('/api/fetchprice/:proid', async (req, res) => {
+  const productId = req.params.proid;
+  console.log(productId);
+  try {
+      // Fetch the bid details from the database based on the product ID
+      const bid = await Bid.findOne({ _id: productId });
+
+      if (!bid) {
+          return res.status(404).json({ success: false, message: 'Bid not found' });
+      }
+
+      // If the bid is found, send back the name and current bid
+      res.json({ success: true, name: bid.name, currentBid: bid.currentBid });
+  } catch (error) {
+      console.error('Error fetching bid details:', error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
 //fetching seller
 //fetch the seller by product id
 app.get('/api/fetchsellerbyproid/:productId', async (req, res) => {

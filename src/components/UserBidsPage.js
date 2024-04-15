@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import './homepage.css';
+import Buynow from './Buynow';
 
 const UserBidsPage = () => {
   const [userBids, setUserBids] = useState([]);
@@ -61,6 +62,9 @@ const UserBidsPage = () => {
   const goToProductFeedback = (prodId) => {
     window.location.href = `/ProductFeedback/${prodId}`;
   };
+  // const goToBuyNow = (prodId) => {
+  //   window.location.href = `/BuyNow/${prodId}`;
+  // };
 
   return (
     <div className="container mt-4">
@@ -118,10 +122,14 @@ const UserBidsPage = () => {
                   <strong>Winning Bid:</strong> {bid.isWinningBid ? 'Yes' : 'No'}
                 </Card.Text>
                 {bid.isWinningBid && bid.mailsend && (
-  <Button variant="primary" className="feedback-btn" onClick={() => goToProductFeedback(bid.productId)}>
-    Product Feedback
-  </Button>
-)}
+                <Button variant="primary" className="feedback-btn" onClick={() => goToProductFeedback(bid.productId)}>
+                 Product Feedback
+                </Button>
+                )}
+                {bid.isWinningBid && bid.mailsend && (
+                <Buynow/>
+                )}
+
 
 
               </Card.Body>

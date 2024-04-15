@@ -437,7 +437,31 @@ const renderWinningUser = (productId) => {
           <h3><span className="orange-text">Deal</span> of the Day</h3>
           <h4>{topDeal.name}</h4>
           <div className="text">{topDeal.description}</div>
-          
+          {/* counter */}
+          <div className="time-counter">
+                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="days">00</span>Days
+                                    </div>
+                                  </div>
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="hours">00</span>Hours
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="minutes">00</span>Mins
+                                    </div>
+                                  </div>  
+                                  <div className="counter-column">
+                                    <div className="inner">
+                                      <span className="count" id="seconds">00</span>Secs
+                                    </div>
+                                  </div>
+                                </div>
+                          </div>
           <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
         <i className="fas fa-shopping-cart"></i> View Details
       </Link>
