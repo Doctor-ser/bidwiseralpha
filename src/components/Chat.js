@@ -20,21 +20,38 @@ function Chat({loadMessage,setLoadMessage}) {
 
   // Function to fetch messages from MongoDB (adjust API endpoint)
   const fetchMessages = async () => {
-    try {
-      console.log("fetching messages for product ID:", proid);
-      const response = await fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`); // Include product ID in query string
-      const data = await response.json();
-      if (data.length === 0) {
-        setMessages(['No messages to display']);
-      } else {
-        setMessages(data);
-        console.log(data)
-      }
-      
-    } catch (error) {
-      console.error('Error fetching messages:', error);
+  try {
+    console.log("fetching messages for product ID:", proid);
+    const response = await fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`); // Include product ID in query string
+    const data = await response.json();
+    if (data.length === 0) {
+      setMessages(['No messages to display']);
+    } else {
+      setMessages(data);
+      console.log(data);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+  }
+};
+
+//to check if current user is a seller
+//to check if current user is a seller
+const checkSeller = async () => {
+  try {
+    const productResponse = await fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`);
+    const productData = await productResponse.json();
+  
+    if (productData && productData.seller.userId === currentUser.email) {
+      console.log("User is a seller");
+      setCurrentUser(prevState => ({ ...prevState, isSeller: true }));
+    }
+  } catch (error) {
+    console.error('Error checking seller:', error);
+  }
+};
+
+
   
 
   // Function to send a new message and store it in MongoDB
@@ -84,6 +101,7 @@ function Chat({loadMessage,setLoadMessage}) {
   useEffect(() => {
     fetchMessages();
     setProid(productId); // Extract product ID from route and store in state
+    checkSeller();
   }, [productId,loadMessage]); // Update proid only when productId changes
   
 
@@ -100,7 +118,7 @@ function Chat({loadMessage,setLoadMessage}) {
               // Render regular message content here
               <>
                 <div className="profile-container">
-                  <p className="profile-info">{message.senderEmail}</p>
+                <p className="profile-info">{message.senderEmail} {currentUser.isSeller && message.senderEmail === currentUser.email ? "(Seller)" : ""}</p>
                 </div>
                 <p className="message-content">{message.message}</p>
               </>
