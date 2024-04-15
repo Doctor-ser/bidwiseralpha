@@ -14,9 +14,7 @@ const BiddingPage = ({ darkMode }) => {
     description: '',
     startingBid: '',
     currentBid: '',
-    endTime: '',
-    imageUrl: '',
-
+    endTime: ''
   });
   
   const { loggedIn, userId } = useAuth();
@@ -283,9 +281,8 @@ const BiddingPage = ({ darkMode }) => {
             <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
           </div>
           <div>
-            <label>Image URL</label>
-            <input type="text" name="imageUrl" value={newProduct.imageUrl || ''} onChange={handleInputChange} />
-          </div>
+
+      </div>
           </div>
           <div className='img'>
           <div class="file-upload">
