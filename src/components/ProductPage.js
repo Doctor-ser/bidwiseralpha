@@ -47,18 +47,46 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
    
 //update the timer of banner
 
-useEffect(() => {
-  const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
+// useEffect(() => {
+//   const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
 
-  // Start the countdown timer
-  $('#countdown').countdown(finalDate, function(event) {
-    // Update the content of each count span with the corresponding value
-    $('#days').text(event.strftime('%D'));
-    $('#hours').text(event.strftime('%H'));
-    $('#minutes').text(event.strftime('%M'));
-    $('#seconds').text(event.strftime('%S'));
-  });
-}, []); // Run once when component mounts
+//   // Start the countdown timer
+//   $('#countdown').countdown(finalDate, function(event) {
+//     // Update the content of each count span with the corresponding value
+//     $('#days').text(event.strftime('%D'));
+//     $('#hours').text(event.strftime('%H'));
+//     $('#minutes').text(event.strftime('%M'));
+//     $('#seconds').text(event.strftime('%S'));
+//   });
+// }, []); // Run once when component mounts
+const calculateRemainingTimeForCounter = (endTime) => {
+  const now = new Date();
+  const end = new Date(endTime);
+  const timeDiff = end - now;
+
+  if (timeDiff <= 0) {
+    return {
+      ended: true,
+      days: '00',
+      hours: '00',
+      minutes: '00',
+      seconds: '00'
+    };
+  }
+
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+  return {
+    ended: false,
+    days: days.toString().padStart(2, '0'),
+    hours: hours.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0')
+  };
+};
 
 
 useEffect(() => {
@@ -437,31 +465,39 @@ const renderWinningUser = (productId) => {
           <h3><span className="orange-text">Deal</span> of the Day</h3>
           <h4>{topDeal.name}</h4>
           <div className="text">{topDeal.description}</div>
+          
           {/* counter */}
-          <div className="time-counter">
-                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="days">00</span>Days
-                                    </div>
-                                  </div>
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="hours">00</span>Hours
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="minutes">00</span>Mins
-                                    </div>
-                                  </div>  
-                                  <div className="counter-column">
-                                    <div className="inner">
-                                      <span className="count" id="seconds">00</span>Secs
-                                    </div>
-                                  </div>
-                                </div>
-                          </div>
+{topDeal.endTime && (() => {
+    const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
+    return (
+        <div className="time-counter">
+            <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="days">{remainingTimec.days}</span>Days
+                    </div>
+                </div>
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="hours">{remainingTimec.hours}</span>Hours
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+})()}
+
+
           <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
         <i className="fas fa-shopping-cart"></i> View Details
       </Link>
