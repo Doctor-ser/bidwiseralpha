@@ -424,11 +424,12 @@ const renderWinningUser = (productId) => {
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Search by product name or bid : "
+            placeholder="Search by Product Name or Bid : "
             className="form-control"
             value={searchTerm}
             onChange={handleSearch}
           />
+          <button  className="btn btn-primary1 ms-2">Search</button>
         </div>
 
 
@@ -505,7 +506,9 @@ const renderWinningUser = (productId) => {
 )}
           {/* end cart banner section */}
 
-        <div style={{display:'block'}}>Live Auctions</div>
+        <div className='cap-head'>
+        <span class="text">Live Auctions</span>
+        </div>
         <div className="row">
           {/* Display filtered products instead of all products */}
           {activeBidProducts.map((product) => (
@@ -559,7 +562,10 @@ const renderWinningUser = (productId) => {
         </div>
 
 
-          <div style={{display:'block'}}>Bid ended</div>
+        <div className='cap-head'>
+        <span class="text">End Auctions</span>
+        </div>
+
         {/* bidended */}
         <div className="row">
           {/* Display filtered products instead of all products */}

@@ -3,6 +3,9 @@ import { useAuth } from './AuthContext';
 import './Bidding.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
+
 
 const BiddingPage = ({ darkMode }) => {
   const [products, setProducts] = useState([]);
@@ -11,7 +14,9 @@ const BiddingPage = ({ darkMode }) => {
     description: '',
     startingBid: '',
     currentBid: '',
-    endTime: ''
+    endTime: '',
+    imageUrl: '',
+
   });
   
   const { loggedIn, userId } = useAuth();
@@ -246,49 +251,55 @@ const BiddingPage = ({ darkMode }) => {
 
   return (
     <div className={`bidding-page ${darkMode ? 'dark-mode' : ''}`}>
-      <h2>Add Product for Auction</h2>
-      <div>
-        <label>Name:</label>
-        <input type="text" name="name" value={newProduct.name || ''} onChange={handleInputChange} />
+      <h2 className='t1'>Add New Product</h2>
+      <h3 className='t2'>Product Details</h3>
+      <div className='details'>
+      <div class="info">
+          <div>
+            <label>Title</label>
+            <input type="text" name="name" value={newProduct.name || ''} onChange={handleInputChange} />
+          </div>
+          <div>
+            <label >Description</label>
+            <input className='desc' type="text" name="description" value={newProduct.description || ''} onChange={handleInputChange} />
+          </div>
+          <div>
+            <label>Starting Bid</label>
+            <input type="number" name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
+          </div>
+          <div>
+            <label>Current Bid</label>
+            
+            <input
+            type="number"
+            name="currentBid"
+            value={newProduct.currentBid}
+            onChange={handleInputChange}
+            />
+            
+            </div>
+          <div>
+            <label>End Time</label>
+            <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
+          </div>
+          <div>
+            <label>Image URL</label>
+            <input type="text" name="imageUrl" value={newProduct.imageUrl || ''} onChange={handleInputChange} />
+          </div>
+          </div>
+          <div className='img'>
+          <div class="file-upload">
+            <label>Add Image</label>
+            <input className='input-img' type="file" id="fileInput" onChange={handleChange} />
+            <label for="fileInput">
+            <FontAwesomeIcon  class="file-label" icon={faImage} /> <br/>
+            </label>
+          </div>
+          <button className='btn-pub' onClick={handleAddProduct}>Publish Now</button>
+          <pre></pre>
+          </div>
       </div>
-      <div>
-        <label>Description:</label>
-        <input type="text" name="description" value={newProduct.description || ''} onChange={handleInputChange} />
-      </div>
-      <div>
-        <label>Starting Bid:</label>
-        <input type="number" name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
-      </div>
-      <div>
-        <label>Current Bid:</label>
-        
-        <input
-        type="number"
-        name="currentBid"
-        value={newProduct.currentBid}
-        onChange={handleInputChange}
-        />
-        
-        </div>
-        
-       
-    
-      <div>
-        <label>End Time:</label>
-        <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
-      </div>
-      {/* <div>
-        <label>Image URL</label>
-        <input type="text" name="imageUrl" value={newProduct.imageUrl || ''} onChange={handleInputChange} />
-      </div> */}
-      <div>
-            <h3>Add Image:</h3>
-            <input type="file" onChange={handleChange} />
-        </div>
-      <button onClick={handleAddProduct}>Add Product</button>
-      <pre></pre>
-
-      <h3>Products you have added :</h3> <pre></pre>
+      <h3 className='t2'>Added Products</h3> <pre></pre>
       {products.map(product => (
         // Only render products associated with the logged-in user
   product.userId === userId && (
