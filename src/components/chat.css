@@ -37,6 +37,10 @@ body {
     justify-content: space-between; /* Space items evenly */
     padding: 20px;
   }
+  .seller-tag {
+    background-color: yellow;
+  }
+  
   
   input[type="text"] {
     flex: 1; /* Make input field fill available space */

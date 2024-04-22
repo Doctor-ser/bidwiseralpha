@@ -45,11 +45,16 @@ const BiddingPage = ({ darkMode }) => {
     setNewProduct({ ...newProduct, [name]: value });
   };
 
- const handleChange = (event) => {
-    
-    setFile(event.target.files[0])
-    
-  };
+  const handleChange = (event) => {
+    setFile(event.target.files[0]);
+
+    // Update the newProduct state with the uploaded image file
+    setNewProduct({
+        ...newProduct,
+        imageFile: event.target.files[0]
+    });
+};
+
   const handleImageProduct = async (imageUrl) => {
     console.log('image', file);
     if (!file) {
@@ -84,37 +89,28 @@ const BiddingPage = ({ darkMode }) => {
   
   const handleAddProduct = async () => {
     if (loggedIn) {
-      const { startingBid, currentBid , name, description,endTime } = newProduct;
-
+      const { startingBid, name, description, endTime, imageFile } = newProduct;
+      
+      if(imageFile){console.log("imagefile");}
+      else{
+        console.log("no imagefile");
+      }
       // Validate that all required fields are filled
-    if (!name || !description || !startingBid || !currentBid || !endTime) {
-      alert('Please fill all the required bid details first.');
-      return;
-    }
-  
-      // Convert currentBid and startingBid to numbers
-      const numericStartingBid = parseInt(startingBid);
-      const numericCurrentBid = parseInt(currentBid);
-
-      console.log('startingBid:', startingBid);
-    console.log('currentBid:', currentBid);
-    console.log('numericStartingBid:', numericStartingBid);
-    console.log('numericCurrentBid:', numericCurrentBid);
-   
-  
-      // Check if the current bid is less than the starting bid
-      if (numericCurrentBid < numericStartingBid) {
-        alert('Current bid must be greater than or equal to the starting bid');
+      if (!name || !description || !startingBid || !endTime || !imageFile) {
+        alert('Please fill all the required bid details first.');
         return;
       }
+  
+      // Convert startingBid to a number
+      const numericStartingBid = parseInt(startingBid);
   
       try {
         const imageUrl = generateRandomString();
         const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,
-          currentBid: numericCurrentBid || numericStartingBid, // Set currentBid to startingBid if not provided
-          imageUrl: imageUrl, // Assign the generated random string to imageUrl
+          currentBid: numericStartingBid, // Pass startingBid as the current bid
+          imageUrl: imageUrl,
         });
         if (response.data === 'End time should be in the future') {
           alert('End time should be in the future');
@@ -129,8 +125,6 @@ const BiddingPage = ({ darkMode }) => {
         console.error('Error adding bid:', err);
         alert('An error occurred while adding bid');
       }
-      
-      
     } else {
       alert('Please login first');
       navigate('/login'); // Redirect to login page
@@ -259,7 +253,7 @@ const BiddingPage = ({ darkMode }) => {
         <label>Starting Bid:</label>
         <input type="number" name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
       </div>
-      <div>
+      {/* <div>
         <label>Current Bid:</label>
         
         <input
@@ -269,7 +263,7 @@ const BiddingPage = ({ darkMode }) => {
         onChange={handleInputChange}
         />
         
-        </div>
+        </div> */}
         
        
     

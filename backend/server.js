@@ -703,24 +703,43 @@ app.get('/api/top-deal', async (req, res) => {
       // Group by productId and count the number of bids for each product
       { $group: { _id: '$productId', bidCount: { $sum: 1 } } },
       // Sort products by bid count in descending order
-      { $sort: { bidCount: -1 } },
-      // Limit to the first document, which will be the product with the most bids
-      { $limit: 1 }
+      { $sort: { bidCount: -1 } }
     ]);
 
-    // Get the productId of the top deal
-    const topProductId = topDeal[0]._id;
+    let topProductDetails;
+    let i = 0;
 
-    // Find the details of the top deal from the 'bids' collection
-    const topProductDetails = await Bid.findOne({ _id: topProductId });
+    // Find the top deal with the end time in the future
+    while (i < topDeal.length) {
+      // Get the productId of the top deal
+      const topProductId = topDeal[i]._id;
 
-    // Return the top deal details
-    res.json({ topDeal: topProductDetails });
+      // Find the details of the top deal from the 'bids' collection
+      topProductDetails = await Bid.findOne({ _id: topProductId });
+
+      // Check if the end time of the top product is greater than the current time
+      if (new Date(topProductDetails.endTime) > new Date()) {
+        // If the end time is in the future, break the loop
+        break;
+      }
+
+      // Increment the index to find the next top deal
+      i++;
+    }
+
+    if (i < topDeal.length) {
+      // Return the top deal details if found
+      res.json({ topDeal: topProductDetails });
+    } else {
+      // If no active top deal is found, return an empty response or handle the case as needed
+      res.json({ message: 'No active top deal found' });
+    }
   } catch (error) {
     console.error('Error fetching top deal:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 //fetch the bid by product id
