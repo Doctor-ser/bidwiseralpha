@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
+import './feedbackc.css';
 
 function FettchFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -32,17 +33,20 @@ function FettchFeedback() {
 
     return filteredFeedbacks.map(feedback => (
       <div key={feedback._id} className="feedback">
+        <div className='feedbackbox'>
         <p><strong>Rating:</strong> {feedback.rating}</p>
         <p><strong>Comment:</strong> {feedback.comment}</p>
-        <p><strong>User:</strong> {feedback.userId}</p>
+        <p><strong>User:</strong> {feedback.userId}</p> 
+        </div>
+        
       </div>
     ));
   };
 
   return (
-    <div className="App">
+    <div className="feedbackform">
         
-      <h1>Feedbacks</h1>
+      <h1 style={{fontFamily:'Copperplate'}}>Feedbacks</h1>
       <div>
         <label htmlFor="filter">Filter by:</label>
         <select id="filter" onChange={(e) => setFilter(e.target.value)}>

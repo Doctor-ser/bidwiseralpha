@@ -1,0 +1,58 @@
+/* ProductDetails.css */
+
+.det-img-thumbnail {
+    border: none;
+    height: 580.16px; /* Adjust height as needed */
+    width: 889.55px; /* Adjust width as needed */
+  }
+  
+  .pro-img {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
+    border-radius: 5px;
+    margin: 80px 90px;
+    background-color: #eeeeee;
+    padding: 0px 25px;
+    max-width: 889.55px; /* Same as image width */
+    max-height: 580.16px; /* Same as image height */
+  }
+  
+  .pro-details {
+    display: flex;
+    margin: 0 ;
+  }
+  
+  .pro-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 80px 20px;
+  }
+  
+  .description {
+    text-align: justify;
+  }
+
+  
+  .highest-bid {
+    margin: 5px 0;
+  }
+  
+  .end-time {
+
+    margin: 5px 0;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  
+  .btn-p.cart {
+    margin-right: 10px; /* Adjust button spacing */
+  }
+  
+  .chat-btn {
+    margin-right: 10px; /* Adjust button spacing */
+  }
+  

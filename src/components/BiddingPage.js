@@ -19,13 +19,12 @@ const BiddingPage = ({ darkMode }) => {
   
   const { loggedIn, userId } = useAuth();
   const navigate = useNavigate();
-  const [bidAmount, setBidAmount] = useState(localStorage.getItem('bidAmount') || ''); // Use local storage for bid amount
-  const [modifyProductId, setModifyProductId] = useState(null); // Track the product being modified
+  const [bidAmount, setBidAmount] = useState(localStorage.getItem('bidAmount') || '');
+  const [modifyProductId, setModifyProductId] = useState(null);
   const [currentBid, setCurrentBid] = useState(localStorage.getItem('currentBid') || '');
   const [file, setFile] = useState(null);
  
 
-  // Fetch products from the server when the component mounts
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:5500/api/getBids?userId=${userId}`);
@@ -37,7 +36,7 @@ const BiddingPage = ({ darkMode }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
+  }, []);
 
   function generateRandomString() {
     return Math.random().toString(36).substring(7);
@@ -48,11 +47,16 @@ const BiddingPage = ({ darkMode }) => {
     setNewProduct({ ...newProduct, [name]: value });
   };
 
- const handleChange = (event) => {
-    
-    setFile(event.target.files[0])
-    
-  };
+  const handleChange = (event) => {
+    setFile(event.target.files[0]);
+
+    // Update the newProduct state with the uploaded image file
+    setNewProduct({
+        ...newProduct,
+        imageFile: event.target.files[0]
+    });
+};
+
   const handleImageProduct = async (imageUrl) => {
     console.log('image', file);
     if (!file) {
@@ -61,17 +65,14 @@ const BiddingPage = ({ darkMode }) => {
     }
   
     try {
-      // Create FormData object to send file
       const formData = new FormData();
-      formData.append('image', file); // Append the file to FormData
-      console.log('image', imageUrl);
+      formData.append('image', file);
       formData.append('imageUrl', imageUrl);
   
       const response = await axios.post('http://127.0.0.1:5500/api/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Set content type for FormData
+          'Content-Type': 'multipart/form-data',
         },
-        
       });
       
       if (response.status === 200) {
@@ -87,37 +88,28 @@ const BiddingPage = ({ darkMode }) => {
   
   const handleAddProduct = async () => {
     if (loggedIn) {
-      const { startingBid, currentBid , name, description,endTime } = newProduct;
-
+      const { startingBid, name, description, endTime, imageFile } = newProduct;
+      
+      if(imageFile){console.log("imagefile");}
+      else{
+        console.log("no imagefile");
+      }
       // Validate that all required fields are filled
-    if (!name || !description || !startingBid || !currentBid || !endTime) {
-      alert('Please fill all the required bid details first.');
-      return;
-    }
-  
-      // Convert currentBid and startingBid to numbers
-      const numericStartingBid = parseInt(startingBid);
-      const numericCurrentBid = parseInt(currentBid);
-
-      console.log('startingBid:', startingBid);
-    console.log('currentBid:', currentBid);
-    console.log('numericStartingBid:', numericStartingBid);
-    console.log('numericCurrentBid:', numericCurrentBid);
-   
-  
-      // Check if the current bid is less than the starting bid
-      if (numericCurrentBid < numericStartingBid) {
-        alert('Current bid must be greater than or equal to the starting bid');
+      if (!name || !description || !startingBid || !endTime || !imageFile) {
+        alert('Please fill all the required bid details first.');
         return;
       }
+  
+      // Convert startingBid to a number
+      const numericStartingBid = parseInt(startingBid);
   
       try {
         const imageUrl = generateRandomString();
         const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,
-          currentBid: numericCurrentBid || numericStartingBid, // Set currentBid to startingBid if not provided
-          imageUrl: imageUrl, // Assign the generated random string to imageUrl
+          currentBid: numericStartingBid, // Pass startingBid as the current bid
+          imageUrl: imageUrl,
         });
         if (response.data === 'End time should be in the future') {
           alert('End time should be in the future');
@@ -132,34 +124,24 @@ const BiddingPage = ({ darkMode }) => {
         console.error('Error adding bid:', err);
         alert('An error occurred while adding bid');
       }
-      
-      
     } else {
       alert('Please login first');
-      navigate('/login'); // Redirect to login page
+      navigate('/login');
     }
   };
-  
-  //const handleAddAndImageProduct = () => {
-   // handleAddProduct();
-    //handleImageProduct();
-  //};
-  
   
 
   const handleDeleteProduct = async (productId) => {
     if (loggedIn) {
         try {
             const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
-            console.log('Response from server:', response); // Log the response for debugging
+            console.log('Response from server:', response);
             if (response.status === 200) {
                 alert('Bid deleted successfully');
-                // Update state immediately after successful deletion
                 setProducts((prevProducts) =>
                     prevProducts.filter((product) => product._id !== productId)
                 );
             } else if (response.status === 400) {
-                // Display specific error message sent from the server
                 alert(response.data.message);
             } else {
                 alert('Failed to delete bid');
@@ -170,47 +152,44 @@ const BiddingPage = ({ darkMode }) => {
         }
     } else {
         alert('Please login first');
-        navigate('/login'); // Redirect to login page
+        navigate('/login');
     }
 };
 
   const handleModifyBid = (productId, newBid) => {
-    setModifyProductId(productId); // Set the product being modified
+    setModifyProductId(productId);
   };
 
   const handleConfirmModifyBid = (productId, newBid) => {
     axios
       .put(`http://127.0.0.1:5500/api/modifyBid/${productId}`, {
         newBid,
-        currentBid: bidAmount, // Pass the currentBid along with newBid
+        currentBid: bidAmount,
       })
       .then((res) => {
         if (res.status === 200) {
-          // Check if bidding has ended
-        if (res.data.message === 'Bidding for this product has already ended. Modification not allowed.') {
-          alert(res.data.message);
-          return;
-        }
+          if (res.data.message === 'Bidding for this product has already ended. Modification not allowed.') {
+            alert(res.data.message);
+            return;
+          }
           alert('Bid modified successfully');
           setProducts((prevProducts) =>
             prevProducts.map((product) =>
               product._id === productId
-                ? { ...product, startingBid: parseInt(newBid), currentBid: parseInt(bidAmount) } // Update both startingBid and currentBid
+                ? { ...product, startingBid: parseInt(newBid), currentBid: parseInt(bidAmount) }
                 : product
             )
           );
-          setModifyProductId(null); // Clear the product being modified
+          setModifyProductId(null);
         } else {
           Promise.reject();
         }
       })
       .catch((err) => {
-        // Handle Axios errors with a response
         if (err.response) {
           const errorMessage = err.response.data.message || 'An error occurred while modifying bid';
           alert(errorMessage);
         } else {
-          // Handle other errors
           alert('An error occurred while modifying bid');
         }
       });
@@ -218,7 +197,6 @@ const BiddingPage = ({ darkMode }) => {
   
 
   const handlePlaceBid = (productId, currentBid) => {
-    // Logic to check if bidAmount is greater than startingBid
     if (bidAmount <= currentBid) {
       alert('Bid amount must be greater than the current bid');
       return;
@@ -227,16 +205,15 @@ const BiddingPage = ({ darkMode }) => {
     axios
       .post('http://127.0.0.1:5500/api/placeBid', {
         productId,
-        userId: userId, // Use userId from useAuth
+        userId: userId,
         bidAmount,
       })
       .then((res) => {
         if (res.status === 200) {
           alert('Bid placed successfully');
-          // Refresh product data after placing bid
           fetchProducts();
-          setBidAmount(''); // Clear bid amount after placing bid
-          localStorage.removeItem('bidAmount'); // Remove bid amount from local storage
+          setBidAmount('');
+          localStorage.removeItem('bidAmount');
         } else {
           alert('Failed to place bid');
         }
@@ -265,72 +242,62 @@ const BiddingPage = ({ darkMode }) => {
             <label>Starting Bid</label>
             <input type="number" name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
           </div>
-          <div>
-            <label>Current Bid</label>
-            
-            <input
-            type="number"
-            name="currentBid"
-            value={newProduct.currentBid}
-            onChange={handleInputChange}
-            />
-            
-            </div>
+
           <div>
             <label>End Time</label>
             <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
           </div>
-          <div>
-
-      </div>
-          </div>
-          <div className='img'>
+        </div>
+        <div className='img'>
           <div class="file-upload">
             <label>Add Image</label>
             <input className='input-img' type="file" id="fileInput" onChange={handleChange} />
             <label for="fileInput">
-            <FontAwesomeIcon  class="file-label" icon={faImage} /> <br/>
+              <FontAwesomeIcon  class="file-label" icon={faImage} /> <br/>
             </label>
           </div>
           <button className='btn-pub' onClick={handleAddProduct}>Publish Now</button>
           <pre></pre>
-          </div>
-      </div>
-      <h3 className='t2'>Added Products</h3> <pre></pre>
-      {products.map(product => (
-        // Only render products associated with the logged-in user
-  product.userId === userId && (
-        <div key={product._id} className="product">
-          
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <p>Starting Bid: ${product.startingBid}</p>
-          <p>Current Bid: ${product.currentBid}</p>
-          {modifyProductId === product._id ?(
-          <div>
-            <label>Enter Your Modified Bid:</label>
-            <input
-              type="number"
-              value={bidAmount}
-              onChange={(e)=> {setBidAmount(e.target.value);
-              localStorage.setItem('bidAmount', e.target.value); // Store bid amount in local storage
-              }}
-            />
-            <button onClick={() => handleConfirmModifyBid(product._id, bidAmount)}>
-                Confirm Modification
-              </button>
-          </div>
-          ) : (
-            <button onClick={() => handleModifyBid(product._id, product.currentBid)}>
-              Modify Bid
-            </button>
-          )}
-          <button onClick={() => handleDeleteProduct(product._id)}>Delete Product</button>
         </div>
-  )
-      ))}
+      </div>
+      <h3 className='t2 bor'>Added Products</h3> <pre></pre>
+      <div className="product-container">
+        {products.map((product, index) => (
+          product.userId === userId && (
+            <div className="cont" key={product._id}>
+              <div className="product det1">
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <p>Starting Bid: ${product.startingBid}</p>
+                <p>Current Bid: ${product.currentBid}</p>
+                {modifyProductId === product._id ? (
+                  <div>
+                    <label>Enter Your Modified Bid:</label>
+                    <input
+                      type="number"
+                      value={bidAmount}
+                      onChange={(e) => {
+                        setBidAmount(e.target.value);
+                        localStorage.setItem('bidAmount', e.target.value);
+                      }}
+                    />
+                    <button onClick={() => handleConfirmModifyBid(product._id, bidAmount)}>
+                      Confirm Modification
+                    </button>
+                  </div>
+                ) : (
+                  <button className='btn-card' onClick={() => handleModifyBid(product._id, product.currentBid)}>
+                    Modify Bid
+                  </button>
+                )}
+                <button className='btn-card' onClick={() => handleDeleteProduct(product._id)}>Delete Product</button>
+              </div>
+            </div>
+          )
+        ))}
+      </div>
     </div>
   );
 };
 
-export default BiddingPage; 
+export default BiddingPage;

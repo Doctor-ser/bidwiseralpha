@@ -204,7 +204,6 @@ const renderWinningUser = (productId) => {
     alert('Bidding for this product has already ended.');
     return;
   }
-  
     setShowBidModal(true);
     setSelectedProduct({ productId, currentBid,startingBid });
 
@@ -516,17 +515,14 @@ const renderWinningUser = (productId) => {
           {/* Display filtered products instead of all products */}
           {activeBidProducts.map((product) => (
        
-            <div key={product._id} className="col-md-4 mb-4">
+            <div key={product._id} className="col-md-4 mb-4 ">
                   <div class='container-fluid'>
-                      <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <LazyLoad height={200} once>
+                      <div class="card mx-auto col-md-3 col-10 mt-5 ">
                       <img
                       src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
                       alt={product.name}
-                      className="mx-auto img-thumbnail"
-                      />
-                      </LazyLoad>
-                            <div class="card-body text-center mx-auto">
+                      className="mx-auto img-thumbnail"/>
+                            <div class="card-body win text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
                                     <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
@@ -550,7 +546,7 @@ const renderWinningUser = (productId) => {
                                         })()
                                       }
                                   </p>
-                                  <Link to={`/products/${product._id}`} className="btn details px-auto">View Details</Link>
+                                  <Link to={`/products/${product._id}`} className="btn btn-view">View Details</Link>
                                   <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
                                       Place Bid
                                   </button>
@@ -608,7 +604,7 @@ const renderWinningUser = (productId) => {
                                         })()
                                       }
                                   </p>
-                                  <Link to={`/products/${product._id}`} className="btn details px-auto">View Details</Link>
+                                  <Link to={`/products/${product._id}`} className="btn btn-view b1">View Details</Link>
                                 </div>
                             </div>
                       </div>
