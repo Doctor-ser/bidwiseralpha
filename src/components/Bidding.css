@@ -1,7 +1,15 @@
 /* Bidding.css */
+.cont {
+  display: inline-block;
+  width: 30%; /* Adjust as needed */
+  margin: 10px; /* Add margin between products */
+}
+.product-container{
+  margin-left: 50px;
+}
 
 .bidding-page {
-  font-family: 'PT Mono', monospace;
+  font-family: 'Mona Sans', sans-serif;;
     margin: 0 auto;
     padding: 20px;
     position: relative; /* Ensure the parent is positioned */
@@ -11,31 +19,37 @@
   .t1{
     margin-bottom: 10px;
     font-weight: bold;
-    font-size: 38px;
+    font-size: 45px;
     padding: 30px;
   }
   .t2{
+    border-bottom: #b2b2b2 solid 1px;
     margin: 10px;
     padding: 30px;
+    padding-bottom: 50px;
     padding-left: 160px;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 30px;
+    margin-bottom: 80px;
+    text-underline-offset: 10px; /* Adjusts the space between text and underline */
   }
   .details {
     display: flex; /* Enables Flexbox */
     flex-wrap: wrap; /* Allows items to wrap to the next line if needed */
     align-items: flex-start; /* Aligns items to the top of the container */
     justify-content: space-between; /* Distributes space between the flex items */
-    margin-left: 70px;
-    border-radius: 5px;
+    margin-left: 90px;
+    margin-bottom: 80px;
+    border-radius: 25px;
     padding: 100px;
     padding-bottom: 0px;
     max-width: 90%;
     background-color: #f1f1f1;
+
   }
  
   .file-upload .file-label {
-    height: 200px;
+    height: 300px;
     width: 80%;
     display: inline-block;
     padding: 20px; /* Adjust padding to control the size of the box */
@@ -103,6 +117,7 @@
     padding: 8px;
     font-size: 1rem;
     border-radius: 5px;
+    background-color: #ffffff;
   }
   .desc{
     height: 100px;
@@ -121,12 +136,62 @@
   }
   
   .product {
-    margin: 10px 0;
+    margin: 10px;
     padding: 10px;
-    border: 1px solid #ccc;
+    margin-left: 70px;
+    text-transform: uppercase;
+    line-height: 2.5;
   }
-  
+.product h3{
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  font-weight: bold;
+}
+/* Button.css */
+.btn-card {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.btn-card:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-card:active {
+  transform: translateY(1px);
+}
+
+.btn-card:focus {
+  outline: none;
+}
+
+  .det1 {
+    border: 1.5px solid grey;
+    color: #212121;
+    width: 100%;
+    height: auto;
+    box-shadow: 0px 0px 10px #212121;
+    border-radius: 0;
+    margin-bottom: 40px;
+    margin-left: 90px;
+}
+
+
+  .bor{
+    border-top: #b2b2b2 solid 1px;
+    margin-top: 60px;
+  }
   .product h3 {
+    
     font-size: 1.2rem;
     margin-bottom: 5px;
   }

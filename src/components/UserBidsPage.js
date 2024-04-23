@@ -102,7 +102,7 @@ const UserBidsPage = () => {
 
       <div className="row">
         {filteredBids.map((bid) => (
-          <div key={bid._id} className="col-md-4 mb-4">
+          <div key={bid._id} className="win card-body text-center mx-auto col-md-4 mb-4">
             <Card>
               <Card.Body>
                 <Card.Title>{bid.productName}</Card.Title>
@@ -122,16 +122,15 @@ const UserBidsPage = () => {
                   <strong>Winning Bid:</strong> {bid.isWinningBid ? 'Yes' : 'No'}
                 </Card.Text>
                 {bid.isWinningBid && bid.mailsend && (
-                <Button variant="primary" className="feedback-btn" onClick={() => goToProductFeedback(bid.productId)}>
+                <Button variant="primary" className="btn btn-view" onClick={() => goToProductFeedback(bid.productId)}>
                  Product Feedback
                 </Button>
                 )}
                 {bid.isWinningBid && bid.mailsend && (
-                <Buynow/>
+                  <div className='gpay'>
+                    <Buynow/>
+                  </div>
                 )}
-
-
-
               </Card.Body>
             </Card>
           </div>

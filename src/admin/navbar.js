@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../components/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { blue } from '@mui/material/colors';
 // Optional: Import a styled component for the MoonSVG if you have one
 
 const MoonSVG = () => (
@@ -32,9 +33,13 @@ const AdminNavbar = ({ darkMode, toggleDarkMode,setUserType }) => {
   return (
     <nav className={`navbar navbar-expand-lg ${darkMode ? 'dark-mode' : ''}`}>
       <div className="container">
-        <Link className="navbar-brand" to="/admin">
-          Admin Panel
-        </Link>
+        
+      <Link className="navbar-brand" to="/admin" style={{ color: 'black', fontWeight: 'bold', fontSize: '2rem',marginLeft: 'none' }}>
+    Admin Panel
+</Link>
+
+     
+        
         <button
           className="navbar-toggler"
           type="button"

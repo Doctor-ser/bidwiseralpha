@@ -1,60 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './chat.css';
-import { useParams } from 'react-router-dom'; // Import useParams hook
-import { useAuth } from './AuthContext'; // Import the useAuth hook
+import { useParams } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-
-function Chat({loadMessage,setLoadMessage}) {
-  const { userId } = useAuth(); // Get userId from useAuth
-
+function Chat({ loadMessage, setLoadMessage }) {
+  const { userId } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState({
-    email: userId, // Set email to userId obtained from useAuth
+    email: userId,
   });
-  
-
-  // Use useParams hook to access product ID from route
   const { productId } = useParams();
-  const [proid, setProid] = useState(productId); // State to store product ID
+  const [proid, setProid] = useState(productId);
 
-  // Function to fetch messages from MongoDB (adjust API endpoint)
+  // Define chatContainerRef using useRef
+  const chatContainerRef = useRef(null);
+
   const fetchMessages = async () => {
-  try {
-    console.log("fetching messages for product ID:", proid);
-    const response = await fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`); // Include product ID in query string
-    const data = await response.json();
-    if (data.length === 0) {
-      setMessages(['No messages to display']);
-    } else {
-      setMessages(data);
-      console.log(data);
+    try {
+      console.log("fetching messages for product ID:", proid);
+      // Fetch product data along with messages
+      const [messagesResponse, productResponse] = await Promise.all([
+        fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`),
+        fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`)
+      ]);
+      const [messagesData, productData] = await Promise.all([
+        messagesResponse.json(),
+        productResponse.json()
+      ]);
+
+      if (messagesData.length === 0) {
+        setMessages(['No messages to display']);
+      } else {
+        const messagesWithSellerInfo = messagesData.map(message => ({
+          ...message,
+          isSeller: message.senderEmail === productData.seller.userId
+        }));
+        setMessages(messagesWithSellerInfo);
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
     }
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-  }
-};
+  };
 
-//to check if current user is a seller
-//to check if current user is a seller
-const checkSeller = async () => {
-  try {
-    const productResponse = await fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`);
-    const productData = await productResponse.json();
+  const checkSeller = async () => {
+    try {
+      const productResponse = await fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`);
+      const productData = await productResponse.json();
   
-    if (productData && productData.seller.userId === currentUser.email) {
-      console.log("User is a seller");
-      setCurrentUser(prevState => ({ ...prevState, isSeller: true }));
+      if (productData && productData.seller.userId === currentUser.email) {
+        setCurrentUser(prevState => ({ ...prevState, isSeller: true }));
+      }
+    } catch (error) {
+      console.error('Error checking seller:', error);
     }
-  } catch (error) {
-    console.error('Error checking seller:', error);
-  }
-};
+  };
 
-
-  
-
-  // Function to send a new message and store it in MongoDB
   const sendMessage = async () => {
     if (newMessage.trim()) {
       const newMessageData = {
@@ -62,24 +63,16 @@ const checkSeller = async () => {
         user: currentUser,
         productId: proid,
       };
-      console.log(newMessageData);
-  
+
       try {
-        console.log("sending message 2");
         const response = await fetch('http://127.0.0.1:5500/api/send-message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessageData),
         });
-        console.log("sending message 3");
-  
+
         if (response.ok) {
-          console.log("sending message 4");
-          console.log(response);
-          // Clear input field after successful message sending
           setNewMessage('');
-  
-          // Fetch updated messages after sending a new message
           fetchMessages();
         } else {
           console.error('Error sending message:', response.statusText);
@@ -90,35 +83,40 @@ const checkSeller = async () => {
     }
   };
 
-  // Handle keyboard press for Enter key
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       sendMessage();
     }
   };
 
-  // Fetch messages on component mount and set proid based on productId in route
   useEffect(() => {
     fetchMessages();
-    setProid(productId); // Extract product ID from route and store in state
+    setProid(productId);
     checkSeller();
-  }, [productId,loadMessage]); // Update proid only when productId changes
-  
+  }, [productId, loadMessage]);
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat container when messages update
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className="chat-container">
       <h2>Global Chat</h2>
-      <div className="message-list">
-        {/* Map through messages, conditionally render a placeholder for empty state */}
+      <div className="message-list" ref={chatContainerRef}>
         {messages.map((message, index) => (
           <div className="message" key={index}>
             {message === 'No messages to display' ? (
               <p className="no-messages">No messages yet!</p>
             ) : (
-              // Render regular message content here
               <>
-                <div className="profile-container">
-                <p className="profile-info">{message.senderEmail} {currentUser.isSeller && message.senderEmail === currentUser.email ? "(Seller)" : ""}</p>
+                <div className="profile-container" style={{ backgroundColor: '' }}>
+                  <p className="profile-info">
+                    {message.senderEmail} 
+                    {message.isSeller && <span className="seller-tag">(Seller)</span>}
+                  </p>
                 </div>
                 <p className="message-content">{message.message}</p>
               </>
@@ -126,7 +124,6 @@ const checkSeller = async () => {
           </div>
         ))}
       </div>
-
 
       <div className="input-container">
         <input

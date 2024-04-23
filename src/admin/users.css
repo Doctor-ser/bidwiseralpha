@@ -1,0 +1,88 @@
+.user-det {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'PT Mono', monospace;
+  }
+  .sidebar {
+    box-sizing: border-box;
+  }
+.emailform .n-tag {
+  font-size: 25px;
+  margin: 5px;
+}
+
+.find-e {
+  margin: 35px 0px;
+  font-family: 'PT Mono', monospace;
+  color: aliceblue;
+  text-align: center;
+  line-height: 30px;
+}
+
+.fet-btn {
+  background-color: black;
+  margin-top: 25px;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.fet-btn:hover {
+  background-color: #2c2c3a;
+}
+.detaillisting p{
+    margin: 25px;
+}
+.detaillisting {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 1px;
+  background-color: #f9f9f9;
+  width: 1400px;
+  height: 350px;
+  box-sizing: border-box;
+}
+
+.biddetails {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add box shadow */
+  display: block;
+  width: 300px;
+  padding: 20px;
+  margin-left: 10px;
+}
+.detaillisting{
+    border-top: 40px solid #3d3d4e;
+}
+/* New styles for button inside .detaillisting */
+.detaillisting button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  width: 40%;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 40px;
+  margin-left: 400px;
+}
+
+.detaillisting button:hover {
+  background-color: #2c2c3a;
+}
+
+.flex1{
+  display: flex;
+}
+
+.mar1{
+  margin-top: 50px;
+}
