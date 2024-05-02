@@ -81,7 +81,7 @@ const Image = mongoose.model('Image', new mongoose.Schema({
 // Endpoint to handle file upload
 app.post('/api/upload', upload.single('image'), async (req, res) => {
   try {
-    console.log('Uploaded image:', req.file);
+    // console.log('Uploaded image:', req.file);
 
     const newImage = new Image({
       filename: req.file.originalname,
@@ -196,7 +196,7 @@ app.get('/api/topRatedComments', async (req, res) => {
     const topRatedComments = await Feedback.find()
       .sort({ rating: -1, _id: -1 })
       .limit(5);
-    console.log(topRatedComments);
+    // console.log(topRatedComments);
     res.json({ topRatedComments });
   } catch (error) {
     console.error('Error fetching top-rated comments:', error);
@@ -236,7 +236,7 @@ app.post('/api/send-message', async (req, res) => {
     // Save the new message to the database
     await newMessage.save();
 
-    console.log('Message saved:', newMessage);
+    // console.log('Message saved:', newMessage);
     
     // Respond with success message
     io.emit('new-message');
@@ -256,8 +256,8 @@ app.get('/api/get-messages', async (req, res) => {
     const { productId } = req.query;
 
     const messages = await Message.find({ productId }).sort({ createdAt: 1 }); // Filter by productId and sort by creation time
-    console.log(messages);
-    console.log("all messages printed");
+    // console.log(messages);
+    // console.log("all messages printed");
 
     // Extract senderEmail and message from each message object
     const simplifiedMessages = messages.map(message => ({
@@ -330,6 +330,30 @@ app.post('/api/signup', async(req, res) => {
   });
 
     
+});
+//fetch the topcategories using userId
+app.get('/api/top-categories/:userId', async (req, res) => {
+  const email = req.params.userId;
+  //console.log(email);
+  try {
+    const userDetails= await UserBid.find({ email });
+    //console.log(userDetails);
+    // Aggregate query to find top 3 distinct categories based on user ID
+    const topCategories = await UserBid.aggregate([
+      { $match: { userId: email } }, // Match bids for the given user ID
+      { $group: { _id: '$category', count: { $sum: 1 } } }, // Group bids by category and count occurrences
+      { $sort: { count: -1 } }, // Sort by count in descending order
+      { $limit: 1 } // Limit to top 3 categories
+    ]);
+    console.log(topCategories);
+    // Extract only category names from the result
+    const categories = topCategories.map(category => category._id);
+    //console.log('asas',topCategories);
+    res.json({ topCategories: categories });
+  } catch (error) {
+    console.error('Error fetching top categories:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 //fetch by email
@@ -437,11 +461,11 @@ app.get('/api/feedbacks', async (req, res) => {
 app.post('/api/changePassword', async (req, res) => {
   const { userId, oldPassword, newPassword } = req.body;
   const email=userId;
-  console.log(req.body);
+  // console.log(req.body);
   try {
       // Find the user by email
       const user = await User.findOne({ email });
-      console.log(user);
+      // console.log(user);
       // Check if the user exists
       if (!user) {
         console.log("user not found");
@@ -568,7 +592,7 @@ app.post('/api/forgotPassword', async (req, res) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    console.log('Email sent:', info.response);
+    // console.log('Email sent:', info.response);
     return res.status(200).json({ message: 'Email sent successfully' });
   });
 } catch (error) {
@@ -581,6 +605,7 @@ app.post('/api/forgotPassword', async (req, res) => {
 //bidding schema
 const bidSchema = new mongoose.Schema({
   name: String,
+  category: String,
   description: String,
   startingBid: Number,
   currentBid: Number, // Add this field
@@ -595,16 +620,17 @@ const Bid = mongoose.model('Bid', bidSchema);
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/api/addBid', (req, res) => {
-  const { name, description, startingBid, endTime, currentBid, imageUrl } = req.body;
+  const { name,category, description, startingBid, endTime, currentBid, imageUrl } = req.body;
 
   // Check if endTime is less than the current time
   if (new Date(endTime) < new Date()) {
-    console.log("End time should be in the future");
+    // console.log("End time should be in the future");
     return res.json('End time should be in the future');
   }
 
   const newBid = new Bid({
     name,
+    category,
     description,
     startingBid,
     currentBid,
@@ -750,7 +776,7 @@ app.get('/api/products/:productId', async (req, res) => {
 
   try {
     const product = await Bid.findById(productId);
-    console.log(product);
+    // console.log(product);
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -764,7 +790,7 @@ app.get('/api/products/:productId', async (req, res) => {
 //fetch bids price after winning the product by product id
 app.get('/api/fetchprice/:proid', async (req, res) => {
   const productId = req.params.proid;
-  console.log(productId);
+  // console.log(productId);
   try {
       // Fetch the bid details from the database based on the product ID
       const bid = await Bid.findOne({ _id: productId });
@@ -788,7 +814,7 @@ app.get('/api/fetchsellerbyproid/:productId', async (req, res) => {
 
   try {
     const product = await Bid.findById(productId);
-    console.log(product);
+    // console.log(product);
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -853,7 +879,7 @@ app.get('/api/userratings/:userId', async (req, res) => {
 
       // Get top 5 feedbacks
       const top5Feedbacks = sortedFeedbacks.slice(0, 5);
-      console.log(averageRating,sortedFeedbacks)
+      // console.log(averageRating,sortedFeedbacks)
       // Send the average rating and top 5 feedbacks in the response
       res.json({ averageRating, feedbacks: top5Feedbacks });
     }
@@ -931,11 +957,11 @@ app.post('/api/productfeedbacks', async (req, res) => {
 //mail to winner 
 app.post('/api/sendEmailToWinner', async (req, res) => {
   const { productName, winningBid, productId } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   try {
     // Find the winning user based on productId and isWinningBid being true
     const winningUserBid = await UserBid.findOne({ productId, isWinningBid: true });
-    console.log(winningUserBid.userId);
+    // console.log(winningUserBid.userId);
     if (!winningUserBid) {
       return res.status(404).json({ message: 'Winning user not found for the specified product' });
     }
@@ -956,7 +982,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('Email sent to winner:', winnerEmail);
+    // console.log('Email sent to winner:', winnerEmail);
 
     // Update mailsend flag to true
     await UserBid.updateOne({ _id: winningUserBid._id }, { $set: { mailsend: true } });
@@ -977,6 +1003,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
 // user bid schema //
 const userBidSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bid' },
+  category: String,
   userId: String,
   bidAmount: Number,
   bidId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }, // Reference to the bid in the Bid collection
@@ -1023,7 +1050,7 @@ app.get('/api/getUserBids/:userId', async (req, res) => {
     const userBids = await UserBid.find({ userId }).populate('bidId' , 'productId');
     res.status(200).json({ userBids });
   } catch (error) {
-    console.error('Error fetching user bids:', error);
+    // console.error('Error fetching user bids:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1050,7 +1077,7 @@ app.get('/api/products/:productId/winner', async (req, res) => {
     // Return the winner's information
     res.json({ success: true, winner: { email: winner.email, bidAmount: highestBid.bidAmount } });
   } catch (error) {
-    console.error('Error fetching winner:', error);
+    // console.error('Error fetching winner:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
@@ -1059,8 +1086,9 @@ app.get('/api/products/:productId/winner', async (req, res) => {
 
 //place bid 
 app.post('/api/placeBid', async (req, res) => {
-  const { productId, userId, bidAmount } = req.body;
-  console.log("Recieved data",req.body);
+  const { productId, userId, bidAmount ,category} = req.body;
+  // console.log("Recieved data",req.body);
+  console.log('category:',category);
   try {
     // Fetch the product
     const product = await Bid.findById(productId);
@@ -1081,7 +1109,7 @@ app.post('/api/placeBid', async (req, res) => {
       const user = await User.findOne({ email: previousWinnerUserId });
       const username = user.username;
       if (previousWinnerUserId === userId) {
-        console.log("You are already the winning bidder");
+        // console.log("You are already the winning bidder");
         return res.status(400).json({ message: 'You are already the winning bidder' });
       }
       const previousWinningBidAmount = previousWinningBid.bidAmount;
@@ -1115,6 +1143,7 @@ app.post('/api/placeBid', async (req, res) => {
     // Add user bid
     const newUserBid = new UserBid({
       productId,
+      category,
       userId,
       bidAmount,
       productName: product.name,
@@ -1127,7 +1156,7 @@ app.post('/api/placeBid', async (req, res) => {
 
     res.status(200).json({ message: 'Bid placed successfully' });
   } catch (error) {
-    console.error('Error placing bid:', error);
+    // console.error('Error placing bid:', error);
     // Handle the error and respond to the client
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -1149,7 +1178,7 @@ app.get('/api/getWinningBid/:productId', async (req, res) => {
 
     res.status(200).json({ winningBid });
   } catch (error) {
-    console.error('Error fetching winning bid details:', error);
+    // console.error('Error fetching winning bid details:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1162,7 +1191,7 @@ app.get('/api/getBids', async (req, res) => {
      const bids = await Bid.find(); // Fetch only the bids associated with the logged-in user
     res.status(200).json({ bids });
   } catch (error) {
-    console.error('Error fetching bids:', error);
+    // console.error('Error fetching bids:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1182,7 +1211,7 @@ app.get('/api/getBids/:productId', async (req, res) => {
     const product = await Bid.findById(productId);
     res.status(200).json({ bids: [product] });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    // console.error('Error fetching product:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1197,7 +1226,7 @@ app.get('/api/getTotalBids/:userId', async (req, res) => {
     const totalBids = await UserBid.countDocuments({ userId });
     res.status(200).json({ totalBids });
   } catch (error) {
-    console.error('Error fetching total bids:', error);
+    // console.error('Error fetching total bids:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1210,7 +1239,7 @@ app.get('/api/getTotalProducts/:userId', async (req, res) => {
     const totalProducts = await Bid.countDocuments({ userId });
     res.status(200).json({ totalProducts });
   } catch (error) {
-    console.error('Error fetching total products:', error);
+    // console.error('Error fetching total products:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1223,7 +1252,7 @@ app.get('/api/getWinningBids/:userId', async (req, res) => {
     const winningBids = await UserBid.countDocuments({ userId, isWinningBid: true });
     res.status(200).json({ winningBids });
   } catch (error) {
-    console.error('Error fetching winning bids:', error);
+    // console.error('Error fetching winning bids:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -1244,11 +1273,11 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error('Error sending welcome email:', error);
+      // console.error('Error sending welcome email:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    console.log('Welcome email sent:', info.response);
+    // console.log('Welcome email sent:', info.response);
     return res.status(200).json({ message: 'Welcome email sent successfully' });
   });
 });

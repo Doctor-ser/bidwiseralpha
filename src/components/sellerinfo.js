@@ -58,10 +58,10 @@ const SellerInfoPage = () => {
               <div>
                 <span>Ratings: {product.ratings.join(', ')}</span>
               </div>
-               <div>
+               {/* <div>
                 <span>imageUrl: {product.imageUrls}</span>
               </div> 
-              
+               */}
               <img
                       src={`http://127.0.0.1:5500/api/images/${product.imageUrls}`}
                       alt={product.name}

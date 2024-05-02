@@ -11,6 +11,7 @@ const BiddingPage = ({ darkMode }) => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: '',
+    category: '',
     description: '',
     startingBid: '',
     currentBid: '',
@@ -88,14 +89,14 @@ const BiddingPage = ({ darkMode }) => {
   
   const handleAddProduct = async () => {
     if (loggedIn) {
-      const { startingBid, name, description, endTime, imageFile } = newProduct;
+      const { startingBid, name, category, description, endTime, imageFile } = newProduct;
       
       if(imageFile){console.log("imagefile");}
       else{
         console.log("no imagefile");
       }
       // Validate that all required fields are filled
-      if (!name || !description || !startingBid || !endTime || !imageFile) {
+      if (!name || !description || !startingBid || !endTime || !imageFile || !category) {
         alert('Please fill all the required bid details first.');
         return;
       }
@@ -234,6 +235,25 @@ const BiddingPage = ({ darkMode }) => {
             <label>Title</label>
             <input type="text" name="name" placeholder='Enter Name of product' value={newProduct.name || ''} onChange={handleInputChange} />
           </div>
+          <div>
+          <label>Category</label>
+          <select name="category" value={newProduct.category || ''} onChange={handleInputChange}>
+            <option value="">Select a category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Fashion and Clothing">Fashion and Clothing</option>
+            <option value="Home and Garden">Home and Garden</option>
+            <option value="Collectibles">Collectibles</option>
+            <option value="Automotive">Automotive</option>
+            <option value="Art and Crafts">Art and Crafts</option>
+            <option value="Sports and Fitness">Sports and Fitness</option>
+            <option value="Books and Media">Books and Media</option>
+            <option value="Toys and Games">Toys and Games</option>
+            <option value="Health and Beauty">Health and Beauty</option>
+            <option value="Other">Other</option>
+          </select>
+          </div>
+
+          
           <div>
             <label >Description</label>
             <input className='desc' placeholder='Enter Description' type="text" name="description" value={newProduct.description || ''} onChange={handleInputChange} />

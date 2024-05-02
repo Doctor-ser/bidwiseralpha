@@ -26,9 +26,7 @@ const UserBidsPage = () => {
       }
     };
     fetchUserBids();
-    const intervalId = setInterval(fetchUserBids, 5000); // Refresh every 5 seconds
-
-    return () => clearInterval(intervalId); // Clear interval on component unmount
+    
   }, [userId, filterOption]);
 
   const filterBids = (bids) => {

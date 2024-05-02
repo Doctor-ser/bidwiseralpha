@@ -15,13 +15,17 @@ const MyProfile = ({ darkMode, email }) => {
  const [totalProducts, setTotalProducts] = useState(0);
  const [winningBids, setWinningBids] = useState(0);
  const [averageBidAmount, setAverageBidAmount] = useState(0);
+ const [totalBidAmount, setTotalBidAmount] = useState(0);
  const [winningRate, setWinningRate] = useState(0);
  const [username, setUsername] = useState('');
-
+ const [topCategories, setTopCategories] = useState([]);
+  
  
  useEffect(() => {
    const fetchProfileStatistics = async () => {
      try {
+      const topCategoriesResponse = await axios.get(`http://127.0.0.1:5500/api/top-categories/${userId}`);
+      setTopCategories(topCategoriesResponse.data.topCategories);
 
       const userResponse = await axios.get(`http://127.0.0.1:5500/api/getUserByEmail/${userId}`);
       setUsername(userResponse.data.username);
@@ -41,6 +45,7 @@ const MyProfile = ({ darkMode, email }) => {
        
        // Calculate average bid amount
        const totalBidAmount = userBids.reduce((sum, bid) => sum + bid.bidAmount, 0);
+       setTotalBidAmount(totalBidAmount);
        const averageBid = totalBids > 0 ? totalBidAmount / totalBids : 0;
        setAverageBidAmount(averageBid);
 
@@ -89,14 +94,17 @@ const MyProfile = ({ darkMode, email }) => {
             </p>
             <p className={`card-box card ${darkMode ? 'text-light' : ''}`} >
               <Cash width="150" height="150" />
-              &#8377;{averageBidAmount.toFixed(2)}
-              <span className='n-box'>Average Bid Amount: </span>
+              &#8377;{totalBidAmount}
+              <span className='n-box'>Total Bid Amount: </span>
             </p>
-            <p className={`card-box card ${darkMode ? 'text-light' : ''}`} >
+            {/* Display top categories */}
+            {topCategories.map((category, index) => (
+              <p key={index} className={`card-box card ${darkMode ? 'text-light' : ''}`} >
               <Cash width="150" height="150" />
-              &#8377;{averageBidAmount.toFixed(2)}
-              <span className='n-box'>Average Bid Amount: </span>
-            </p>
+                <span>{category}</span>
+                <span className='n-box'>Your Top Category #{index + 1}: </span>
+              </p>
+            ))}
           </div>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
             Winning Rate: {winningRate.toFixed(2)}%
