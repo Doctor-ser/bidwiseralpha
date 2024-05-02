@@ -165,7 +165,7 @@ const renderWinningUser = (productId) => {
 };
 
 
-  const handleBid = async (productId, currentBid,startingBid) => {
+  const handleBid = async (productId, currentBid,startingBid,category) => {
     // Check if the user is logged in
     if (!auth.loggedIn) {
       alert('Please log in to place a bid.');
@@ -188,7 +188,7 @@ const renderWinningUser = (productId) => {
     return;
   }
     setShowBidModal(true);
-    setSelectedProduct({ productId, currentBid,startingBid });
+    setSelectedProduct({ productId, currentBid,startingBid ,category});
 
    
   };
@@ -247,6 +247,7 @@ const renderWinningUser = (productId) => {
         productId: selectedProduct.productId,
         userId:userId,// Use userId consistently
         bidAmount: Number(bidAmount),
+        category:selectedProduct.category
       });
 
       
@@ -332,8 +333,8 @@ const renderWinningUser = (productId) => {
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.startingBid.toString().includes(searchTerm) || // 
-        product.currentBid.toString().includes(searchTerm) // 
-        
+        product.currentBid.toString().includes(searchTerm)  ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredProducts(filtered);
   }, [products, searchTerm]);
@@ -407,12 +408,27 @@ const renderWinningUser = (productId) => {
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Search by Product Name or Bid : "
+            placeholder="Search by Product Name or Bid or Category: "
             className="form-control"
             value={searchTerm}
             onChange={handleSearch}
           />
-          <button  className="btn btn-primary1 ms-2">Search</button>
+          <select className="form-select" value={searchTerm} onChange={handleSearch}>
+            <option value="">All Categories</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Fashion and Clothing">Fashion and Clothing</option>
+            <option value="Home and Garden">Home and Garden</option>
+            <option value="Collectibles">Collectibles</option>
+            <option value="Automotive">Automotive</option>
+            <option value="Art and Crafts">Art and Crafts</option>
+            <option value="Sports and Fitness">Sports and Fitness</option>
+            <option value="Books and Media">Books and Media</option>
+            <option value="Toys and Games">Toys and Games</option>
+            <option value="Health and Beauty">Health and Beauty</option>
+            <option value="Other">Other</option>
+          {/* Add more options as needed */}
+        </select>
+          {/* <button  className="btn btn-primary1 ms-2">Search</button> */}
         </div>
 
 
@@ -529,7 +545,7 @@ const renderWinningUser = (productId) => {
                                       }
                                   </p>
                                   <Link to={`/products/${product._id}`} className="btn btn-view m">View Details</Link>
-                                  <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
+                                  <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid,product.category)}>
                                       Place Bid
                                   </button>
                                 </div>
