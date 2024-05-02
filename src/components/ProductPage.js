@@ -4,9 +4,7 @@ import './Product.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useNavigate,Link } from 'react-router-dom';
-import LazyLoad from 'react-lazyload';
-import $ from 'jquery';
-import 'jquery-countdown';
+
 
 
 const ProductsPage = ({ darkMode, email,bidChange }) => {
@@ -44,21 +42,6 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
     };
 
 
-   
-//update the timer of banner
-
-// useEffect(() => {
-//   const finalDate = '2024/04/10 00:00:00'; // Replace with your desired end date and time
-
-//   // Start the countdown timer
-//   $('#countdown').countdown(finalDate, function(event) {
-//     // Update the content of each count span with the corresponding value
-//     $('#days').text(event.strftime('%D'));
-//     $('#hours').text(event.strftime('%H'));
-//     $('#minutes').text(event.strftime('%M'));
-//     $('#seconds').text(event.strftime('%S'));
-//   });
-// }, []); // Run once when component mounts
 const calculateRemainingTimeForCounter = (endTime) => {
   const now = new Date();
   const end = new Date(endTime);
@@ -288,9 +271,6 @@ const renderWinningUser = (productId) => {
         // Clear the bid modal
         setShowBidModal(false);
         setBidAmount('');
-  
-        // Optionally, you can force a re-render by toggling a state variable
-        // This will ensure that the updated bid amount is immediately reflected in the UI
         setflag((prevFlag) => prevFlag + 1);
       } 
       else if(response.data.message === 'You are already the winning bidder'){
@@ -518,10 +498,12 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4 ">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5 ">
+                      <div className='imagecontainer'>
                       <img
                       src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
                       alt={product.name}
                       className="mx-auto img-thumbnail"/>
+                      </div>
                             <div class="card-body win text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
@@ -546,7 +528,7 @@ const renderWinningUser = (productId) => {
                                         })()
                                       }
                                   </p>
-                                  <Link to={`/products/${product._id}`} className="btn btn-view">View Details</Link>
+                                  <Link to={`/products/${product._id}`} className="btn btn-view m">View Details</Link>
                                   <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid)}>
                                       Place Bid
                                   </button>
@@ -573,13 +555,15 @@ const renderWinningUser = (productId) => {
             <div key={product._id} className="col-md-4 mb-4">
                   <div class='container-fluid'>
                       <div class="card mx-auto col-md-3 col-10 mt-5">
-                      <LazyLoad height={200} once>
+                      
+                      <div className='imagecontainer'>
                       <img
                       src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
-                      alt={product.name}
+                      alt={product.name}             
                       className="mx-auto img-thumbnail"
                       />
-                      </LazyLoad>
+                      </div>
+                      
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{product.name}</h5>
@@ -653,3 +637,4 @@ const renderWinningUser = (productId) => {
 }; 
 
 export default ProductsPage; 
+

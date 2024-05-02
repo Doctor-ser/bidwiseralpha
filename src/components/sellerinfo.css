@@ -1,0 +1,39 @@
+.star{
+ margin-bottom: 0px;
+ margin-left: auto; 
+ padding-right: 30px;
+ color: white;
+}
+.stxt{
+    font-size: 15px;
+    padding-left: 2px;
+}
+.nb-txt{
+    text-transform: uppercase;
+
+    color: white;
+    padding: 20px;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.u-ic{
+    font-size: 80px;
+    color: white;
+    margin: 20px;
+    margin-right: 0px;
+    margin-left: 30px;
+}
+.name-bar {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    background-color:#333333;
+
+}
+.card1{
+    border: 5px;
+    border-color: black;
+    margin-left: 20px;
+    width: 200px;
+    padding: 20px;
+   }

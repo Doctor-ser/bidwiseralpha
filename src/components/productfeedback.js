@@ -93,7 +93,7 @@ const Productfeedback = () => {
 
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="userId" value={product && product.userId} />
-        <label htmlFor="rating" style={{ marginLeft: '40px' }}>Rating (out of 10):</label>
+        <label htmlFor="rating" style={{ marginLeft: '40px' }}>Rating (out of 5):</label>
         <div className='feedback-rating'>
           <div className='feedback-commentl'>
             <input
@@ -101,7 +101,7 @@ const Productfeedback = () => {
               id="rating"
               name="rating"
               min="0"
-              max="10"
+              max="5"
               value={rating}
               onChange={handleRatingChange}
             />

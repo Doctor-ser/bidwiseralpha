@@ -81,6 +81,7 @@ const UserBidsPage = () => {
               />
             </Form.Group>
           </Form>
+          
         </Col>
         <Col md={2}>
           <Button variant="primary" className="btn-search" onClick={handleSearch}>
@@ -103,7 +104,7 @@ const UserBidsPage = () => {
       <div className="row">
         {filteredBids.map((bid) => (
           <div key={bid._id} className="win card-body text-center mx-auto col-md-4 mb-4">
-            <Card>
+            <Card className='card-f'>
               <Card.Body>
                 <Card.Title>{bid.productName}</Card.Title>
                 <Card.Text>
@@ -122,9 +123,11 @@ const UserBidsPage = () => {
                   <strong>Winning Bid:</strong> {bid.isWinningBid ? 'Yes' : 'No'}
                 </Card.Text>
                 {bid.isWinningBid && bid.mailsend && (
-                <Button variant="primary" className="btn btn-view" onClick={() => goToProductFeedback(bid.productId)}>
-                 Product Feedback
-                </Button>
+                  <div className="text-center btx">
+                    <Button variant="primary" className="btn btn-view x" onClick={() => goToProductFeedback(bid.productId)}>
+                    Product Feedback
+                    </Button>
+                  </div>
                 )}
                 {bid.isWinningBid && bid.mailsend && (
                   <div className='gpay'>

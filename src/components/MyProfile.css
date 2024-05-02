@@ -1,10 +1,9 @@
 /* MyProfile.css */
-
 /* Use a more specific class or ID for styles */
 .my-profile-container {
     margin: 0 auto;
-    max-width: 800px; /* Adjust as needed */
-    
+    max-width: 1400px; /* Adjust as needed */
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
   
   .my-profile-card {
@@ -25,5 +24,64 @@
   
   .my-profile-btn-primary:hover {
     background-color: #0056b3;
+  }
+  
+  .tt{
+    font-weight: 100;
+    padding: 0px;
+  }
+  .tt1{
+    width: 1365px;
+    margin: 0px;
+    margin-bottom:40px;
+    padding: 0px;
+    border: 0px;
+  }
+
+  .card-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    height: 250px;
+    margin: 10px;
+    text-align: center;
+    background: linear-gradient(to right, #ba28ff, #604eff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight:bold;
+  }
+
+  .n-box {
+    position: absolute;
+    bottom: 0;
+    padding: 15px 0px;
+    text-align: center;
+    border: 1px  solid #eaeaea;
+    background-image: linear-gradient(to bottom right, #334ee1,#29d5b1);
+    width: 100%;
+    color: #fff;
+  }
+  .card-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .card-box {
+    flex: 0 0 calc(33.333% - 20px); /* Adjust width of each card */
+    margin-bottom: 20px; /* Adjust margin between rows */
+  }
+  
+  @media (max-width: 992px) {
+    .card-box {
+      flex-basis: calc(50% - 20px); /* Two cards in a row on smaller screens */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .card-box {
+      flex-basis: 100%; /* Single card in a row on mobile screens */
+    }
   }
   

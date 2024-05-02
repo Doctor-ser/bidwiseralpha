@@ -16,7 +16,7 @@ const path = require('path');
 
 const app = express();
 mongoose.set("strictQuery", true)
-// Connect to MongoDB (replace this URI with your actual MongoDB URI)
+//mongo uri
 mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 
@@ -713,12 +713,13 @@ app.get('/api/top-deal', async (req, res) => {
     while (i < topDeal.length) {
       // Get the productId of the top deal
       const topProductId = topDeal[i]._id;
+      
 
       // Find the details of the top deal from the 'bids' collection
       topProductDetails = await Bid.findOne({ _id: topProductId });
 
-      // Check if the end time of the top product is greater than the current time
-      if (new Date(topProductDetails.endTime) > new Date()) {
+      // Check if the top product details are found and not null
+      if (topProductDetails && new Date(topProductDetails.endTime) > new Date()) {
         // If the end time is in the future, break the loop
         break;
       }
@@ -727,7 +728,7 @@ app.get('/api/top-deal', async (req, res) => {
       i++;
     }
 
-    if (i < topDeal.length) {
+    if (i < topDeal.length && topProductDetails) {
       // Return the top deal details if found
       res.json({ topDeal: topProductDetails });
     } else {
@@ -739,6 +740,7 @@ app.get('/api/top-deal', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
@@ -863,7 +865,7 @@ app.get('/api/userratings/:userId', async (req, res) => {
 
 
 //get product names
-app.get('/api/getProductNames/:userId', async (req, res) => {
+app.get('/api/getProductFeedback/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -873,12 +875,33 @@ app.get('/api/getProductNames/:userId', async (req, res) => {
     // Extract unique product names from feedbacks
     const productNames = Array.from(new Set(productFeedbacks.map(feedback => feedback.productName)));
 
-    res.json({ productNames });
+    // Extract feedback and rating for each product
+    const productData = await Promise.all(productNames.map(async (productName) => {
+      const feedbackData = productFeedbacks.filter(feedback => feedback.productName === productName);
+      const ratings = feedbackData.map(feedback => feedback.rating);
+      const productIds = feedbackData.map(feedback => feedback.productId);
+
+      // Fetch imageUrls for each productId from the Bids collection
+      const imageUrls = await Promise.all(productIds.map(async (productId) => {
+        const bid = await Bid.findOne({ _id: productId });
+        return bid ? [bid.imageUrl] : []; // Return array with imageUrl if bid exists, otherwise empty array
+      }));
+
+      return {
+        productName,
+        feedback: feedbackData.map(feedback => feedback.feedback),
+        ratings,
+        imageUrls
+      };
+    }));
+
+    res.json({ productData });
   } catch (error) {
-    console.error('Error fetching product names:', error);
+    console.error('Error fetching product feedback:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Endpoint to add product feedback
 app.post('/api/productfeedbacks', async (req, res) => {
@@ -925,15 +948,15 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
       return res.status(400).json({ message: 'Email already sent to winner' });
     }
 
-    // const mailOptions = {
-    //   from: 'johxngeorxe@gmail.com',
-    //   to: winnerEmail,
-    //   subject: 'Congratulations! You are the winning bidder',
-      // text: `Dear ${username},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nBidWiser`
-    // };
+    const mailOptions = {
+      from: 'johxngeorxe@gmail.com',
+      to: winnerEmail,
+      subject: 'Congratulations! You are the winning bidder',
+      text: `Dear ${username},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nBidWiser`
+    };
 
-    // await transporter.sendMail(mailOptions);
-    // console.log('Email sent to winner:', winnerEmail);
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent to winner:', winnerEmail);
 
     // Update mailsend flag to true
     await UserBid.updateOne({ _id: winningUserBid._id }, { $set: { mailsend: true } });
@@ -1246,10 +1269,10 @@ server.listen(port, () => {
 
 //socket.io server side events
 io.on('connection', (socket) => {
-  console.log('A user connected with id : ' + socket.id);
+  //console.log('A user connected with id : ' + socket.id);
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+   // console.log('User disconnected');
   });
 
   

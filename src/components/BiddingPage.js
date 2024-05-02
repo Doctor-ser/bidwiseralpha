@@ -227,20 +227,20 @@ const BiddingPage = ({ darkMode }) => {
   return (
     <div className={`bidding-page ${darkMode ? 'dark-mode' : ''}`}>
       <h2 className='t1'>Add New Product</h2>
-      <h3 className='t2'>Product Details</h3>
+      <h3 className='t2 cap-head'>Product Details</h3>
       <div className='details'>
       <div class="info">
           <div>
             <label>Title</label>
-            <input type="text" name="name" value={newProduct.name || ''} onChange={handleInputChange} />
+            <input type="text" name="name" placeholder='Enter Name of product' value={newProduct.name || ''} onChange={handleInputChange} />
           </div>
           <div>
             <label >Description</label>
-            <input className='desc' type="text" name="description" value={newProduct.description || ''} onChange={handleInputChange} />
+            <input className='desc' placeholder='Enter Description' type="text" name="description" value={newProduct.description || ''} onChange={handleInputChange} />
           </div>
           <div>
             <label>Starting Bid</label>
-            <input type="number" name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
+            <input type="number" placeholder='Enter Start price' name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
           </div>
 
           <div>
@@ -260,7 +260,7 @@ const BiddingPage = ({ darkMode }) => {
           <pre></pre>
         </div>
       </div>
-      <h3 className='t2 bor'>Added Products</h3> <pre></pre>
+      <h3 className='t2 bor cap-head'>Added Products</h3> <pre></pre>
       <div className="product-container">
         {products.map((product, index) => (
           product.userId === userId && (
