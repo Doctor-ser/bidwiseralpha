@@ -17,21 +17,25 @@
   }
   
   .t1{
-    margin-bottom: 10px;
+    padding-bottom: 40px;
     font-weight: bold;
     font-size: 45px;
     padding: 30px;
+    border-bottom: none;
   }
   .t2{
+    background-color: #333333;
+    color: white;
     border-bottom: #b2b2b2 solid 1px;
     margin: 10px;
-    padding: 30px;
-    padding-bottom: 50px;
+    padding: 40px;
     padding-left: 160px;
     font-weight: bold;
     font-size: 30px;
     margin-bottom: 80px;
     text-underline-offset: 10px; /* Adjusts the space between text and underline */
+    text-align: start;
+    border-top: 1px solid #ddd;
   }
   .details {
     display: flex; /* Enables Flexbox */

@@ -3,6 +3,7 @@
   font-weight: bold;
 }
 .btn-primary1{
+  margin-top: 5px;
   display: inline-block;
 	font-size: 13px;
 	font-weight: 700;
@@ -14,7 +15,7 @@
 	letter-spacing: 4px;
   border-radius: 0;
   width: 20%;
-  height: 25%;
+  height: 46px;
 }
 
 .btn-primary1:hover {
@@ -22,6 +23,7 @@
   color: white;
 }
 .btn-search{
+  margin-top: 5px;
   display: inline-block;
 	font-size: 13px;
 	font-weight: 700;
