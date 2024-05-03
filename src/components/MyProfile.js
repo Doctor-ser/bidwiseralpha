@@ -7,6 +7,10 @@ import { ReactComponent as Pro } from '../svg/sell.svg';
 import { ReactComponent as Bids } from '../svg/auction.svg';
 import { ReactComponent as Win } from '../svg/handshake.svg';
 import { ReactComponent as Cash } from '../svg/cash_receipt.svg';
+import { ReactComponent as Cat } from '../svg/sorting.svg';
+import { ReactComponent as Tot } from '../svg/total_sales.svg';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 
 const MyProfile = ({ darkMode, email }) => {
@@ -22,6 +26,7 @@ const MyProfile = ({ darkMode, email }) => {
   
  
  useEffect(() => {
+
    const fetchProfileStatistics = async () => {
      try {
       const topCategoriesResponse = await axios.get(`http://127.0.0.1:5500/api/top-categories/${userId}`);
@@ -61,6 +66,7 @@ const MyProfile = ({ darkMode, email }) => {
    fetchProfileStatistics();
  }, [userId,totalBids,winningBids]);
 
+
   return (
       <div className={`my-profile-container mt-5 ${darkMode ? 'dark-mode' : ''}`}>
       <div className={`my-profile-card ${darkMode ? 'text-light bg-dark' : ''}`}>
@@ -68,8 +74,8 @@ const MyProfile = ({ darkMode, email }) => {
           <div className='tt1 t2'>
             <h2 className={`card-title  ${darkMode ? 'text-light' : ''}`}><text className='tt' style={{fontSize :"50px"}}>Welcome, </text><strong >{username}</strong>!</h2>
           </div>
-          <h5 className={`card-text ${darkMode ? 'text-light' : ''}`}>
-            <p style={{ marginLeft: "25px" }}>Email: <strong >{userId}</strong></p>
+          <h5 className={`card-text tc1 ${darkMode ? 'text-light' : ''}`}>
+            <p style={{ padding:"50px 0px 40px 25px" }}>Email: <strong >{userId}</strong></p>
           </h5><pre></pre>
           <div className="card-row">
             <p className={`card-box card ${darkMode ? 'text-light' : ''}`}>
@@ -93,28 +99,38 @@ const MyProfile = ({ darkMode, email }) => {
               <span className='n-box'>Average Bid Amount: </span>
             </p>
             <p className={`card-box card ${darkMode ? 'text-light' : ''}`} >
-              <Cash width="150" height="150" />
+              <Tot width="150" height="150" />
               &#8377;{totalBidAmount}
               <span className='n-box'>Total Bid Amount: </span>
             </p>
-            {/* Display top categories */}
-            {topCategories.map((category, index) => (
-              <p key={index} className={`card-box card ${darkMode ? 'text-light' : ''}`} >
-              <Cash width="150" height="150" />
-                <span>{category}</span>
-                <span className='n-box'>Your Top Category #{index + 1}: </span>
-              </p>
-            ))}
+          {/* Display top categories if available */}
+            {topCategories.length > 0 ? (
+              topCategories.map((category, index) => (
+                <p className={`card-box card ${darkMode ? 'text-light' : ''}`} key={index}>
+                  <Cat width="150" height="150" />
+                  <span>{category}</span>
+                  <span className='n-box'>Favorite Category:</span>
+                </p>
+              ))
+            ) : (
+               <a href="/product" className={`card-box card ${darkMode ? 'text-light' : ''}`} >
+                <Cat width="150" height="150" />
+                <span>Bid here to get started</span>
+                <span className='n-box'>Favorite Category:</span>
+              </a>
+            )}
           </div>
-          <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
+          <h5 className={`card-text tc ${darkMode ? 'text-light' : ''}`}style={{ margin:"0px 0px 35px 25px" }}>
             Winning Rate: {winningRate.toFixed(2)}%
-          </p><pre></pre>
+          </h5><pre></pre>
           <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/bidding">
             View Your Products
           </Link>&nbsp; &nbsp;
           <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/userBids">
             View Your Placed Bids
           </Link>
+          <CircularProgressbar value= {winningRate.toFixed(2)} text={`${winningRate.toFixed(2)}%`} />;
+          
         </div>
       </div>
     </div>

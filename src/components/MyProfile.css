@@ -51,7 +51,10 @@
     background-clip: text;
     color: transparent;
     font-weight:bold;
+    flex: 0 0 calc(33.333% - 20px); /* Adjust width of each card */
+    margin-bottom: 60px;
   }
+
 
   .n-box {
     position: absolute;
@@ -63,16 +66,25 @@
     width: 100%;
     color: #fff;
   }
+
   .card-row {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 25px;
   }
   
-  .card-box {
-    flex: 0 0 calc(33.333% - 20px); /* Adjust width of each card */
-    margin-bottom: 20px; /* Adjust margin between rows */
-  }
   
+  
+  .tc1{
+    border-bottom: 1px solid #e8e2e2;
+    border-top: 1px solid #e8e2e2;
+    margin-bottom: 40px;
+  } 
+  .tc{
+    border-bottom: 1px solid #e8e2e2;
+    border-top: 1px solid #e8e2e2;
+    padding: 40px 0px 40px 10px;
+  }
   @media (max-width: 992px) {
     .card-box {
       flex-basis: calc(50% - 20px); /* Two cards in a row on smaller screens */
