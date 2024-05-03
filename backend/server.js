@@ -331,6 +331,7 @@ app.post('/api/signup', async(req, res) => {
 
     
 });
+
 //fetch the topcategories using userId
 app.get('/api/top-categories/:userId', async (req, res) => {
   const email = req.params.userId;
@@ -350,7 +351,6 @@ app.get('/api/top-categories/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 //fetch by email
 app.get('/api/getUserByEmail/:email', async (req, res) => {
