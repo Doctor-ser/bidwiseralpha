@@ -334,27 +334,23 @@ app.post('/api/signup', async(req, res) => {
 //fetch the topcategories using userId
 app.get('/api/top-categories/:userId', async (req, res) => {
   const email = req.params.userId;
-  //console.log(email);
   try {
-    const userDetails= await UserBid.find({ email });
-    //console.log(userDetails);
-    // Aggregate query to find top 3 distinct categories based on user ID
+    // Aggregate query to find top categories based on user ID
     const topCategories = await UserBid.aggregate([
       { $match: { userId: email } }, // Match bids for the given user ID
-      { $group: { _id: '$category', count: { $sum: 1 } } }, // Group bids by category and count occurrences
-      { $sort: { count: -1 } }, // Sort by count in descending order
-      { $limit: 1 } // Limit to top 3 categories
+      { $group: { _id: '$category', count: { $sum: 1 }, latestBidId: { $max: '$_id' } } }, // Group bids by category and count occurrences, also get the latest bid ObjectId
+      { $sort: { count: -1, latestBidId: -1 } }, // Sort by count and latest bid ObjectId in descending order
+      { $limit: 1 } // Limit to top 1 categories
     ]);
-    console.log(topCategories);
     // Extract only category names from the result
     const categories = topCategories.map(category => category._id);
-    //console.log('asas',topCategories);
     res.json({ topCategories: categories });
   } catch (error) {
     console.error('Error fetching top categories:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 //fetch by email
 app.get('/api/getUserByEmail/:email', async (req, res) => {

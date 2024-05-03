@@ -98,13 +98,22 @@ const MyProfile = ({ darkMode, email }) => {
               <span className='n-box'>Total Bid Amount: </span>
             </p>
             {/* Display top categories */}
-            {topCategories.map((category, index) => (
-              <p key={index} className={`card-box card ${darkMode ? 'text-light' : ''}`} >
-              <Cash width="150" height="150" />
-                <span>{category}</span>
-                <span className='n-box'>Your Top Category #{index + 1}: </span>
-              </p>
-            ))}
+            
+            {topCategories.length > 0 ? (
+  topCategories.map((category, index) => (
+    <p key={index} className={`card-box card ${darkMode ? 'text-light' : ''}`} >
+      <Cash width="150" height="150" />
+      <span>{category}</span>
+      <span className='n-box'>Top Category #{index + 1}: </span>
+    </p>
+  ))
+) : (
+  <a href="/product" className={`card-box card ${darkMode ? 'text-light' : ''}`} >
+    <Cash width="150" height="150" />
+    <span>Bid here to get started</span>
+    <span className='n-box'>Top Category #1: </span>
+  </a>
+)}
           </div>
           <p className={`card-text ${darkMode ? 'text-light' : ''}`}>
             Winning Rate: {winningRate.toFixed(2)}%
