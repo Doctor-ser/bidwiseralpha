@@ -7,6 +7,7 @@ import './ProductDetails.css';
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
+  const [suggestedPosts, setSuggestedPosts] = useState([]);
   const [remainingTime, setRemainingTime] = useState(null);
   const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
@@ -37,6 +38,7 @@ const ProductDetails = () => {
                 winnerEmail: winner.email
               }));
 
+
             } catch (error) {
               console.error('Error fetching winner:', error);
               setWinnerMessage('No winner found for this product.');
@@ -45,6 +47,17 @@ const ProductDetails = () => {
             clearInterval(intervalId);
           }
         }
+        try{
+        const category = response.data.product.category;
+        const productId= response.data.product._id;
+        console.log(category)
+        const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category ,productId});
+        setSuggestedPosts(response1.data);
+        }
+        catch(error){
+          //alert('no response');
+        }
+        
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
@@ -56,7 +69,7 @@ const ProductDetails = () => {
 
     fetchProductDetails();
 
-    const intervalId = setInterval(fetchProducts, 5000);
+    const intervalId = setInterval(fetchProducts, 500000);
 
     return () => clearInterval(intervalId);
   }, [productId]);
@@ -117,6 +130,7 @@ const ProductDetails = () => {
         productId,
         userId,
         bidAmount: Number(bidAmount),
+        category: product.category
       });
 
       if (response.status === 200) {
@@ -205,9 +219,35 @@ const ProductDetails = () => {
             ) : null}
           </div>
         </div>
+        
+        
       ) : (
         <p>Loading...</p>
       )}
+      
+      {/* Suggested Post */}
+      <div className='conatiner-suggestedposts'> 
+      <h3>Suggested Post</h3>
+      <div className="suggested-post">
+        
+        {suggestedPosts.map((post, index) => (
+          <div key={index} className='box-suggestedposts'>
+            <p>{post.name}</p>
+            <p>Current Bid: {post.currentBid}</p>
+            {/* <p>product id:{post._id}</p> */}
+            <div className='imagecontainer'>
+            <img
+                      src={`http://127.0.0.1:5500/api/images/${post.imageUrl}`}
+                      alt={post.name}
+                      className="mx-auto img-thumbnail"/>
+                      </div>
+                      <a href={`/products/${post._id}`}>Get Product</a>
+            {/* Render other details as needed */}
+          </div>
+        ))}
+      </div>
+      </div>
+      
 
       {showBidModal && (
         <div className="modal" style={{ display: 'block' }}>
@@ -237,6 +277,7 @@ const ProductDetails = () => {
         </div>
       )}
     </div>
+   
   );
 };
 

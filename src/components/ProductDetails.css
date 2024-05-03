@@ -56,3 +56,30 @@
     margin-right: 10px; /* Adjust button spacing */
   }
   
+  .suggested-post{
+    display: flex;
+    margin-left: 20px;
+  }
+  .conatiner-suggestedposts{
+    display: block;
+  }
+
+  .box-suggestedposts{
+    border-color: black;
+    border-width: 5px;
+
+  }
+
+  .imagecontainer{
+    width: 400px; /* Adjust the width and height as per your requirement */
+      height: 225px;
+      overflow: hidden; /* This will hide any part of the image that exceeds the container */
+      display: flex;
+      justify-content: center; /* Centers the content horizontally */
+      align-items: center;
+  }
+  .imagecontainer img{
+    max-width: 100%; /* Ensures the image doesn't exceed the container width */
+      max-height: 100%; /* Ensures the image doesn't exceed the container height */
+      display: block; 
+  }
