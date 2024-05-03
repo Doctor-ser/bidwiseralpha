@@ -783,6 +783,44 @@ app.get('/api/products/:productId', async (req, res) => {
   }
 });
 
+app.post('/api/products/by-category', async (req, res) => {
+  const { category, productId } = req.body;
+  // console.log("which categoryy", category);
+  // console.log("productId", productId);
+
+  try {
+    const currentTime = new Date();
+
+    // Find the three most recent live products in the specified category
+    const recentProducts = await Bid.aggregate([
+      { $match: {
+        category,
+        endTime: { $gt: currentTime } // Filter products where endTime is greater than current time
+      } },
+      { $sort: { endTime: -1 } },
+      { $limit: 3 },
+      { $project: { name: 1, currentBid: 1, imageUrl: 1, _id: 1 } }
+    ]);
+
+    // Convert _id to a string for reliable comparison
+    const filteredProducts = recentProducts.filter(product => String(product._id) !== productId);
+
+    //console.log(filteredProducts);
+    res.json(filteredProducts);
+  } catch (error) {
+    console.error('Error fetching recent products:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
+
+
+
+
+
 //fetch bids price after winning the product by product id
 app.get('/api/fetchprice/:proid', async (req, res) => {
   const productId = req.params.proid;
