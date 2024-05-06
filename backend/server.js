@@ -305,8 +305,8 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: "johxngeorxe@gmail.com", //  email address
-    pass: "nraetzgwnhfmppbh", //  Encrypted Password
+    user: "bidwiser.help@gmail.com", //  email address
+    pass: "golkxgygttxiftbi", //  Encrypted Password
   },
 });
 
@@ -598,7 +598,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   const username = user.username;
   // Send an email with the new password
   const mailOptions = {
-    from: 'johxngeorxe@gmail.com', // Sender email address
+    from: 'bidwiser.help@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
     text: `Dear ${username}, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidWiser.`,
@@ -774,7 +774,7 @@ app.get('/api/top-deal', async (req, res) => {
 
     if (i < topDeal.length && topProductDetails) {
       // Return the top deal details if found
-      res.json({ topDeal: topProductDetails });
+      res.json({ topDeal: topProductDetails});
     } else {
       // If no active top deal is found, return an empty response or handle the case as needed
       res.json({ message: 'No active top deal found' });
@@ -1069,7 +1069,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     }
 
     const mailOptions = {
-      from: 'johxngeorxe@gmail.com',
+      from: 'bidwiser.help@gmail.com',
       to: winnerEmail,
       subject: 'Congratulations! You are the winning bidder',
       text: `Dear ${username},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nBidWiser`
@@ -1211,7 +1211,7 @@ app.post('/api/placeBid', async (req, res) => {
 
       // Send email to the previous winner
       // const mailOptions = {
-      //   from: 'johxngeorxe@gmail.com',
+      //   from: 'bidwiser.help@gmail.com',
       //   to: previousWinnerUserId, // Assuming userId contains the email
       //   subject: 'You have been outbid!',
       //   text: `Hello '${username}',\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
@@ -1359,7 +1359,7 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   const username =user.username;
   // Send welcome email logic here
   const mailOptions = {
-    from: 'johxngeorxe@gmail.com',
+    from: 'bidwiser.help@gmail.com',
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
     text: `Dear '${username}', Welcome to BidWiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidWiser!`,
