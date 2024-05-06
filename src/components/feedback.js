@@ -44,6 +44,7 @@ const FeedbackForm = ({ darkMode }) => {
       }
       try {
           // Use userId obtained from useAuth
+          console.log('Submitting feedback:', feedback);
           await axios.post('http://127.0.0.1:5500/api/feedback', { ...feedback, userId });
           alert('Feedback submitted successfully');
           setFeedback({ rating: '', comment: '' });
@@ -82,30 +83,30 @@ const FeedbackForm = ({ darkMode }) => {
     };
 
     return (
-    <div className="feedback-container">
-        <div className="feedback-form card feed-c" style={{padding:"0px",border:"none"}}>
+    <span className="feedback-container">
+        <span className="feedback-form card feed-c" style={{padding:"0px",border:"none"}}>
             <h2 style={{marginBottom:"0px",border:"none"}} className='card-title ch-t'>We value your feedback</h2>
             <span style={{ border: "3px solid #333333",borderTop:"none"}}>
                 <form onSubmit={handleSubmit}>
-                    <p className="feedback-rating">
-                        <label style={{ width: '470px',margin:"40px 0px 20px 0px" }}>How satisfied are you with this webpage?</label>
+                    <span className="feedback-rating">
+                        <label style={{ width: '470px',margin:"40px 0px 0px 0px" }}>How satisfied are you with this webpage?<pre></pre>
                         <RatingStar rating={rating} value={feedback.rating} onChange={handleInputChange} setRating={setRating} />
+                        </label>
                         {/* <input type="number" name="rating" value={feedback.rating} onChange={handleInputChange} placeholder="0-5" /> */}
-                    </p>
-                    <br />
-                    <div className="feedback-comment">
+                    </span>
+                    <p className="feedback-comment">
                             <label style={{margin:"20px 0px 20px 0px" }}>Why did you give this rating?</label>
-                            <div className='feedback-commentl'>
+                            <p className='feedback-commentl'>
                                 <textarea name="comment" value={feedback.comment} onChange={handleInputChange} />
-                            </div>
-                    </div>
+                            </p>
+                    </p>
                     <br />
                     <div >
                         <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
                     </div>
                 </form>
             </span>
-        </div>
+        </span>
             {/* {averageRating && (
                 <div className="average-rating">
                     <h3>Average Rating: {averageRating.toFixed(2)}</h3>
@@ -122,7 +123,7 @@ const FeedbackForm = ({ darkMode }) => {
                     ))}
                 </ul>
             </div> */}
-    </div>    
+    </span>    
     );
 };
 

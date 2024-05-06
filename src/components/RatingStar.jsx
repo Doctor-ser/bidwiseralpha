@@ -3,7 +3,7 @@ import React from 'react'
 
 function RatingStar({ rating, setRating }) {
   return (
-    <div>
+    <p>
       {[1, 2, 3, 4, 5].map((star) => {
         return (  
           <span
@@ -22,7 +22,7 @@ function RatingStar({ rating, setRating }) {
           </span>
         )
       })}
-    </div>
+    </p>
   )
 }
 

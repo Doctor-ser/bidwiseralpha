@@ -30,7 +30,6 @@
 .feedback-rating {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; /* Add some space below the rating section */
 }
 .feedback-comment textarea {
    width: 100%;
