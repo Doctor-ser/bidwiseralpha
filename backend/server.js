@@ -272,6 +272,28 @@ app.get('/api/get-messages', async (req, res) => {
   }
 });
 
+//fetch username using email
+app.get('/api/fetchchatusername/:senderEmail', async (req, res) => {
+  try {
+    const senderEmail = req.params.senderEmail;
+
+    // Find the user based on the sender email
+    const user = await User.findOne({ email: senderEmail });
+
+    if (user) {
+      // If user found, send the username in the response
+      res.json({ username: user.username });
+    } else {
+      // If user not found, send a 404 status with a message
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    // If any error occurs, send a 500 status with the error message
+    console.error('Error fetching username:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 
@@ -331,7 +353,6 @@ app.post('/api/signup', async(req, res) => {
 
     
 });
-
 //fetch the topcategories using userId
 app.get('/api/top-categories/:userId', async (req, res) => {
   const email = req.params.userId;
@@ -351,6 +372,7 @@ app.get('/api/top-categories/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 //fetch by email
 app.get('/api/getUserByEmail/:email', async (req, res) => {
@@ -922,6 +944,44 @@ app.get('/api/userratings/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Update product feedback by _id
+app.put('/api/productfeedbacks/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { rating, feedback } = req.body;
+    const updatedFeedback = await ProductFeedback.findOneAndUpdate({ productId }, { rating, feedback }, { new: true });
+    //console.log(updatedFeedback);
+    res.json(updatedFeedback);
+  } catch (error) {
+    console.error('Error updating product feedback:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+//fetch the feedback of the product
+app.get('/api/productfeedbacksfetch/:productId', async (req, res) => {
+  const productId = req.params.productId;
+
+  try {
+    // Fetch product feedback from the database based on productId
+    const feedback = await ProductFeedback.find({ productId }, { feedback: 1, rating: 1 ,_id: 0});
+
+    // If no feedback is found, return a 404 error
+    if (!feedback.length) {
+      return res.status(404).json({ error: 'No feedback found for the given productId' });
+    }
+
+    // If feedback is found, return it in the response
+    //console.log(feedback);
+    res.json(feedback);
+  } catch (error) {
+    console.error('Error fetching product feedback:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 //get product names

@@ -1,5 +1,21 @@
 /* MyProfile.css */
 /* Use a more specific class or ID for styles */
+.new-pass{
+  padding: 70px 40px 40px 40px;
+
+}
+.cx{
+  width: 20%;
+  margin-bottom: 20px;
+}
+.dx{
+width: 650px;
+height: 550px;
+}
+.dx1{
+  width: 460px;
+  height: 510px;
+}
 .my-profile-container {
     margin: 0 auto;
     max-width: 1400px; /* Adjust as needed */
@@ -13,17 +29,20 @@
   }
   
   .my-profile-btn-primary {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
     font-size: 18px;
     text-decoration: none;
     cursor: pointer;
+    margin: 200px;
+    line-height: 50px;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,linear-gradient(to right, #334ee1,#29d5b1) border-box;
+    border-radius: 50em;
+    border: 3px solid transparent;
+    padding: 15px 40px 15px 40px;
   }
   
   .my-profile-btn-primary:hover {
-    background-color: #0056b3;
+    background: linear-gradient(to right, #334ee1,#29d5b1) border-box;
+    color: #ffffff;
   }
   
   .tt{
@@ -81,9 +100,10 @@
     margin-bottom: 40px;
   } 
   .tc{
+    margin-left: 100px;
     border-bottom: 1px solid #e8e2e2;
     border-top: 1px solid #e8e2e2;
-    padding: 40px 0px 40px 10px;
+    padding: 40px 0px 40px 40px;
   }
   @media (max-width: 992px) {
     .card-box {
@@ -97,3 +117,27 @@
     }
   }
   
+  .pi{
+    width: 400px;
+    height: 400px;
+  }
+  .progress-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .links-container {
+    margin-left: auto; /* Push the links to the right side */
+  }
+  
+  .links-container a {
+    margin-left: 10px; /* Add spacing between the links if needed */
+  }
+  .CircularProgressbar{
+    width: 400px;
+    height: 400px;
+  }
+  .sv{
+    width: 0px;
+    height: 0px;
+  }

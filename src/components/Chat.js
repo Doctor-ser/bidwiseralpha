@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './chat.css';
 import { useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { ReactComponent as Plane } from '../svg/paper_plane.svg';
+import { colors } from '@mui/material';
 
 function Chat({ loadMessage, setLoadMessage }) {
   const { userId } = useAuth();
@@ -34,6 +38,7 @@ function Chat({ loadMessage, setLoadMessage }) {
       } else {
         const messagesWithSellerInfo = messagesData.map(message => ({
           ...message,
+          isCurrentUser: message.senderEmail === currentUser.email, // Add a flag to identify messages sent by the current user
           isSeller: message.senderEmail === productData.seller.userId
         }));
         setMessages(messagesWithSellerInfo);
@@ -104,39 +109,85 @@ function Chat({ loadMessage, setLoadMessage }) {
 
   return (
     <div className="chat-container">
-      <h2>Global Chat</h2>
-      <div className="message-list" ref={chatContainerRef}>
-        {messages.map((message, index) => (
-          <div className="message" key={index}>
-            {message === 'No messages to display' ? (
-              <p className="no-messages">No messages yet!</p>
-            ) : (
-              <>
-                <div className="profile-container" style={{ backgroundColor: '' }}>
-                  <p className="profile-info">
-                    {message.senderEmail} 
-                    {message.isSeller && <span className="seller-tag">(Seller)</span>}
-                  </p>
-                </div>
-                <p className="message-content">{message.message}</p>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <h2 className='card-title ch-t'>Global Chat</h2>
+      <p style={{marginBottom:"0px"}} className="message-list" ref={chatContainerRef}>
+        {messages.length === 0 ? (
+          <p className="no-messages">No messages yet!</p>
+        ) : (
+          <>
+            {messages.map((message, index) => (
+              <MessageItem key={index} message={message} />
+            ))}
+          </>
+        )}
+      </p>
 
-      <div className="input-container">
-        <input
-          type="text"
+      <span className="input-container">
+        <input style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '0px', borderBottomLeftRadius: '10px', borderBottomRightRadius: '0' , border:"none",borderTop:" 1px solid #ccc"}}
+          className='cht-i'
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
+          placeholder="Write your message..."
         />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+        <span style={{borderTop:" 1px solid #ccc",padding:"20px"}} onClick={sendMessage}><Plane width="25" height="25" /></span> 
+      </span>
     </div>
   );
 }
+
+const MessageItem = ({ message }) => {
+  const [senderName, setSenderName] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSenderName = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5500/api/fetchchatusername/${message.senderEmail}`);
+        if (response.ok) {
+          const userData = await response.json();
+          const senderName = userData.username; // Adjust the property name based on your API response
+          setSenderName(senderName);
+        } else {
+          console.error('Failed to fetch sender data');
+        }
+      } catch (error) {
+        console.error('Error fetching sender data:', error);
+      } finally {
+        setLoading(false); // Set loading to false once data fetching is complete
+      }
+    };
+
+    fetchSenderName();
+  }, [message.senderEmail]);
+
+  return (
+      <span style={{ display: 'flex', flexDirection: 'column' }}>
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: message.isCurrentUser ? 'flex-end' : 'flex-start' }}>
+        {!message.isCurrentUser && (
+          <span style={{ marginRight: '5px' }}>
+            <FontAwesomeIcon icon={faUserCircle} className="c-ic left-icon" />
+          </span>
+        )}
+        <span className={`message ${message.isCurrentUser ? 'sent-message' : 'regular-message'}`}>
+          <span className={`message-content ${message.isCurrentUser ? 'right-align' : ''}`} style={{ overflowWrap: 'break-word', wordWrap: 'break-word', wordBreak: 'break-word' }}>
+            {message.message}
+          </span>
+        </span>
+        {message.isCurrentUser && (
+          <span style={{ marginLeft: '5px' }}>
+            <FontAwesomeIcon icon={faUserCircle} className="c-ic right-icon" />
+          </span>
+        )}
+      </span>
+      <span style={{ display: 'flex', justifyContent: message.isCurrentUser ? 'flex-end' : 'flex-start' ,  marginLeft: "5px"}}>
+        <span>
+        <span className="c-un" style={{ textTransform: "uppercase",fontSize:"13px"}}>{senderName}</span>
+        {message.isSeller && <span className="seller-tag" style={{fontSize:"13px"}}>&nbsp;(SELLER)</span>}
+      </span>
+      </span>
+    </span>
+  );
+};
 
 export default Chat;

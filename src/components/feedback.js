@@ -3,6 +3,8 @@ import './feedback.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext'; // Import the useAuth hook
 import { useNavigate } from 'react-router-dom';
+import RatingStar from "./RatingStar" // add you floder path properly
+
 
 const FeedbackForm = ({ darkMode }) => {
     const auth = useAuth();
@@ -12,6 +14,7 @@ const FeedbackForm = ({ darkMode }) => {
     const [feedback, setFeedback] = useState({ rating: '', comment: '' });
     const [averageRating, setAverageRating] = useState(null);
     const [topRatedComments, setTopRatedComments] = useState([]);
+    const [showComments, setShowComments] = useState(false);
 
     useEffect(() => {
         // Fetch average rating when component mounts
@@ -29,6 +32,8 @@ const FeedbackForm = ({ darkMode }) => {
 
         setFeedback({ ...feedback, [name]: value });
     };
+
+    const [rating, setRating] = useState(0)
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -72,51 +77,53 @@ const FeedbackForm = ({ darkMode }) => {
             console.error('Error fetching top-rated comments:', error);
         }
     };
+    const toggleComments = () => {
+        setShowComments(!showComments);
+    };
 
     return (
-        <div className="feedback-container">
-            <div className="feedback-form">
-                <h2>Submit Feedback</h2>
+    <div className="feedback-container">
+        <div className="feedback-form card feed-c" style={{padding:"0px",border:"none"}}>
+            <h2 style={{marginBottom:"0px",border:"none"}} className='card-title ch-t'>We value your feedback</h2>
+            <span style={{ border: "3px solid #333333",borderTop:"none"}}>
                 <form onSubmit={handleSubmit}>
-                    <div className="feedback-rating">
-                        <label>
-                            Rating:
-                            <div className='feedback-commentl'>
-                                <input type="number" name="rating" value={feedback.rating} onChange={handleInputChange} placeholder="0-5" />
-                            </div>
-                        </label>
-                    </div>
+                    <p className="feedback-rating">
+                        <label style={{ width: '470px',margin:"40px 0px 20px 0px" }}>How satisfied are you with this webpage?</label>
+                        <RatingStar rating={rating} value={feedback.rating} onChange={handleInputChange} setRating={setRating} />
+                        {/* <input type="number" name="rating" value={feedback.rating} onChange={handleInputChange} placeholder="0-5" /> */}
+                    </p>
                     <br />
                     <div className="feedback-comment">
-                        <label>
-                            Comment:
+                            <label style={{margin:"20px 0px 20px 0px" }}>Why did you give this rating?</label>
                             <div className='feedback-commentl'>
                                 <textarea name="comment" value={feedback.comment} onChange={handleInputChange} />
                             </div>
-                        </label>
                     </div>
                     <br />
-                    <div className='submit-btn'>
-                        <button type="submit">Submit</button>
+                    <div >
+                        <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
                     </div>
                 </form>
-                {averageRating && (
-                    <div className="average-rating">
-                        <h3>Average Rating: {averageRating.toFixed(2)}</h3>
-                    </div>
-                )}
-            </div>
-            <div className="top-rated-comments">
-    <h2>Top Rated Comments</h2>
-    <ul>
-        {topRatedComments.map((comment, index) => (
-            <li key={index}>{comment.comment}</li>
-        ))}
-    </ul>
-</div>
-
+            </span>
         </div>
+            {/* {averageRating && (
+                <div className="average-rating">
+                    <h3>Average Rating: {averageRating.toFixed(2)}</h3>
+                    <button className="toggle-comments-btn" onClick={toggleComments}>
+                        {showComments ? 'Hide Comments' : 'Show Comments'}
+                    </button>
+                </div>
+            )}
+            <div className="top-rated-comments" style={{ display: showComments ? 'block' : 'none' }}>
+                <h2>Top Rated Comments</h2>
+                <ul className="comment-list">
+                    {topRatedComments.map((comment, index) => (
+                        <li key={index}>{comment.comment}</li>
+                    ))}
+                </ul>
+            </div> */}
+    </div>    
     );
 };
 
-export default FeedbackForm;
+export default FeedbackForm;

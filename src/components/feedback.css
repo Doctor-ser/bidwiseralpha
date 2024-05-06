@@ -1,40 +1,74 @@
-.feedback-rating{
-    max-width: 100px;
-    margin-left: 40px;
-    margin-bottom: 20px;
+.feedback-container{
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   align-items: center;
+   margin: 40px auto;
+   padding: 20px;
+   max-width: 1200px;
+   position: relative;
 }
- .feedback-comment
- {
-    margin-left: 40px;
-    
-    display: block;
- } 
- .feedback-commentl{
-    display: block;
- }
- .submit-btn{
-    margin-left: 40px;
-    margin-top: 20px;
-    width: 80px;
-    height: 30px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
- }
- .submit-btn:hover{
-    background-color: #45a049;
- }
+
+.feedback-form {
+  width: 100%;
+  max-width: 700px; /* Adjust max-width as needed */
+}
+
+.feedback-rating,
+.feedback-comment {
+   margin-bottom: 2px;
+   padding-bottom: 0;
+}
+
+.feedback-rating label {
+  flex: 0 0 auto; /* Prevent label from growing */
+  margin-right: 10px; /* Adjust spacing between label and stars */
+}
+.RatingStar {
+  flex: 0 0 auto; /* Prevent stars from growing */
+}
+.feedback-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Add some space below the rating section */
+}
+.feedback-comment textarea {
+   width: 100%;
+   max-width: 615px; /* Adjust max-width as needed */
+   height: 200px;
+}
+.submit-btn:hover{
+   background-color: #e6e6e6;
+}
 
 .average-rating {
-   /* position: absolute; */
-   top: 0;
-   right: 0;
-   margin-top: 60px;
-   margin-left: 40px;
-   font-size: 18px;
-   font-weight: bold;
-   color: #1a04be;
-   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-   font-weight: 500;
+  /* position: absolute; */
+  top: 0;
+  right: 0;
+  margin-top: 60px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a04be;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 500;
+}
+
+.toggle-comments-btn {
+  display: inline-block;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  z-index: 999;
+  transition: background-color 0.3s ease;
+}
+
+.comment-list {
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto;
+  margin-top: 10px;
 }

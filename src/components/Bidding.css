@@ -94,15 +94,19 @@
 
   .info, .img {
     flex: 1; /* Each takes half of the space available */
-  }
+    border: 1px solid #d2d2d2;
+    padding: 50px;
+    border-radius: 10px;
+    }
   
   .img {
     /* Optional: additional styling to push it to the right if not fully positioned as desired */
-    margin-left:200px; /* Ensures some space between the .info and .img sections */
+    margin-left:50px; /* Ensures some space between the .info and .img sections */
   }
   
   .info {
     max-width: calc(50% - 0px); /* Adjust width considering margin */
+    margin-bottom: 80px;
   }
 
 
@@ -227,5 +231,22 @@
     position: relative;
   }
   
-
+  .imagecontainer{
+    width: 400px; /* Adjust the width and height as per your requirement */
+      height: 400px;
+      overflow: hidden; /* This will hide any part of the image that exceeds the container */
+      display: flex;
+      justify-content: center; /* Centers the content horizontally */
+      align-items: center;
+  }
+  .imagecontainer img{
+    max-width: 100%; /* Ensures the image doesn't exceed the container width */
+      max-height: 100%; /* Ensures the image doesn't exceed the container height */
+      display: block; 
+  }
+  .remove-image{
+    height: 20px;
+    width: 100px;
+    margin-top: 0;
+  }
   

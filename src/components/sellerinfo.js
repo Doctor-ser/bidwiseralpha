@@ -43,41 +43,42 @@ const SellerInfoPage = () => {
           <RatingReview rating={averageRating} />
         </div>
       </div>
-      <div className='f-det'>
-        <div className='f-ig'>
-          <img src='https://wallpapercave.com/wp/wp9277691.jpg' alt='car-img' style={{ height: '200px', width: '300px' }}></img>
+        <div className='f-det'>
+          <ul>
+            {productData.map((product, index) => (
+              <div className='card1 card ccx' key={index}>
+                <img 
+                  src={`http://127.0.0.1:5500/api/images/${product.imageUrls}`}
+                  alt={product.name}
+                  className="img-thumbnail ig-mar"
+                />
+                <div className="product-details">
+                  <p style={{margin:"30px 40px",color:"#333333"}}>
+                    <h4 style={{marginTop:"15px", fontWeight:"bold"}}>Product Name &nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;<strong>{product.productName}</strong> </h4><br />
+                    <h4 style={{ fontWeight:"bold"}}>User Review &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{product.feedback.join(', ')}</strong></h4>
+                  </p>
+                  {/* <div>
+                    <strong>Ratings:</strong> {product.ratings.join(', ')}  make change heree for averageing rating 
+                  </div> */}
+                </div>
+                <div className="rating-column">
+                  <div className="star" style={{margin:"45px 40px", paddingTop:"10px"}}>
+                    <span className='stxt'style={{color:"Black"}}> Product Rating :</span>
+                    <RatingReview rating={product.ratings} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ul>
         </div>
-        <ul>
-          {productData.map((product, index) => (
-            <div className='card1'>
-            <li key={index}>
-              <div>Product name:<strong>{product.productName}</strong></div>
-              <div>
-                <span>Feedback: {product.feedback.join(', ')}</span>
-              </div>
-              <div>
-                <span>Ratings: {product.ratings.join(', ')}</span>
-              </div>
-               {/* <div>
-                <span>imageUrl: {product.imageUrls}</span>
-              </div> 
-               */}
-              <img
-                      src={`http://127.0.0.1:5500/api/images/${product.imageUrls}`}
-                      alt={product.name}
-                      className="mx-auto img-thumbnail"/>
-            </li>
-            </div>
-            
-          ))}
-        </ul>
-      </div>
-      <h3>Top reviews for this seller:</h3>
-      <ul>
-        {topFeedbacks.map((feedback, index) => (
-          <li key={index}>{feedback.feedback}</li>
-        ))}
-      </ul>
+        <div class="feedback-form card feed-c" style={{padding:"0px",border:"none", display:"flex",marginLeft:"450px"}}>
+         <h2 class="card-title ch-t" style={{marginBottom: "0px", border: "none"}}>Top reviews for this Seller</h2>
+          <ul>
+            {topFeedbacks.map((feedback, index) => (
+              <li key={index}><h3 style={{textAlign:"center",marginTop:"30px",fontWeight:"bold",padding:"25px",backgroundColor:"#ededed"}}>Review {index+1}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;<strong>{feedback.feedback}</strong></h3></li>
+            ))}
+          </ul>
+        </div>
     </div>
   );
 };

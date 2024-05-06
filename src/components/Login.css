@@ -102,7 +102,7 @@
   }
 /* Add this to your CSS to style the link in dark mode */
 .forgot-password {
-  color: #007bff; /* Set the color to the default hyperlink color */
+  color: #3160da; /* Set the color to the default hyperlink color */
   text-decoration: underline;
   cursor: pointer;
 }
@@ -111,4 +111,21 @@
 }
 .dark-mode .forgot-password:hover {
   text-decoration: underline; /* Add underline on hover in dark mode */
+}
+.sg{
+  color:#3160da; /* Set the color to the default hyperlink color */
+  text-decoration: none;
+}
+
+.sg:hover {
+  color: #fff; /* Change text color to white on hover */
+}
+.rad{
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background-color: #333333;
+  color: #ddd;
+}
+.l-bt{
+  color:#3160da;
 }
