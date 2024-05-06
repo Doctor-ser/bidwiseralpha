@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './productfeedback.css';
 import { useAuth } from './AuthContext';
 import RatingReview from './star.jsx';
+import { border, borderRadius, height, lineHeight, textTransform, width } from '@mui/system';
 
 
 const Productfeedback = () => {
@@ -141,20 +142,20 @@ const Productfeedback = () => {
   return (
     <div className='feedback-container'>
       <div class="feedback-form card feed-c" style={{margin:"0px", padding: "0px", border: "none", height:"600px"}}><h2 class="card-title ch-t" style={{marginBottom:" 0px", border:"none"}}>Product Feedback</h2>
-        <span style={{ border: "3px solid #333333",borderTop:"none",height:"600px"}}>
+        <span style={{ border: "3px solid #333333",borderTop:"none",height:"600px",lineHeight:"27px"}}>
           <p className='fe-from'>
               {product && (
                 <span>
-                  <p>Product Name &nbsp; :&nbsp; <strong>{product.name}</strong></p>
+                  <p>Product Name &nbsp; :&nbsp; <strong style={{textTransform:"uppercase"}}>{product.name}</strong></p>
                   <p>Product Price &nbsp;&nbsp; :&nbsp; <strong>{product.currentBid}</strong></p>
-                  <p>Seller Mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong>{product.userId}</strong></p>
+                  <p>Seller Mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong style={{textTransform:"uppercase"}}>{product.userId}</strong></p>
                 </span>
               )}
 
               {/* Check if existing feedback exists */}
               {existingFeedback ? (
                 <span>            
-                  <p>Feedback &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong>{existingFeedback[0].feedback}</strong></p>
+                  <p>Feedback &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong style={{textTransform:"uppercase"}}>{existingFeedback[0].feedback}</strong></p>
                   <p style={{marginLeft:"213px",marginBottom:"0px", marginTop:"30px"}}>Product Rating</p>
                   <p style={{marginLeft:"160px"}}><RatingReview rating={existingFeedback[0].rating}/></p>
                   <p>
@@ -164,38 +165,32 @@ const Productfeedback = () => {
                 
               ) : (
                 <form onSubmit={handleSubmit}>
-                  <input type="hidden" name="userId" value={product && product.userId} />
-                  <label htmlFor="rating" style={{ marginLeft: '40px' }}>Rating (out of 5):</label>
-                  <div className='feedback-rating'>
-                    <div className='feedback-commentl'>
-                      <input
-                        type="number"
-                        id="rating"
-                        name="rating"
-                        min="0"
-                        max="5"
-                        value={rating}
-                        onChange={handleRatingChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="feedback-comment">
-                    <label htmlFor="feedback">Feedback:</label>
-                    <div className='feedback-commentl'>
-                      <textarea
-                        id="feedback"
-                        name="feedback"
-                        value={feedback}
-                        onChange={handleFeedbackChange}
-                      />
-                    </div>
-                  </div>
-                  <div className='submit-btn'>
-                    <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
-                  </div>
+                      <input type="hidden" name="userId" value={product && product.userId} />
+                      <p style={{display:"flex",alignItems: "center"}} htmlFor="rating">Rating&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;
+                            <input style={{width:"400px",border:"1px solid #dddddd"}}
+                              type="number"
+                              id="rating"
+                              name="rating"
+                              min="0"
+                              max="5"
+                              value={rating}
+                              onChange={handleRatingChange}
+                            />
+                      </p>
+                        <p htmlFor="feedback">Comment &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;
+                          <textarea style={{width:"395px",height:"70px",border:"1px solid #dddddd",borderRadius:"5px"}}
+                            id="feedback"
+                            name="feedback"
+                            value={feedback}
+                            onChange={handleFeedbackChange}
+                          />
+                          </p>
+                      <>
+                        <button style={{margin:"0px 157px", width:"200px"}} className='btn btn-primary1' type="submit">Submit</button>
+                      </>
                 </form>
               )}
-        </p>
+          </p>
           {/* Render update form if showUpdateForm is true */}
           {showUpdateForm && (
           <div class="modal" style={{display:"block"}}>
@@ -203,7 +198,7 @@ const Productfeedback = () => {
               <span class="modal-content ff" style={{padding:"50px"}}>
                 <form onSubmit={handleUpdateSubmit}>
                   {/* Add input fields for rating and feedback */}
-                  <label htmlFor="rating"  style={{marginTop:"30px"}}>Rating (out of 5):</label>
+                  <label htmlFor="rating"  style={{marginTop:"30px"}}>Rating:</label>
                   <input
                     type="number"
                     id="rating"
