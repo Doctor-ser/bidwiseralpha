@@ -10,11 +10,55 @@ import { ReactComponent as Cash } from '../svg/cash_receipt.svg';
 import { ReactComponent as Cat } from '../svg/sorting.svg';
 import { ReactComponent as Tot } from '../svg/total_sales.svg';
 import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import './styles.css';
 
+
+const ChangePasswordForm = ({ userId, onClose }) => {
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
+  const handleChangePassword = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5500/api/changePassword', {
+        userId: userId,
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      });
+      if (response.message ==='invalid password'){
+        alert('Invalid password');
+      }
+      if (response.status === 200) {
+        alert('Password changed successfully');
+        onClose(); // Close the form after successful password change
+      } else {
+        alert('Failed to change password');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      alert('Wrong Password');
+    }
+  };
+
+  return (
+    <div class="modal" style={{display:"block"}}>
+    <div className="modal-dialog change-password-form dx">
+      <span class="modal-content dx1">
+      <button type="button" class="btn-close" onClick={onClose}></button>
+        <h2>Change Password</h2>
+        <span className='new-pass'>
+          <input type="password" placeholder="Old Password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+          <input type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          <button className='btn-p cart px-auto'style={{marginTop:"40px"}} onClick={handleChangePassword}>Change Password</button>
+        </span>
+      </span>
+    </div>
+    </div>
+  );
+};
 
 const MyProfile = ({ darkMode, email }) => {
   const { userId  } = useAuth(); // Assuming you have a 'username' property in your AuthContext
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [totalBids, setTotalBids] = useState(0);
  const [totalProducts, setTotalProducts] = useState(0);
  const [winningBids, setWinningBids] = useState(0);
@@ -23,10 +67,17 @@ const MyProfile = ({ darkMode, email }) => {
  const [winningRate, setWinningRate] = useState(0);
  const [username, setUsername] = useState('');
  const [topCategories, setTopCategories] = useState([]);
+
+ const handleOpenChangePasswordForm = () => {
+  setShowChangePasswordForm(true);
+};
+
+const handleCloseChangePasswordForm = () => {
+  setShowChangePasswordForm(false);
+};
   
  
  useEffect(() => {
-
    const fetchProfileStatistics = async () => {
      try {
       const topCategoriesResponse = await axios.get(`http://127.0.0.1:5500/api/top-categories/${userId}`);
@@ -66,7 +117,6 @@ const MyProfile = ({ darkMode, email }) => {
    fetchProfileStatistics();
  }, [userId,totalBids,winningBids]);
 
-
   return (
       <div className={`my-profile-container mt-5 ${darkMode ? 'dark-mode' : ''}`}>
       <div className={`my-profile-card ${darkMode ? 'text-light bg-dark' : ''}`}>
@@ -75,8 +125,14 @@ const MyProfile = ({ darkMode, email }) => {
             <h2 className={`card-title  ${darkMode ? 'text-light' : ''}`}><text className='tt' style={{fontSize :"50px"}}>Welcome, </text><strong >{username}</strong>!</h2>
           </div>
           <h5 className={`card-text tc1 ${darkMode ? 'text-light' : ''}`}>
-            <p style={{ padding:"50px 0px 40px 25px" }}>Email: <strong >{userId}</strong></p>
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ padding: "50px 0px 40px 25px" }}>Email: <strong>{userId}</strong></p>
+              <button className='btn-p cart px-auto cx' style={{marginRight:"50px"}} onClick={handleOpenChangePasswordForm}>Change Password</button>
+            </span>
           </h5><pre></pre>
+          {/* Render change password form if showChangePasswordForm is true */}
+          {showChangePasswordForm && <ChangePasswordForm userId={userId} onClose={handleCloseChangePasswordForm} />}
+
           <div className="card-row">
             <p className={`card-box card ${darkMode ? 'text-light' : ''}`}>
               <Bids width="150" height="150" />
@@ -103,7 +159,6 @@ const MyProfile = ({ darkMode, email }) => {
               &#8377;{totalBidAmount}
               <span className='n-box'>Total Bid Amount: </span>
             </p>
-          {/* Display top categories if available */}
             {topCategories.length > 0 ? (
               topCategories.map((category, index) => (
                 <p className={`card-box card ${darkMode ? 'text-light' : ''}`} key={index}>
@@ -121,16 +176,27 @@ const MyProfile = ({ darkMode, email }) => {
             )}
           </div>
           <h5 className={`card-text tc ${darkMode ? 'text-light' : ''}`}style={{ margin:"0px 0px 35px 25px" }}>
-            Winning Rate: {winningRate.toFixed(2)}%
+            Winning Rate
           </h5><pre></pre>
-          <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/bidding">
-            View Your Products
-          </Link>&nbsp; &nbsp;
-          <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/userBids">
-            View Your Placed Bids
-          </Link>
-          <CircularProgressbar value= {winningRate.toFixed(2)} text={`${winningRate.toFixed(2)}%`} />;
-          
+          <div className="progress-container">
+            <CircularProgressbar className='pi' value={winningRate.toFixed(2)} text={`${winningRate.toFixed(2)}%`} />
+            <svg className='sv'>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ba28ff" />
+                <stop offset="100%" stop-color="#604eff" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="links-container">
+            <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/bidding">
+              &nbsp;&nbsp;&nbsp;&nbsp;View Your Products&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </Link><br/><br/>
+            <Link className={`my-profile-btn-primary ${darkMode ? 'btn-toggle-dark' : ''}`} to="/userBids">
+            &nbsp;&nbsp;&nbsp;View Your Placed Bids&nbsp;&nbsp;&nbsp;
+            </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

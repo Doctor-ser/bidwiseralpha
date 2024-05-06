@@ -9,7 +9,23 @@
  .google-pay-button-container{
    margin: 0px;
  }
- 
+ .drop{
+  margin-top: 5px;
+  margin-left: 10px;
+  display: inline-block;
+	font-size: 13px;
+	font-weight: 700;
+	text-transform: uppercase;
+	text-decoration: none;
+	padding: 14px 30px;
+	color: #ffffff;
+	background: #000000;
+	letter-spacing: 4px;
+  border-radius: 0;
+  width: 18%;
+  height: 46px;
+ }
+
  .btn-primary2{
    display: inline-block;
    font-size: 13px;
@@ -456,3 +472,6 @@
      max-width: 90%;
    }
  }
+
+.ct-f{
+}

@@ -140,11 +140,13 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
                 <div class='container-fluid'>
                   <div class="card mx-auto col-md-3 col-10 mt-5">
                   <LazyLoad height={200} once>
+                  <div className='imagecontainer'>
                       <img
                       src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
                       alt={product.name}
                       className="mx-auto img-thumbnail"
                       />
+                      </div>
                       </LazyLoad>
                     <div class="card-body text-center mx-auto">
                       <div class='cvp'>

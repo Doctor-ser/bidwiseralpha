@@ -4,6 +4,9 @@ import { useAuth } from './AuthContext';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ProductDetails.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons'; // Importing the user-circle icon
+
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -191,32 +194,40 @@ const ProductDetails = () => {
           )}
 
           <div className='pro-info'>
-            <h2>{product.name}</h2>
-            <p className="description">{product.description}</p>
-            <Link to={`/sellerinfo/${product.userId}`} className="card-text">Seller Info</Link>
-            <p className="bid-details">Starting Bid: &#8377;{product.startingBid}</p>
-            <p className="bid-details">Current Bid: &#8377;{product.currentBid}</p>
-            <p className="added-by">Product Added By: {product.userId}</p>
-            {product.winnerEmail && <p className="winner-email">Winner Email: {product.winnerEmail}</p>}
-            {product.winnerEmail && <p className="highest-bid">Highest Bid: &#8377;{product.currentBid}</p>}
-            {winnerMessage && <p className="winner-message">{winnerMessage}</p>}
-            {product.endTime && (
-              <p className="end-time">
-                {remainingTime ? remainingTime : "Bidding for this product has ended."}
-              </p>
-            )}
-
-            {/* Conditionally render buttons if there is remaining time or no winner */}
-            {remainingTime || winnerMessage ? (
-              <div className="button-container">
-                <button className="btn-p cart px-auto" onClick={handleBid}>
-                  Place Bid
-                </button>
-                <button className="chat-btn" onClick={handleChatClick(productId)}>
-                  Chat
-                </button>
+            <div className='c'>
+            <h2 className='hn'>{product.name}</h2>
+            <div className='p-de'>
+              <p className="description">{product.description}</p>
+              <div className="sel">
+                <Link to={`/sellerinfo/${product.userId}`}>
+                  <FontAwesomeIcon icon={faUserCircle} className="us-ic" />
+                  <span className='id'>&nbsp;{product.userId}</span>
+                </Link>
               </div>
-            ) : null}
+              <p className="bid-details cur">Current Bid:&nbsp;&#8377;<strong>{product.currentBid}</strong></p>
+              <p className="bid-details">Starting Bid: &#8377;{product.startingBid}</p>
+              {product.winnerEmail && <p className="winner-email">Winner Email: {product.winnerEmail}</p>}
+              {product.winnerEmail && <p className="highest-bid">Highest Bid: &#8377;{product.currentBid}</p>}
+              {winnerMessage && <p className="winner-message">{winnerMessage}</p>}
+              {product.endTime && (
+                <p className="end-time">
+                  {remainingTime ? remainingTime : "Bidding for this product has ended."}
+                </p>
+              )}
+
+              {/* Conditionally render buttons if there is remaining time or no winner */}
+              {remainingTime || winnerMessage ? (
+                <div className="button-container bc">
+                  <button className="bp" onClick={handleBid}>
+                    <strong>Place Bid</strong>
+                  </button>
+                  <button className="bp" onClick={handleChatClick(productId)}>
+                  <strong>Chat</strong>
+                  </button>
+                </div>
+              ) : null}
+            </div>
+            </div>
           </div>
         </div>
         
@@ -227,27 +238,25 @@ const ProductDetails = () => {
       
       {/* Suggested Post */}
       <div className='conatiner-suggestedposts'> 
-      <h3>Suggested Post</h3>
-      <div className="suggested-post">
-        
-        {suggestedPosts.map((post, index) => (
-          <div key={index} className='box-suggestedposts'>
-            <p>{post.name}</p>
-            <p>Current Bid: {post.currentBid}</p>
-            {/* <p>product id:{post._id}</p> */}
-            <div className='imagecontainer'>
-            <img
-                      src={`http://127.0.0.1:5500/api/images/${post.imageUrl}`}
-                      alt={post.name}
-                      className="mx-auto img-thumbnail"/>
-                      </div>
-                      <a href={`/products/${post._id}`}>Get Product</a>
-            {/* Render other details as needed */}
-          </div>
-        ))}
+        <h3 className='sug'>Similar products</h3>
+        <div className="suggested-post">
+          {suggestedPosts.map((post, index) => (
+            <a href={`/products/${post._id}`} key={index} className='box-suggestedposts no-underline'>
+              <p className='ic imagecontainer'>
+                <img
+                  src={`http://127.0.0.1:5500/api/images/${post.imageUrl}`}
+                  alt={post.name}
+                  className="it"
+                />
+              </p>
+              <p className="post-details">
+                <p><strong>{post.name}</strong></p>
+                <p>Current Bid:  <strong>&#8377;{post.currentBid}</strong></p>
+              </p>
+            </a>
+          ))}
+        </div>
       </div>
-      </div>
-      
 
       {showBidModal && (
         <div className="modal" style={{ display: 'block' }}>
@@ -258,17 +267,17 @@ const ProductDetails = () => {
                 <button type="button" className="btn-close" onClick={() => setShowBidModal(false)}></button>
               </div>
               <div className="modal-body">
-                <p>Current Bid: &#8377;{product.currentBid}</p>
                 <input
                   type="number"
                   placeholder="Enter your bid amount"
-                  className="form-control"
+                  className="form-control f-c"
                   value={bidAmount}
                   onChange={(e) => setBidAmount(e.target.value)}
                 />
+                <p>Current Bid: &#8377;{product.currentBid}</p>
               </div>
               <div className="modal-footer">
-                <button className="btn-primary2" onClick={placeBid}>
+                <button className="btn-primary2 b-cb" onClick={placeBid}>
                   Confirm Bid
                 </button>
               </div>

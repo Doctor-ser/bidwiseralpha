@@ -406,15 +406,15 @@ const renderWinningUser = (productId) => {
       <div className="container mt-5">
         {/* Search Bar */}
         <div className="mb-3">
-          <input
+          <input style={{ width: '1052px' }} 
             type="text"
             placeholder="Search by Product Name or Bid or Category: "
             className="form-control"
             value={searchTerm}
             onChange={handleSearch}
           />
-          <select className="form-select" value={searchTerm} onChange={handleSearch}>
-            <option value="">All Categories</option>
+          <select className="form-select drop" value={searchTerm} onChange={handleSearch}>
+            <option value="" defaultChecked>All Categories</option>
             <option value="Electronics">Electronics</option>
             <option value="Fashion and Clothing">Fashion and Clothing</option>
             <option value="Home and Garden">Home and Garden</option>
@@ -434,74 +434,72 @@ const renderWinningUser = (productId) => {
 
         {/* cart banner section */}
         {topDeal && (
-  <section className="cart-banner pt-100 pb-100">
-    <div className="container">
-      <div className="row clearfix">
-        {/* Image Column */}
-        <div className="image-column col-lg-6">
-          <div className="image">
-            <div className="price-box">
-              <div className="inner-price">
-                <span className="price">
-                  <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
-                </span>
+          <section className="cart-banner pt-100 pb-100">
+            <div className="container">
+              <div className="row clearfix">
+                {/* Image Column */}
+                <div className="image-column col-lg-6">
+                  <div className="image">
+                    <div className="price-box">
+                      <div className="inner-price">
+                        <span className="price">
+                          <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      {topDeal.imageUrl ? (
+                        <img className='b-img' src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
+                      ) : (
+                        <div>No image available</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* Content Column */}
+                <div className="content-column col-lg-6">
+                  <h3><span className="orange-text">Deal</span> of the Day</h3>
+                  <h4>{topDeal.name}</h4>
+                  <div className="text">{topDeal.description}</div>
+                  
+                  {/* counter */}
+                    {topDeal.endTime && (() => {
+                        const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
+                        return (
+                            <div className="time-counter">
+                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                                    <div className="counter-column">
+                                        <div className="inner">
+                                            <span className="count" id="days">{remainingTimec.days}</span>Days
+                                        </div>
+                                    </div>
+                                    <div className="counter-column">
+                                        <div className="inner">
+                                            <span className="count" id="hours">{remainingTimec.hours}</span>Hours
+                                        </div>
+                                    </div>  
+                                    <div className="counter-column">
+                                        <div className="inner">
+                                            <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
+                                        </div>
+                                    </div>  
+                                    <div className="counter-column">
+                                        <div className="inner">
+                                            <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                  <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
+                <i className="fas fa-shopping-cart"></i> View Details
+              </Link>
+                </div>
               </div>
             </div>
-            <div className="col-md-6">
-              {topDeal.imageUrl ? (
-                <img src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
-              ) : (
-                <div>No image available</div>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Content Column */}
-        <div className="content-column col-lg-6">
-          <h3><span className="orange-text">Deal</span> of the Day</h3>
-          <h4>{topDeal.name}</h4>
-          <div className="text">{topDeal.description}</div>
-          
-          {/* counter */}
-{topDeal.endTime && (() => {
-    const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
-    return (
-        <div className="time-counter">
-            <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="days">{remainingTimec.days}</span>Days
-                    </div>
-                </div>
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="hours">{remainingTimec.hours}</span>Hours
-                    </div>
-                </div>  
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
-                    </div>
-                </div>  
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-})()}
-
-
-          <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
-        <i className="fas fa-shopping-cart"></i> View Details
-      </Link>
-        </div>
-      </div>
-    </div>
-  </section>
-)}
+          </section>
+        )}
           {/* end cart banner section */}
 
         <div className='cap-head'>
@@ -557,8 +555,6 @@ const renderWinningUser = (productId) => {
             </div>
           ))}
         </div>
-
-
         <div className='cap-head'>
         <span class="text">End Auctions</span>
         </div>

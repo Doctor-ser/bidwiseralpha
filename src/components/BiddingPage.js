@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { border, borderRadius, padding } from '@mui/system';
 
 
 const BiddingPage = ({ darkMode }) => {
@@ -49,15 +50,30 @@ const BiddingPage = ({ darkMode }) => {
   };
 
   const handleChange = (event) => {
-    setFile(event.target.files[0]);
-
-    // Update the newProduct state with the uploaded image file
-    setNewProduct({
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    
+    // Check if a file is selected
+    if (selectedFile) {
+      // Create a URL for the selected file
+      const imageUrl = URL.createObjectURL(selectedFile);
+    
+      // Update the newProduct state with the uploaded image file and imageUrl
+      setNewProduct({
         ...newProduct,
-        imageFile: event.target.files[0]
-    });
-};
-
+        imageFile: selectedFile,
+        imageUrl: imageUrl
+      });
+    } else {
+      // If no file is selected, clear the image URL and file
+      setNewProduct({
+        ...newProduct,
+        imageFile: null,
+        imageUrl: ''
+      });
+    }
+  };
+  
   const handleImageProduct = async (imageUrl) => {
     console.log('image', file);
     if (!file) {
@@ -195,6 +211,15 @@ const BiddingPage = ({ darkMode }) => {
         }
       });
   };
+
+  const handleRemoveImage = () => {
+    setFile(null); // Clear the selected file
+    setNewProduct({
+      ...newProduct,
+      imageFile: null, // Remove the image file from the newProduct state
+      imageUrl: '' // Clear the imageUrl
+    });
+  };
   
 
   const handlePlaceBid = (productId, currentBid) => {
@@ -236,8 +261,8 @@ const BiddingPage = ({ darkMode }) => {
             <input type="text" name="name" placeholder='Enter Name of product' value={newProduct.name || ''} onChange={handleInputChange} />
           </div>
           <div>
-          <label>Category</label>
-          <select name="category" value={newProduct.category || ''} onChange={handleInputChange}>
+          <label >Category</label>
+          <select style={{width:"465px",height:"50px",border:"1px solid #d2d2d2",color:"#837d77",padding:"10px",borderRadius:"5px"}} name="category" value={newProduct.category || ''} onChange={handleInputChange}>
             <option value="">Select a category</option>
             <option value="Electronics">Electronics</option>
             <option value="Fashion and Clothing">Fashion and Clothing</option>
@@ -260,26 +285,33 @@ const BiddingPage = ({ darkMode }) => {
           </div>
           <div>
             <label>Starting Bid</label>
-            <input type="number" placeholder='Enter Start price' name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
+            <input type="number"  style={{border:"1px solid #d2d2d2",color:"#837d77"}} placeholder='Enter Start price' name="startingBid" value={newProduct.startingBid || ''} onChange={handleInputChange} />
           </div>
 
           <div>
             <label>End Time</label>
-            <input type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
+            <input  style={{border:"1px solid #d2d2d2",color:"#837d77"}} type="datetime-local" name="endTime" value={newProduct.endTime || ''} onChange={handleInputChange} />
           </div>
         </div>
         <div className='img'>
-          <div class="file-upload">
-            <label>Add Image</label>
-            <input className='input-img' type="file" id="fileInput" onChange={handleChange} />
-            <label for="fileInput">
-              <FontAwesomeIcon  class="file-label" icon={faImage} /> <br/>
-            </label>
-          </div>
-          <button className='btn-pub' onClick={handleAddProduct}>Publish Now</button>
-          <pre></pre>
+        <div className="file-upload" onClick={handleRemoveImage}>
+          <label>Add Image</label>
+          <input className='input-img' type="file" id="fileInput" onChange={handleChange} />
+          <label htmlFor="fileInput" className='imagecontainer'>
+            {file ? (
+              <div className="image-preview">
+                <img src={newProduct.imageUrl} alt="Preview" />
+              </div>
+            ) : (
+              <FontAwesomeIcon className="file-label" style={{height:"200px", width:"90%"}} icon={faImage} />
+            )}
+            <br/>
+          </label>
         </div>
+        <button className='btn-pub' onClick={handleAddProduct}>Publish Now</button>
+        <pre></pre>
       </div>
+     </div>
       <h3 className='t2 bor cap-head'>Added Products</h3> <pre></pre>
       <div className="product-container">
         {products.map((product, index) => (
