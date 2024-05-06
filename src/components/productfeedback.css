@@ -39,3 +39,17 @@
    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
    font-weight: 500;
 }
+.fe-from{
+   margin: 50px 50px;
+   border: 1px solid #bdbdbd;
+   padding: 40px 35px;
+}
+
+.ff{
+   width: 460px;
+   height: 410px;
+}
+.ff1{
+   width: 900px;
+   height: 450px;
+}
