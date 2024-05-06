@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './productfeedback.css';
 import { useAuth } from './AuthContext';
+import RatingReview from './star.jsx';
+
 
 const Productfeedback = () => {
   const { productId } = useParams();
@@ -137,84 +139,98 @@ const Productfeedback = () => {
   };
 
   return (
-    <div>
-      <h1 style={{ textAlign: 'center' }}>Product Feedback</h1>
-      {product && (
-        <div>
-          <h2 style={{ marginLeft: '20px', textAlign: 'left' }}>PRODUCT NAME: {product.name}</h2>
-          <p style={{ marginLeft: '40px' }}>Product Price: {product.currentBid}</p>
-          <p style={{ marginLeft: '40px' }}>SELLER MAIL: {product.userId}</p>
-        </div>
-      )}
+    <div className='feedback-container'>
+      <div class="feedback-form card feed-c" style={{margin:"0px", padding: "0px", border: "none", height:"600px"}}><h2 class="card-title ch-t" style={{marginBottom:" 0px", border:"none"}}>Product Feedback</h2>
+        <span style={{ border: "3px solid #333333",borderTop:"none",height:"600px"}}>
+          <p className='fe-from'>
+              {product && (
+                <span>
+                  <p>Product Name &nbsp; :&nbsp; <strong>{product.name}</strong></p>
+                  <p>Product Price &nbsp;&nbsp; :&nbsp; <strong>{product.currentBid}</strong></p>
+                  <p>Seller Mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong>{product.userId}</strong></p>
+                </span>
+              )}
 
-      {/* Check if existing feedback exists */}
-      {existingFeedback ? (
-        <div>
-          <h3>Existing Feedback</h3>
-          <p>Rating: {existingFeedback[0].rating}</p>
-          <p>Feedback: {existingFeedback[0].feedback}</p>
-          {/* Render update button */}
-          <button onClick={handleUpdateFeedback}>Update Feedback</button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <input type="hidden" name="userId" value={product && product.userId} />
-          <label htmlFor="rating" style={{ marginLeft: '40px' }}>Rating (out of 5):</label>
-          <div className='feedback-rating'>
-            <div className='feedback-commentl'>
-              <input
-                type="number"
-                id="rating"
-                name="rating"
-                min="0"
-                max="5"
-                value={rating}
-                onChange={handleRatingChange}
-              />
+              {/* Check if existing feedback exists */}
+              {existingFeedback ? (
+                <span>            
+                  <p>Feedback &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <strong>{existingFeedback[0].feedback}</strong></p>
+                  <p style={{marginLeft:"213px",marginBottom:"0px", marginTop:"30px"}}>Product Rating</p>
+                  <p style={{marginLeft:"160px"}}><RatingReview rating={existingFeedback[0].rating}/></p>
+                  <p>
+                  <button onClick={handleUpdateFeedback} style={{margin:"0px 157px 0px 142px", width:"250px"}} className='btn btn-primary1' type="submit">Update Feedback</button>
+                  </p>
+                </span>
+                
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <input type="hidden" name="userId" value={product && product.userId} />
+                  <label htmlFor="rating" style={{ marginLeft: '40px' }}>Rating (out of 5):</label>
+                  <div className='feedback-rating'>
+                    <div className='feedback-commentl'>
+                      <input
+                        type="number"
+                        id="rating"
+                        name="rating"
+                        min="0"
+                        max="5"
+                        value={rating}
+                        onChange={handleRatingChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="feedback-comment">
+                    <label htmlFor="feedback">Feedback:</label>
+                    <div className='feedback-commentl'>
+                      <textarea
+                        id="feedback"
+                        name="feedback"
+                        value={feedback}
+                        onChange={handleFeedbackChange}
+                      />
+                    </div>
+                  </div>
+                  <div className='submit-btn'>
+                    <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
+                  </div>
+                </form>
+              )}
+        </p>
+          {/* Render update form if showUpdateForm is true */}
+          {showUpdateForm && (
+          <div class="modal" style={{display:"block"}}>
+            <div className="modal-dialog change-password-form ff1">
+              <span class="modal-content ff" style={{padding:"50px"}}>
+                <form onSubmit={handleUpdateSubmit}>
+                  {/* Add input fields for rating and feedback */}
+                  <label htmlFor="rating"  style={{marginTop:"30px"}}>Rating (out of 5):</label>
+                  <input
+                    type="number"
+                    id="rating"
+                    name="rating"
+                    min="0"
+                    max="5"
+                    value={rating}
+                    onChange={handleRatingChange}
+                  />
+                  <label htmlFor="feedback" style={{marginTop:"30px"}}>Feedback:</label>
+                  <textarea style={{marginTop:"3px",width:"357px", border:"1px solid black"}}
+                    id="feedback"
+                    name="feedback"
+                    value={feedback}
+                    onChange={handleFeedbackChange}
+                  />
+                  <div >
+                    <button style={{margin:"30px 80px",width:"200px" ,  display: 'block' }} className='btn btn-primary1' type="submit">Update</button>
+                  </div>
+                </form>
+              </span>
             </div>
           </div>
-          <div className="feedback-comment">
-            <label htmlFor="feedback">Feedback:</label>
-            <div className='feedback-commentl'>
-              <textarea
-                id="feedback"
-                name="feedback"
-                value={feedback}
-                onChange={handleFeedbackChange}
-              />
-            </div>
-          </div>
-          <div className='submit-btn'>
-            <button type="submit">Submit Feedback</button>
-          </div>
-        </form>
-      )}
-
-      {/* Render update form if showUpdateForm is true */}
-      {showUpdateForm && (
-  <form onSubmit={handleUpdateSubmit}>
-    {/* Add input fields for rating and feedback */}
-    <label htmlFor="rating">Rating (out of 5):</label>
-    <input
-      type="number"
-      id="rating"
-      name="rating"
-      min="0"
-      max="5"
-      value={rating}
-      onChange={handleRatingChange}
-    />
-    <label htmlFor="feedback">Feedback:</label>
-    <textarea
-      id="feedback"
-      name="feedback"
-      value={feedback}
-      onChange={handleFeedbackChange}
-    />
-    <button type="submit" style={{ display: 'block' }}>Update </button>
-  </form>
-)}
+          )}
+        </span>
     </div>
+  </div>
   );
 };
 
