@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {Buffer} from 'buffer';
 import { useAuth } from './AuthContext';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams,useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SuggestedPost from './SuggestedPost';
 import './ProductDetails.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'; // Importing the user-circle icon
@@ -15,7 +17,9 @@ const ProductDetails = () => {
   const [bidAmount, setBidAmount] = useState(0);
   const [showBidModal, setShowBidModal] = useState(false);
   const [winnerMessage, setWinnerMessage] = useState('');
+  const location = useLocation()
   const [productImage, setProductImage] = useState(null);
+  const [imageStream,setImageStream] =useState(null)
   const auth = useAuth();
   const navigate = useNavigate();
   const { productId } = useParams(); // Get productId from URL params
@@ -24,6 +28,15 @@ const ProductDetails = () => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:5500/api/products/${productId}`);
+        const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${response.data.product.imageUrl}`);
+        // console.log(imageResponse)
+        const data = await imageResponse.json()
+        // const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer.buffer)));
+        const base64String = Buffer.from(data.buffer.data).toString('base64')
+        const image = `data:${data.contentType};base64,${base64String}`;     
+        setImageStream(image)
+       
+
         setProduct(response.data.product);
         setProductImage(response.data.product.imageUrl);
         if (response.data.product.endTime) {
@@ -53,7 +66,7 @@ const ProductDetails = () => {
         try{
         const category = response.data.product.category;
         const productId= response.data.product._id;
-        console.log(category)
+        //console.log(category)
         const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category ,productId});
         setSuggestedPosts(response1.data);
         }
@@ -76,6 +89,8 @@ const ProductDetails = () => {
 
     return () => clearInterval(intervalId);
   }, [productId]);
+
+ 
 
   const handleBid = async () => {
     if (!auth.loggedIn) {
@@ -186,11 +201,14 @@ const ProductDetails = () => {
       {product ? (
         <div className='pro-details'>
           {productImage && (
-            <img
-              src={`http://127.0.0.1:5500/api/images/${productImage}`}
+           
+             <img
+              src={imageStream}
               alt={product.name}
               className="pro-img det-img-thumbnail"
             />
+          
+          
           )}
 
           <div className='pro-info'>
@@ -240,23 +258,12 @@ const ProductDetails = () => {
       <div className='conatiner-suggestedposts'> 
         <h3 className='sug'>Similar products</h3>
         <div className="suggested-post">
-          {suggestedPosts.map((post, index) => (
-            <a href={`/products/${post._id}`} key={index} className='box-suggestedposts no-underline'>
-              <p className='ic imagecontainer'>
-                <img
-                  src={`http://127.0.0.1:5500/api/images/${post.imageUrl}`}
-                  alt={post.name}
-                  className="it"
-                />
-              </p>
-              <p className="post-details">
-                <p><strong>{post.name}</strong></p>
-                <p>Current Bid:  <strong>&#8377;{post.currentBid}</strong></p>
-              </p>
-            </a>
+       {suggestedPosts.map((post) => (
+            <SuggestedPost key={post._id} post={post} />
           ))}
         </div>
       </div>
+      
 
       {showBidModal && (
         <div className="modal" style={{ display: 'block' }}>

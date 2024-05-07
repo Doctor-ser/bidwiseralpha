@@ -1,156 +1,208 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../components/AuthContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../components/Product.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './adminpage.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'; // Importing the user-circle icon
+import { useAuth } from '../components/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { Buffer } from 'buffer';
 
+const ProductsPage = ({ darkMode, email, bidChange }) => {
+  const [products, setProducts] = useState([]);
+  const [sortBy, setSortBy] = useState('all'); // Default to sorting by all
+  const [bidAmount, setBidAmount] = useState(0);
+  const [showBidModal, setShowBidModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [userBids, setUserBids] = useState([]);
+  const [modifyProductId, setModifyProductId] = useState(null);
+  const [winningUsers, setWinningUsers] = useState({});
+  const [productDetails, setProductDetails] = useState({});
+  const [flag, setFlag] = useState(0);
+  const navigate = useNavigate();
 
-const AdminPage = () => {
+  // Use the userId from the context
+  const auth = useAuth();
+  const userId = auth.userId;
 
-    const [username, setUsername] = useState('');
-    const { userId } = useAuth();
-    const [newAdminData, setNewAdminData] = useState({ username: '', email: '', password: '' });
-    const [changePasswordData, setChangePasswordData] = useState({ oldPassword: '', newPassword: '' });
-    const [showAddAdminForm, setShowAddAdminForm] = useState(false);
-    const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
-    const navigate = useNavigate();
+  // Fetch winning user details
+  const fetchWinningUser = async (productId) => {
+    try {
+      const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
+      setWinningUsers((prevWinningUsers) => ({
+        ...prevWinningUsers,
+        [productId]: winningUserResponse.data.winningBid.userId,
+      }));
+    } catch (error) {
+      console.error('Error fetching winning user details:', error);
+    }
+  };
 
-    useEffect(() => {
-        const fetchAdminDetails = async () => {
-            try {
-                const adminResponse = await axios.get(`http://127.0.0.1:5500/api/getUserByEmail/${userId}`);
-                setUsername(adminResponse.data.username);
-            } catch (err) {
-                console.error('Error fetching admin details:', err);
-            }
-        };
-        fetchAdminDetails();
-    }, [userId]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5500/api/getBids');
+        setProducts(response.data.bids);
+        console.log('Products:', response.data.bids);
 
-    const handleAddAdmin = async () => {
-        setShowAddAdminForm(true);
-        setShowChangePasswordForm(false);
-    };
-
-    const handleChangePassword = async () => {
-        setShowAddAdminForm(false);
-        setShowChangePasswordForm(true);
-    };
-
-    const addAdmin = async () => {
-        try {
-            const response = await axios.post('http://127.0.0.1:5500/api/addAdmin', newAdminData);
-            // Optionally, you can reset the form fields after successful addition
-            setNewAdminData({ username: '', email: '', password: '' });
-            // Display the response message in an alert
-            alert(response.data.message);
-        } catch (error) {
-            console.error('Error adding admin:', error);
-            // Optionally, you can show an error message to the user
+        // Call fetchWinningUser for each product
+        const winningUserPromises = response.data.bids.map(async (product) => {
+          await fetchWinningUser(product._id);
+        });
+        await Promise.all(winningUserPromises);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request aborted:', error.message);
+        } else {
+          console.error('Error fetching bids:', error);
         }
+      }
     };
-    
+    fetchProducts();
+    // Refresh products every 10 seconds
+    const intervalId = setInterval(fetchProducts, 10000);
+    // Clear interval on component unmount to prevent memory leaks
+    return () => clearInterval(intervalId);
+  }, [bidChange]);
 
-    const changePassword = async () => {
-        try {
-            const response = await axios.post('http://127.0.0.1:5500/api/changePassword', {
-                userId: userId,
-                oldPassword: changePasswordData.oldPassword,
-                newPassword: changePasswordData.newPassword
-            });
-            // Optionally, you can reset the form fields after successful password change
-            setChangePasswordData({ oldPassword: '', newPassword: '' });
-            // Display the response message in an alert
-            alert(response.data.message);
-        } catch (error) {
-            console.error('Error changing password:', error);
-            alert("current entered password is incorrect");
-        }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Function to calculate remaining time
+  const calculateRemainingTime = (endTime) => {
+    const now = new Date();
+    const end = new Date(endTime);
+    const timeDiff = end - now;
+
+    if (timeDiff <= 0) {
+      return {
+        ended: true,
+        message: 'Bid has ended',
+      };
+    }
+
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    const endDateFormatted = formatDate(endTime);
+
+    return {
+      ended: false,
+      message: `Bid ends on: ${endDateFormatted}, ${hours}h ${minutes}m ${seconds}s left`,
     };
-    
+  };
 
-    return (
-        <div>
-            
-            <div className="admin-page">
-                <div className="sidebar">
-                    <div  className='n-tag' >
-                    <FontAwesomeIcon icon={faUserCircle} className="user-icon" /> {/* Using the faUserCircle icon */}
-                    <strong>{userId}</strong>
-                    </div>
-                    <div className="btns-g" >
-                        <button className="side-btn"onClick={handleAddAdmin}>Add New Admin</button>
-                        <button className="side-btn" onClick={handleChangePassword}>Change Password</button>
-                    </div>
-                </div>
-                <div className="content">
-                    <div className="admin-details">
-                        <h2 className='cap-head'></h2>
-                    </div>
-                    {showAddAdminForm && (
-                        <div className="content">
-                        <div className="form-container">
-                            <h3  className='headingadmin'>Add New Admin</h3>
-                            <div className='forminput'>
-                            <input
-                                type="text"
-                                placeholder="Username"
-                                value={newAdminData.username}
-                                onChange={(e) => setNewAdminData({ ...newAdminData, username: e.target.value })}
-                            />
-                            </div>
-                            <div className='forminput'>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={newAdminData.email}
-                                onChange={(e) => setNewAdminData({ ...newAdminData, email: e.target.value })}
-                            />
-                            </div>
-                            <div className='forminput'>
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={newAdminData.password}
-                                onChange={(e) => setNewAdminData({ ...newAdminData, password: e.target.value })}
-                            />
-                            </div>
-                            <div className='addadminbtn'>
-                            <button className='add-btn' onClick={addAdmin}>Add Admin</button>
-                            </div>
-                        </div>
-                        </div>
+  // Function to delete a bid
+  const deleteBid = async (productId) => {
+    try {
+      // Send a DELETE request to the backend to delete the bid
+      const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
+      if (response.status === 200) {
+        // Update the UI by removing the deleted bid from the products state
+        setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
+        console.log('Bid deleted successfully');
+      } else {
+        console.error('Failed to delete bid');
+      }
+    } catch (error) {
+      console.error('Error deleting bid:', error);
+      alert("Deletion not possible since the product bid is already closed.");
+    }
+  };
 
-                    )}
-                    {showChangePasswordForm && (
-                        <div className="form-container">
-                            <h3 className='headingadmin'>Change Password</h3>
-                            <div className='forminput'>
-                            <input 
-                                type="password"
-                                placeholder="Old Password"
-                                value={changePasswordData.oldPassword}
-                                onChange={(e) => setChangePasswordData({ ...changePasswordData, oldPassword: e.target.value })}
-                            />
-                            <input
-                                type="password"
-                                placeholder="New Password"
-                                value={changePasswordData.newPassword}
-                                onChange={(e) => setChangePasswordData({ ...changePasswordData, newPassword: e.target.value })}
-                            />
-                            </div>
-                            <div className='addadminbtn'>
-                            <button className='ch-pass' onClick={changePassword}>Change Password</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            
+  return (
+    <div className={`products-page ${darkMode ? 'dark-mode' : ''}`}>
+      
+      <div className="container mt-5">
+        {/* Sorting dropdown menu */}
+        <div style={{ marginBottom: '20px' }}>
+          Sort by:
+          <select className="form-control" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="all">All</option>
+            <option value="live">Live Auctions</option>
+            <option value="ended">Bid Ended</option>
+          </select>
         </div>
-    );
+        {/* Display sorted products */}
+        <div className="row">
+          {products.map((product) => (
+            // Check if product should be displayed based on sorting option
+            ((sortBy === 'all') ||
+            (sortBy === 'live' && !calculateRemainingTime(product.endTime).ended) ||
+            (sortBy === 'ended' && calculateRemainingTime(product.endTime).ended)) && (
+              <div key={product._id} className="col-md-4 mb-4">
+                <div class='container-fluid'>
+                  <div class="card mx-auto col-md-3 col-10 mt-5">
+                 
+                  <div className='imagecontainer'>
+                      {/* Modified image rendering logic */}
+                      <ProductImage product={product} />
+                  </div>
+                      
+                    <div class="card-body text-center mx-auto">
+                      <div class='cvp'>
+                        <h5 class="card-title font-weight-bold">{product.name}</h5>
+                        <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
+                        <p className="card-text">{product.endTime &&
+                          (() => {
+                            const remainingTime = calculateRemainingTime(product.endTime);
+                            if (remainingTime.ended) {
+                              const winnerUserId = winningUsers[product._id];
+                              const winningBid = product.currentBid;
+                              return `Bid has ended`;
+                            } else {
+                              return `${remainingTime.message}`;
+                            }
+                          })()
+                        }</p>
+                        <button className="btn btn-danger" onClick={() => deleteBid(product._id)}>
+                          Delete Bid
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      </div>
+      
+    </div>
+  );
 };
 
-export default AdminPage;
+// Separate component for rendering product image
+const ProductImage = ({ product }) => {
+  const [imageStream, setImageStream] = useState(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${product.imageUrl}`);
+        const data = await imageResponse.json();
+        const base64String = Buffer.from(data.buffer.data).toString('base64');
+        const image = `data:${data.contentType};base64,${base64String}`;
+        setImageStream(image);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [product.imageUrl]);
+
+  return (
+    <img
+      src={imageStream}
+      alt={product.name}
+      className="mx-auto img-thumbnail"
+    />
+  );
+};
+
+export default ProductsPage;

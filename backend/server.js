@@ -120,7 +120,11 @@ app.get('/api/images/:imageUrl', async (req, res) => {
     //     reader.readAsDataURL();
     //     reader.onloadend = () => {
     //       const imageData = reader.result;
-    res.write(imageDetails.image)
+    // res.write(imageDetails.image)
+   
+    res.json({buffer:imageDetails.image,contentType:imageDetails.contentType})
+    
+    
   } catch (error) {
     console.error('Error fetching image:', error);
     res.status(500).json({ message: 'Failed to fetch image' });

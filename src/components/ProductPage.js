@@ -4,8 +4,10 @@ import './Product.css';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useNavigate,Link } from 'react-router-dom';
-
-
+import { useLocation } from 'react-router-dom';
+import EndedBid from './EndedBid';
+import { ActiveBid } from './ActiveBid';
+import {Buffer} from 'buffer'
 
 const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [products, setProducts] = useState([]);
@@ -14,12 +16,13 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userBids, setUserBids] = useState([]); // New state to store user's bids
   const [modifyProductId, setModifyProductId] = useState(null);
-  const [winningUsers, setWinningUsers] = useState({});
   const [productDetails, setProductDetails] = useState({});
   const [flag,setflag]=useState(0);
   const navigate = useNavigate();
   const [activeProducts, setActiveProducts] = useState([]);
   const [topDeal, setTopDeal] = useState(null);
+  const [reloadPage, setReloadPage] = useState(false);
+  const [imageStream,setImageStream] =useState(null)
   
 
   
@@ -27,19 +30,20 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   // Use the userId from the context
   const auth = useAuth();
   const userId = auth.userId 
+  const location = useLocation();
 
     // Fetch winning user details
-    const fetchWinningUser = async (productId) => {
-      try {
-        const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
-        setWinningUsers((prevWinningUsers) => ({
-          ...prevWinningUsers,
-          [productId]: winningUserResponse.data.winningBid.userId,
-        }));
-      } catch (error) {
-        console.error('Error fetching winning user details:', error);
-      }
-    };
+    // const fetchWinningUser = async (productId) => {
+    //   try {
+    //     const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
+    //     setWinningUsers((prevWinningUsers) => ({
+    //       ...prevWinningUsers,
+    //       [productId]: winningUserResponse.data.winningBid.userId,
+    //     }));
+    //   } catch (error) {
+    //     console.error('Error fetching winning user details:', error);
+    //   }
+    // };
 
 
 const calculateRemainingTimeForCounter = (endTime) => {
@@ -70,7 +74,31 @@ const calculateRemainingTimeForCounter = (endTime) => {
     seconds: seconds.toString().padStart(2, '0')
   };
 };
+useEffect(() => {
+  // Function to reload the page only once
+  const reloadPageOnce = () => {
+    // Check if the page has already been reloaded
+    
+      console.log("Reloaded");
+      window.location.reload();
+    
+  };
 
+  // If the reloadPage flag is true, reload the page
+  if (reloadPage) {
+    reloadPageOnce();
+    console.log("fun called");
+    setReloadPage(false);
+  }
+}, [reloadPage]);
+
+useEffect(() => {
+  // Check if the route changed and if the current location is this page
+  if (location.pathname === '/products') {
+    console.log("Reloadset");
+    setReloadPage(true);
+  }
+}, [location.pathname]);
 
 useEffect(() => {
   const fetchProducts = async () => {
@@ -80,10 +108,10 @@ useEffect(() => {
       console.log('Products:', response.data.bids);
 
       // Call fetchWinningUser for each product
-      const winningUserPromises = response.data.bids.map(async (product) => {
-        await fetchWinningUser(product._id);
-      });
-      await Promise.all(winningUserPromises);
+      // const winningUserPromises = response.data.bids.map(async (product) => {
+      //   await fetchWinningUser(product._id);
+      // });
+      // await Promise.all(winningUserPromises);
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log('Request aborted:', error.message);
@@ -95,25 +123,25 @@ useEffect(() => {
   fetchProducts();
   // Refresh products every 5 seconds
    
-  const intervalId = setInterval(fetchProducts, 5000);
+  const intervalId = setInterval(fetchProducts, 500000);
   // Clear interval on component unmount to prevent memory leaks
   return () => clearInterval(intervalId);
   
 }, [bidChange]);
 
-const renderWinningUser = (productId) => {
-  const winnerUserId = winningUsers[productId];
-  return winnerUserId ? `Won By: ${winnerUserId}` : 'No Winner';
-};
+// const renderWinningUser = (productId) => {
+//   const winnerUserId = winningUsers[productId];
+//   return winnerUserId ? `Won By: ${winnerUserId}` : 'No Winner';
+// };
 // Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
 
-  useEffect(() => {
+  // useEffect(() => {
   
-    // Call fetchWinningUser when selectedProduct changes
-    if (selectedProduct) {
-      fetchWinningUser(selectedProduct.productId);
-    }
-  }, [selectedProduct]);
+  //   // Call fetchWinningUser when selectedProduct changes
+  //   if (selectedProduct) {
+  //     fetchWinningUser(selectedProduct.productId);
+  //   }
+  // }, [selectedProduct]);
 
   // Function to format date in "dd//mm/yyyy" format
   const formatDate = (dateString) => {
@@ -257,7 +285,7 @@ const renderWinningUser = (productId) => {
   
       if (response.status === 200) {
         // Fetch winning user details after placing a bid
-        await fetchWinningUser(selectedProduct.productId);
+        // await fetchWinningUser(selectedProduct.productId);
   
         // Update the bid amount for the product in the state
         const updatedProducts = products.map((p) =>
@@ -375,16 +403,32 @@ const renderWinningUser = (productId) => {
   useEffect(() => {
     const fetchActiveProductsAndTopDeal = async () => {
       try {
+        console.log("entry")
         const activeProductsResponse = await axios.get('http://127.0.0.1:5500/api/active-products');
         const activeProducts = activeProductsResponse.data.activeProducts;
+        
         setActiveProducts(activeProducts);
   
         // Check if there are multiple active products
         if (activeProducts.length > 1) {
+          console.log("if block")
           const topDealResponse = await axios.get('http://127.0.0.1:5500/api/top-deal');
+         // console.log(topDealResponse.data.topDeal.imageUrl)
+          
+        
+        
+        const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${topDealResponse.data.topDeal.imageUrl}`);
+        // console.log(imageResponse)
+        const data = await imageResponse.json()
+        
+        const base64String = Buffer.from(data.buffer.data).toString('base64')
+        const image = `data:${data.contentType};base64,${base64String}`;     
+        setImageStream(image)
+       
           const topDeal = topDealResponse.data.topDeal;
           console.log('Top Deal:', topDeal);
           setTopDeal(topDeal);
+          console.log("topdealsetupped")
         }
         else if (activeProducts.length === 1) {
           const singleActiveProduct = activeProducts[0];
@@ -406,7 +450,7 @@ const renderWinningUser = (productId) => {
       <div className="container mt-5">
         {/* Search Bar */}
         <div className="mb-3">
-          <input style={{ width: '1052px' }} 
+          <input
             type="text"
             placeholder="Search by Product Name or Bid or Category: "
             className="form-control"
@@ -414,7 +458,7 @@ const renderWinningUser = (productId) => {
             onChange={handleSearch}
           />
           <select className="form-select drop" value={searchTerm} onChange={handleSearch}>
-            <option value="" defaultChecked>All Categories</option>
+            <option value="">All Categories</option>
             <option value="Electronics">Electronics</option>
             <option value="Fashion and Clothing">Fashion and Clothing</option>
             <option value="Home and Garden">Home and Garden</option>
@@ -433,182 +477,99 @@ const renderWinningUser = (productId) => {
 
 
         {/* cart banner section */}
+        {/* {console.log(topDeal)} */}
         {topDeal && (
-          <section className="cart-banner pt-100 pb-100">
-            <div className="container">
-              <div className="row clearfix">
-                {/* Image Column */}
-                <div className="image-column col-lg-6">
-                  <div className="image">
-                    <div className="price-box">
-                      <div className="inner-price">
-                        <span className="price">
-                          <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      {topDeal.imageUrl ? (
-                        <img className='b-img' src={`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`} alt="Banner" height="400" width="600" />        
-                      ) : (
-                        <div>No image available</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                {/* Content Column */}
-                <div className="content-column col-lg-6">
-                  <h3><span className="orange-text">Deal</span> of the Day</h3>
-                  <h4>{topDeal.name}</h4>
-                  <div className="text">{topDeal.description}</div>
-                  
-                  {/* counter */}
-                    {topDeal.endTime && (() => {
-                        const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
-                        return (
-                            <div className="time-counter">
-                                <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                                    <div className="counter-column">
-                                        <div className="inner">
-                                            <span className="count" id="days">{remainingTimec.days}</span>Days
-                                        </div>
-                                    </div>
-                                    <div className="counter-column">
-                                        <div className="inner">
-                                            <span className="count" id="hours">{remainingTimec.hours}</span>Hours
-                                        </div>
-                                    </div>  
-                                    <div className="counter-column">
-                                        <div className="inner">
-                                            <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
-                                        </div>
-                                    </div>  
-                                    <div className="counter-column">
-                                        <div className="inner">
-                                            <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })()}
-                  <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
-                <i className="fas fa-shopping-cart"></i> View Details
-              </Link>
-                </div>
+  <section className="cart-banner pt-100 pb-100">
+    <div className="container">
+      <div className="row clearfix">
+        {/* Image Column */}
+        <div className="image-column col-lg-6">
+          <div className="image">
+            <div className="price-box">
+              <div className="inner-price">
+                <span className="price">
+                  <strong>Top Deal!</strong> <br/> {/* You can customize the label */}
+                </span>
               </div>
             </div>
-          </section>
-        )}
+            <div className="col-md-6">
+              {imageStream ? (
+                <img src={imageStream} alt="Banner" height="400" width="600" />        
+              ) : (
+                <div>No image available</div>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Content Column */}
+        <div className="content-column col-lg-6">
+          <h3><span className="orange-text">Deal</span> of the Day</h3>
+          <h4>{topDeal.name}</h4>
+          <div className="text">{topDeal.description}</div>
+          
+          {/* counter */}
+{topDeal.endTime && (() => {
+    const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
+    return (
+        <div className="time-counter">
+            <div className="time-countdown clearfix" data-countdown="" id="countdown">
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="days">{remainingTimec.days}</span>Days
+                    </div>
+                </div>
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="hours">{remainingTimec.hours}</span>Hours
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
+                    </div>
+                </div>  
+                <div className="counter-column">
+                    <div className="inner">
+                        <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+})()}
+
+
+          <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">
+        <i className="fas fa-shopping-cart"></i> View Details
+      </Link>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
           {/* end cart banner section */}
 
         <div className='cap-head'>
-        <span class="text">Live Auctions</span>
+        <span className="text">Live Auctions</span>
         </div>
         <div className="row">
           {/* Display filtered products instead of all products */}
           {activeBidProducts.map((product) => (
-       
-            <div key={product._id} className="col-md-4 mb-4 ">
-                  <div class='container-fluid'>
-                      <div class="card mx-auto col-md-3 col-10 mt-5 ">
-                      <div className='imagecontainer'>
-                      <img
-                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
-                      alt={product.name}
-                      className="mx-auto img-thumbnail"/>
-                      </div>
-                            <div class="card-body win text-center mx-auto">
-                                <div class='cvp'>
-                                    <h5 class="card-title font-weight-bold">{product.name}</h5>
-                                    <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                                    <p className="card-text">{product.endTime &&
-                                        (() => {
-                                            const remainingTime = calculateRemainingTime(product.endTime);
-                                            if (remainingTime.ended) {
-                                              const winnerUserId = winningUsers[product._id];
-                                              const winningBid = product.currentBid;
-
-                                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
-                                                    sendEmailToWinner(product.name, winningBid, product._id);
-                                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
-                                              }
-                                        
-                                              return `Bid has ended`;
-
-                                            } else {
-                                              return `${remainingTime.message}`;
-                                            }
-                                        })()
-                                      }
-                                  </p>
-                                  <Link to={`/products/${product._id}`} className="btn btn-view m">View Details</Link>
-                                  <button className="btn-p cart px-auto" onClick={() => handleBid(product._id, product.currentBid, product.startingBid,product.category)}>
-                                      Place Bid
-                                  </button>
-                                </div>
-                            </div>
-                      </div>
-                  </div>
-                  
-
-            </div>
+              <ActiveBid key={product._id} product={product} calculateRemainingTime={calculateRemainingTime} sendEmailToWinner={sendEmailToWinner} handleBid={handleBid} />
           ))}
         </div>
+
+
         <div className='cap-head'>
-        <span class="text">End Auctions</span>
+        <span className="text">End Auctions</span>
         </div>
 
         {/* bidended */}
         <div className="row">
           {/* Display filtered products instead of all products */}
           {endedBidProducts.map((product) => (
-       
-            <div key={product._id} className="col-md-4 mb-4">
-                  <div class='container-fluid'>
-                      <div class="card mx-auto col-md-3 col-10 mt-5">
-                      
-                      <div className='imagecontainer'>
-                      <img
-                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
-                      alt={product.name}             
-                      className="mx-auto img-thumbnail"
-                      />
-                      </div>
-                      
-                            <div class="card-body text-center mx-auto">
-                                <div class='cvp'>
-                                    <h5 class="card-title font-weight-bold">{product.name}</h5>
-                                    <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                                    <p className="card-text">{product.endTime &&
-                                        (() => {
-                                            const remainingTime = calculateRemainingTime(product.endTime);
-                                            if (remainingTime.ended) {
-                                              const winnerUserId = winningUsers[product._id];
-                                              const winningBid = product.currentBid;
-
-                                              if (!localStorage.getItem(`${product._id}_email_sent`)) { // Check if email has not been sent
-                                                    sendEmailToWinner(product.name, winningBid, product._id);
-                                                    localStorage.setItem(`${product._id}_email_sent`, 'true'); // Set flag in local storage
-                                              }
-                                        
-                                              return `Bid has ended`;
-
-                                            } else {
-                                              return `${remainingTime.message}`;
-                                            }
-                                        })()
-                                      }
-                                  </p>
-                                  <Link to={`/products/${product._id}`} className="btn btn-view b1">View Details</Link>
-                                </div>
-                            </div>
-                      </div>
-                  </div>
-                  
-
-              
-            </div>
+              <EndedBid key={product._id} product={product} calculateRemainingTime={calculateRemainingTime} sendEmailToWinner={sendEmailToWinner} handleBid={handleBid} />
+           
           ))}
         </div>
 
