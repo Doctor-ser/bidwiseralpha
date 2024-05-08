@@ -1,0 +1,86 @@
+/*---------------------
+  Testimonial
+-----------------------*/
+.container-ab {
+    position: relative;
+}
+.team {
+	padding-bottom: 70px;
+}
+
+.team__item {
+	margin-bottom: 30px;
+}
+
+.team__item .imgx {
+	min-width: 100%;
+	margin-bottom: 25px;
+}
+
+.team__item .h4-ab {
+	color: #111111;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.team__item .span-ab {
+	font-size: 15px;
+	display: block;
+	color: #b7b7b7;
+}
+.spad-ab {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+.container-ab {
+	border-bottom: 1px solid #e5e5e5;
+	padding-bottom: 70px;
+}
+
+
+.section-title {
+	margin-bottom: 45px;
+	text-align: center;
+}
+
+.section-title .span-ab {
+	color: #e53637;
+	font-size: 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: 15px;
+	display: block;
+}
+
+.section-title .h2-cl {
+	color: #111111;
+	font-weight: 700;
+	line-height: 46px;
+}
+.contact__text .section-title {
+	text-align: left;
+	margin-bottom: 40px;
+}
+
+.contact__text .section-title .h2-cl {
+	font-size: 48px;
+	margin-bottom: 18px;
+}
+
+.contact__text .section-title {
+	color: #707070;
+	line-height: 26px;
+	margin-bottom: 0;
+}
+
+.h-a:hover{
+    color:"#e53637"
+}
+
+@media only screen and (min-width: 1200px) {
+	.container-ab{
+		max-width: 1170px;
+	}
+}
