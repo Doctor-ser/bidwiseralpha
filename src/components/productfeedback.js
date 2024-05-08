@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './productfeedback.css';
 import { useAuth } from './AuthContext';
 import RatingReview from './star.jsx';
-import { border, borderRadius, height, lineHeight, textTransform, width } from '@mui/system';
+import RatingStar from "./RatingStar" // add you floder path properly
 
 
 const Productfeedback = () => {
@@ -166,8 +166,9 @@ const Productfeedback = () => {
               ) : (
                 <form onSubmit={handleSubmit}>
                       <input type="hidden" name="userId" value={product && product.userId} />
-                      <p style={{display:"flex",alignItems: "center"}} htmlFor="rating">Rating&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;
-                            <input style={{width:"400px",border:"1px solid #dddddd"}}
+                      <p style={{display:"flex",alignItems: "center"}} htmlFor="rating">Rating&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp; 
+                      <RatingStar rating={rating}  onChange={handleRatingChange} />
+                            {/* <input style={{width:"400px",border:"1px solid #dddddd"}}
                               type="number"
                               id="rating"
                               name="rating"
@@ -175,7 +176,7 @@ const Productfeedback = () => {
                               max="5"
                               value={rating}
                               onChange={handleRatingChange}
-                            />
+                            /> */}
                       </p>
                         <p htmlFor="feedback">Comment &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;
                           <textarea style={{width:"395px",height:"70px",border:"1px solid #dddddd",borderRadius:"5px"}}
@@ -199,7 +200,8 @@ const Productfeedback = () => {
                 <form onSubmit={handleUpdateSubmit}>
                   {/* Add input fields for rating and feedback */}
                   <label htmlFor="rating"  style={{marginTop:"30px"}}>Rating:</label>
-                  <input
+                  <RatingStar rating={rating}  onChange={handleRatingChange} />
+                  {/* <input
                     type="number"
                     id="rating"
                     name="rating"
@@ -207,7 +209,7 @@ const Productfeedback = () => {
                     max="5"
                     value={rating}
                     onChange={handleRatingChange}
-                  />
+                  /> */}
                   <label htmlFor="feedback" style={{marginTop:"30px"}}>Feedback:</label>
                   <textarea style={{marginTop:"3px",width:"357px", border:"1px solid black"}}
                     id="feedback"

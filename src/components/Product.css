@@ -155,11 +155,7 @@
    flex-wrap: wrap;
  }
  
- .form-control1{
-   border: 2px  solid #d1d1d1;
-   text-align: center;
- }
- 
+
  .modal-header{
    border-bottom: 2px  solid #d1d1d1;
  }
@@ -191,7 +187,6 @@
    margin: 0px;
  }
  .drop{
-  margin-top: 5px;
   margin-left: 10px;
   display: inline-block;
 	font-size: 13px;
@@ -204,7 +199,7 @@
 	letter-spacing: 4px;
   border-radius: 0;
   width: 18%;
-  height: 46px;
+  height: 50px;
  }
 
  .btn-primary2{
@@ -343,10 +338,7 @@
    margin-left: 15px;
    border-bottom: none;
  }
- .form-control{
-   border-radius: 0px;
-   background-color:#f7f7f7;
- }
+
  .mb-3{
    display: flex;
    flex-wrap: wrap;

@@ -451,6 +451,7 @@ useEffect(() => {
         {/* Search Bar */}
         <div className="mb-3">
           <input
+            style={{width:"81%"}}
             type="text"
             placeholder="Search by Product Name or Bid or Category: "
             className="form-control"

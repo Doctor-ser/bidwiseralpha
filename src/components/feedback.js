@@ -83,30 +83,29 @@ const FeedbackForm = ({ darkMode }) => {
     };
 
     return (
-    <span className="feedback-container">
-        <span className="feedback-form card feed-c" style={{padding:"0px",border:"none"}}>
+    <div className="feedback-container">
+        <div className="feedback-form card feed-c" style={{padding:"0px",border:"none"}}>
             <h2 style={{marginBottom:"0px",border:"none"}} className='card-title ch-t'>We value your feedback</h2>
             <span style={{ border: "3px solid #333333",borderTop:"none"}}>
                 <form onSubmit={handleSubmit}>
                     <span className="feedback-rating">
-                        <label style={{ width: '470px',margin:"40px 0px 0px 0px" }}>How satisfied are you with this webpage?<pre></pre>
-                        <RatingStar rating={rating} value={feedback.rating} onChange={handleInputChange} setRating={setRating} />
-                        </label>
-                        {/* <input type="number" name="rating" value={feedback.rating} onChange={handleInputChange} placeholder="0-5" /> */}
+                        <label style={{ width: '470px',margin:"40px 0px 0px 40px" }}>How satisfied are you with this webpage?
+                        <RatingStar rating={feedback.rating}  onChange={handleInputChange} />
+                        </label>  
                     </span>
-                    <p className="feedback-comment">
+                    <div className="feedback-comment">
                             <label style={{margin:"20px 0px 20px 0px" }}>Why did you give this rating?</label>
-                            <p className='feedback-commentl'>
+                            <div className='feedback-commentl'>
                                 <textarea name="comment" value={feedback.comment} onChange={handleInputChange} />
-                            </p>
-                    </p>
+                            </div>
+                    </div>
                     <br />
                     <div >
                         <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
                     </div>
                 </form>
             </span>
-        </span>
+        </div>
             {/* {averageRating && (
                 <div className="average-rating">
                     <h3>Average Rating: {averageRating.toFixed(2)}</h3>
@@ -123,8 +122,8 @@ const FeedbackForm = ({ darkMode }) => {
                     ))}
                 </ul>
             </div> */}
-    </span>    
+    </div>    
     );
 };
 
-export default FeedbackForm;
+export default FeedbackForm;

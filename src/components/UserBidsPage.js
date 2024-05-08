@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import './homepage.css';
 import Buynow from './Buynow';
+import { height, margin } from '@mui/system';
 
 const UserBidsPage = () => {
   const [userBids, setUserBids] = useState([]);
@@ -70,8 +71,9 @@ const UserBidsPage = () => {
       <Row className="mb-4">
         <Col md={8}>
           <Form>
-            <Form.Group controlId="searchInput">
+            <Form.Group controlId="searchInput" >
               <Form.Control
+                style={{height:"45px",marginTop:"5px"}}
                 type="text"
                 placeholder="Search by product name or bid amount"
                 value={searchInput}
@@ -82,14 +84,14 @@ const UserBidsPage = () => {
           
         </Col>
         <Col md={2}>
-          <Button variant="primary" className="btn-search" onClick={handleSearch}>
+          <Button variant="primary" style={{height:"45px",border:"none"}} className="btn-search" onClick={handleSearch}>
             Search
           </Button>
         </Col>
         <Col md={2}>
-          <Form>
+          <Form >
             <Form.Group controlId="filterDropdown">
-              <Form.Select onChange={(e) => handleFilterChange(e.target.value)} value={filterOption}>
+              <Form.Select style={{height:"45px", marginTop:"5px"}} onChange={(e) => handleFilterChange(e.target.value)} value={filterOption}>
                 <option value="all">All bids</option>
                 <option value="winning">Winning bids</option>
                 <option value="won">Won bids</option>

@@ -1,29 +1,26 @@
+import React from 'react';
 
-import React from 'react'
-
-function RatingStar({ rating, setRating }) {
+function RatingStar({ rating, onChange }) {
   return (
-    <p>
-      {[1, 2, 3, 4, 5].map((star) => {
-        return (  
-          <span
-            className='start'
-            style={{
-              cursor: 'pointer',
-              color: rating >= star ? 'gold' : 'gray',
-              fontSize: `35px`,
-            }}
-            onClick={() => {
-              setRating(star)
-            }}
-          >
-            {' '}
-            ★{' '}
-          </span>
-        )
-      })}
-    </p>
-  )
+    <div style={{margin:"0px"}}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className='star'
+          style={{
+            cursor: 'pointer',
+            color: rating >= star ? 'gold' : 'gray',
+            fontSize: '35px',
+          }}
+          onClick={() => {
+            onChange({ target: { name: 'rating', value: star } });
+          }}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+  );
 }
 
-export default RatingStar;
+export default RatingStar;

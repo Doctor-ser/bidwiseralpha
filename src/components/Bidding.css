@@ -94,7 +94,8 @@
 
   .info, .img {
     flex: 1; /* Each takes half of the space available */
-    border: 1px solid #d2d2d2;
+    background-color: #e7e7e7;
+    border: 1px solid #ececec;
     padding: 50px;
     border-radius: 10px;
     }
