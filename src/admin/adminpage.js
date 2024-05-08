@@ -72,13 +72,11 @@ const AdminPage = () => {
     
 
     return (
-        <div>
-            
             <div className="admin-page">
                 <div className="sidebar">
                     <div  className='n-tag' >
                     <FontAwesomeIcon icon={faUserCircle} className="user-icon" /> {/* Using the faUserCircle icon */}
-                    <strong>{userId}</strong>
+                    <strong style={{wordWrap: "break-word"}}>{userId}</strong>
                     </div>
                     <div className="btns-g" >
                         <button className="side-btn"onClick={handleAddAdmin}>Add New Admin</button>
@@ -148,7 +146,6 @@ const AdminPage = () => {
                 </div>
             </div>
             
-        </div>
     );
 };
 

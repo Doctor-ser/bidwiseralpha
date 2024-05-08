@@ -51,8 +51,8 @@ const AdminPage = () => {
   
 
   return (
-    <div>
-    <div className='user-det'>
+  <section>
+    <section className='user-det'>
       <div className='sidebar emailform'>
         <h2 className='n-tag'>Find User</h2>
         <div className='find-e'>
@@ -69,37 +69,37 @@ const AdminPage = () => {
           </button>
         </div>
       </div>
-      {userDetails && (
-        <div className='detaillisting'>
-            <h2 className='n-tag' style={{color:'black', fontSize:'30px'}}>User Details</h2>
-            <p><strong>Name: </strong> {userDetails.username}</p>
-            <p><strong>Email: </strong>{userDetails.email}</p>
-          <button onClick={deleteUser}>Delete User</button>
-          {userBids.length > 0 && (
-        <div className='mar1'>
-          <h2 style={{textAlign:'center'}}>User Bids</h2>
-          <ul className='flex1'>
-            {userBids.map((bid) => (
-              <li key={bid._id}>
-                <div className='biddetails'>
-                <p>Name: {bid.name}</p>
-                <p>Description: {bid.description}</p>
-                <p>Starting Bid: {bid.startingBid}</p>
-                <p>Current Bid: {bid.currentBid}</p>
-                </div>
-                
-              </li>
-            ))}
-          </ul>
+      <div>
+        <section  style={{border:"20px solid #3d3d4e", width:"1232px"}}></section>
+        {userDetails && (
+          <div className='detaillisting'>
+              <h2 className='n-tag' style={{color:'black', fontSize:'30px'}}>User Details</h2>
+              <p><strong>Name: </strong> {userDetails.username}</p>
+              <p><strong>Email: </strong>{userDetails.email}</p>
+              <button onClick={deleteUser}>Delete User</button>
+              {userBids.length > 0 && (
+                <div style={{marginTop:"70px"}}>
+                  <h2 style={{textAlign:'center'}}>User Bids</h2>
+                  <ul className='flex1'>
+                    {userBids.map((bid) => (
+                      <li key={bid._id}>
+                        <div className='biddetails'>
+                        <p>Name: {bid.name}</p>
+                        <p>Description: {bid.description}</p>
+                        <p>Starting Bid: {bid.startingBid}</p>
+                        <p>Current Bid: {bid.currentBid}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+              </div>
+              )}
         </div>
-      )}
-        </div>
-      )}
-    </div>
-      
+        )}
+      </div>
+    </section>
       {errorMessage && <p>{errorMessage}</p>}
-     
-    </div>
+  </section>
   );
 };
 
