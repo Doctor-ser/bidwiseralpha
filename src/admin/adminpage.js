@@ -86,8 +86,7 @@ const AdminPage = () => {
                     </div>
                 </div>
                 <div className="content">
-                    <div className="admin-details">
-                        <h2 className='cap-head'></h2>
+                    <div className="admin-details" style={{border:"20px solid #3d3d4e", width:"1232px"}}>
                     </div>
                     {showAddAdminForm && (
                         <div className="content">
