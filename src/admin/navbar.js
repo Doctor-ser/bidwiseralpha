@@ -33,13 +33,9 @@ const AdminNavbar = ({ darkMode, toggleDarkMode,setUserType }) => {
   return (
     <nav className={`navbar navbar-expand-lg ${darkMode ? 'dark-mode' : ''}`}>
       <div className="container">
-        
-      <Link className="navbar-brand" to="/admin" style={{ color: 'black', fontWeight: 'bold', fontSize: '2rem',marginLeft: 'none' }}>
-    Admin Panel
-</Link>
-
-     
-        
+      <Link className="navbar-brand" to="/admin" style={{ color: '#3d3d4e', fontWeight: 'bold', fontSize: '2rem',marginLeft: 'none' }}>
+          Admin Panel
+      </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -58,7 +54,6 @@ const AdminNavbar = ({ darkMode, toggleDarkMode,setUserType }) => {
                 My Profile
               </Link>
             </li>
-
             <li className="nav-item">
               <Link className="nav-link" to="/admin/products">
                 Products
@@ -69,7 +64,6 @@ const AdminNavbar = ({ darkMode, toggleDarkMode,setUserType }) => {
                 Users
               </Link>
             </li>
-            
             <li className="nav-item">
               <Link className="nav-link" to="/admin/feedbacks">
                 View Feedbacks

@@ -109,11 +109,6 @@
     max-width: calc(50% - 0px); /* Adjust width considering margin */
     margin-bottom: 80px;
   }
-
-
-  div {
-    margin-bottom: 40px;
-  }
   
   label {
     display: block;

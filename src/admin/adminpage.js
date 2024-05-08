@@ -72,13 +72,11 @@ const AdminPage = () => {
     
 
     return (
-        <div>
-            
             <div className="admin-page">
                 <div className="sidebar">
                     <div  className='n-tag' >
                     <FontAwesomeIcon icon={faUserCircle} className="user-icon" /> {/* Using the faUserCircle icon */}
-                    <strong>{userId}</strong>
+                    <strong style={{wordWrap: "break-word"}}>{userId}</strong>
                     </div>
                     <div className="btns-g" >
                         <button className="side-btn"onClick={handleAddAdmin}>Add New Admin</button>
@@ -86,8 +84,7 @@ const AdminPage = () => {
                     </div>
                 </div>
                 <div className="content">
-                    <div className="admin-details">
-                        <h2 className='cap-head'></h2>
+                    <div className="admin-details" style={{border:"20px solid #3d3d4e", width:"1232px"}}>
                     </div>
                     {showAddAdminForm && (
                         <div className="content">
@@ -149,7 +146,6 @@ const AdminPage = () => {
                 </div>
             </div>
             
-        </div>
     );
 };
 
