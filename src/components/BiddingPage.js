@@ -93,7 +93,6 @@ const BiddingPage = ({ darkMode }) => {
       });
       
       if (response.status === 200) {
-        alert('Image uploaded successfully');
       } else {
         alert('Failed to upload image');
       }

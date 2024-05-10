@@ -79,7 +79,7 @@ const AboutUs = ({ darkMode }) => {
         {/* Team Section End  */}
           <section className={`mt-3 ${darkMode ? 'text-light' : ''}`} >
           <h2 className='h2-cl' style={{fontWeight:"bold"}}>Tech Stack</h2>
-            <section className="card" style={{ background: darkMode ? '#343a40' : '',margin:"50px 300px 10px 300px",width:"560px",height:"220px",padding:"30px 60px"}} >
+            <section className="card" style={{ background: darkMode ? '#343a40' : '',margin:"50px 300px 50px 300px",width:"560px",height:"220px",padding:"30px 60px"}} >
               <section className="card-body" >
                 <p className={`card-text ${darkMode ? 'text-light' : 'text-dark'}`}>
                   <strong>Frontend: </strong>&nbsp;&nbsp;&nbsp; HTML,CSS, Bootstrap, JavaScript, React.js <br />

@@ -126,8 +126,8 @@ const handleForgotPassword = async () => {
         <button className="my-profile-btn-primary l-bt" style={{margin:"0px auto", padding:"0px 105px",Color:"#333333",fontWeight:"bold"}} type="submit">Login</button>
       </form>
       <p ><Link to="/signup"  className="my-profile-btn-primary l-bt sg" style={{margin:"20px 50px", padding:"15px 100px",fontWeight:"bold",textAlign:"center"}}>Signup</Link></p>
-      <p>  
-      <span style={{marginLeft:"120px"}} className={`forgot-password ${darkMode ? 'dark-mode' : ''}`} onClick={handleForgotPassword}>
+      <p style={{textAlign:"center"}}>  
+      <span style={{color:"#b30000",textDecoration:"none",fontWeight:"bold"}} onMouseOver={(e) => e.target.style.color = "#b30000" } onMouseOut={(e) => e.target.style.color = "#e53637"} className={`forgot-password ${darkMode ? 'dark-mode' : ''}`} onClick={handleForgotPassword}>
           Forgot Password?
         </span>
       </p>
