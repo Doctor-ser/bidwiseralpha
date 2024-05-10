@@ -88,7 +88,7 @@ const AdminPage = () => {
                     </div>
                     {showAddAdminForm && (
                         <div className="content">
-                        <div className="form-container">
+                        <div className="form-container" style={{marginTop:"30px"}}>
                             <h3  className='headingadmin'>Add New Admin</h3>
                             <div className='forminput'>
                             <input
@@ -122,7 +122,7 @@ const AdminPage = () => {
 
                     )}
                     {showChangePasswordForm && (
-                        <div className="form-container">
+                        <div className="form-container"  style={{marginTop:"30px"}}>
                             <h3 className='headingadmin'>Change Password</h3>
                             <div className='forminput'>
                             <input 

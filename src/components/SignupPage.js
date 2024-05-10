@@ -83,7 +83,7 @@ const SignupPage = ({ darkMode }) => {
         </div>
         <button className="my-profile-btn-primary l-bt" style={{margin:"0px 45px", padding:"0px 105px",Color:"#333333",fontWeight:"bold"}} type="submit">Signup</button>
       </form><pre></pre>
-      <p style={{margin:"0px 60px"}}>Already have an account? <Link to="/login" className='alac'>Login</Link></p> {/* Link to Login Page */}
+      <p style={{margin:"0px 60px"}}>Already have an account? <Link to="/login" className='alac' style={{color:"#b30000",textDecoration:"none",fontWeight:"bold"}} onMouseOver={(e) => e.target.style.color = "#b30000" } onMouseOut={(e) => e.target.style.color = "#e53637"}>Login</Link></p> {/* Link to Login Page */}
     </div>
   );
 };

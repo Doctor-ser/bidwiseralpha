@@ -83,7 +83,7 @@ const AdminPage = () => {
                   <ul className='flex1'>
                     {userBids.map((bid) => (
                       <li key={bid._id}>
-                        <div className='biddetails'>
+                        <div className='biddetails' style={{marginTop:"30px" ,marginBottom:"10px"}}>
                         <p>Name: {bid.name}</p>
                         <p>Description: {bid.description}</p>
                         <p>Starting Bid: {bid.startingBid}</p>
