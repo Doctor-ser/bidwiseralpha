@@ -1,66 +1,66 @@
-// AuthContext.js
-
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({children,userType,setUserType }) => {
-
+export const AuthProvider = ({ children, userType, setUserType }) => {
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem('loggedIn') === 'true' || false
   );
-
-  const [userId, setUserId] = useState(
-    localStorage.getItem('userId') || null
-  );
-
+  const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
- 
-  
+  const [userBids, setUserBids] = useState([]);
 
-  const [userBids, setUserBids] = useState([]); // Initialize userBids state
+  const sessionTimeoutRef = useRef(null);
+
+  const resetSessionTimeout = () => {
+    clearTimeout(sessionTimeoutRef.current);
+    sessionTimeoutRef.current = setTimeout(() => {
+      setLoggedIn(false);
+      setUserId(null);
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userId');
+      alert('Session expired. Please login again.');
+      window.location.href = '/login';
+    }, 300000); // 5 minutes in milliseconds
+  };
+
+  const handleUserActivity = () => {
+    resetSessionTimeout();
+  };
 
   useEffect(() => {
-    // Fetch user data from local storage on mount
-  
     const storedLoggedIn = localStorage.getItem('loggedIn') === 'true' || false;
     const storedUserId = localStorage.getItem('userId') || null;
-    
-    
-    
-   
     setLoggedIn(storedLoggedIn);
     setUserId(storedUserId);
+
+    // Add event listeners for user activity
+    window.addEventListener('mousemove', handleUserActivity);
+    window.addEventListener('keydown', handleUserActivity);
+
+    return () => {
+      // Remove event listeners on cleanup
+      window.removeEventListener('mousemove', handleUserActivity);
+      window.removeEventListener('keydown', handleUserActivity);
+    };
   }, [userType]);
 
   useEffect(() => {
-    // Update the username state when it changes in local storage
     setUsername(localStorage.getItem('username') || '');
-  }, [loggedIn,username]);
-  
+  }, [loggedIn, username]);
 
   useEffect(() => {
-    let sessionTimeout;
-  
-    if (loggedIn) {
-      sessionTimeout = setTimeout(() => {
-        setLoggedIn(false);
-        setUserId(null);
-        localStorage.removeItem('loggedIn');
-        localStorage.removeItem('userId');
-        alert('Session expired. Please login again.');
-        // Navigate to the login page
-        // You can use your preferred method for navigation, like react-router-dom
-        window.location.href = '/login'; // This will redirect to the login page
-      }, 300000); // 5 minutes in milliseconds
-    }
-  
-    return () => clearTimeout(sessionTimeout);
+    resetSessionTimeout();
+    return () => {
+      clearTimeout(sessionTimeoutRef.current);
+    };
   }, [loggedIn]);
 
   return (
-    <AuthContext.Provider value={{ loggedIn, setLoggedIn, userId,setUserType, setUserId, userBids,userType, setUserBids,username,setUsername}}>
+    <AuthContext.Provider
+      value={{ loggedIn, setLoggedIn, userId, setUserType, setUserId, userBids, userType, setUserBids, username, setUsername }}
+    >
       {children}
     </AuthContext.Provider>
   );

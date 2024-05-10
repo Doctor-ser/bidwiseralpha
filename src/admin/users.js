@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './users.css';
+import { colors } from '@mui/material';
 
 const AdminPage = () => {
   const [email, setEmail] = useState('');
@@ -49,40 +51,55 @@ const AdminPage = () => {
   
 
   return (
-    <div>
-    
-      <h1>Admin Page</h1>
-      <div>
-        <label>Email:</label>
-        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <button onClick={fetchUserDetails}>Fetch Details</button>
+  <section>
+    <section className='user-det'>
+      <div className='sidebar emailform'>
+        <h2 className='n-tag'>Find User</h2>
+        <div className='find-e'>
+          <label>Search Using Email:</label>
+          <input
+            type="text"
+            placeholder="Enter the user email"
+            style={{ marginBottom: '20px' }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button className='fet-btn' onClick={fetchUserDetails}>
+            Fetch Details
+          </button>
+        </div>
       </div>
-      {userDetails && (
-        <div>
-          <h2>User Details</h2>
-          <p>Name: {userDetails.username}</p>
-          <p>Email: {userDetails.email}</p>
-          <button onClick={deleteUser}>Delete User</button>
+      <div>
+        <section  style={{border:"20px solid #3d3d4e", width:"1232px"}}></section>
+        {userDetails && (
+          <div className='detaillisting'>
+              <h2 className='n-tag' style={{color:'black', fontSize:'30px'}}>User Details</h2>
+              <p><strong>Name: </strong> {userDetails.username}</p>
+              <p><strong>Email: </strong>{userDetails.email}</p>
+              <button onClick={deleteUser}>Delete User</button>
+              {userBids.length > 0 && (
+                <div style={{marginTop:"70px"}}>
+                  <h2 style={{textAlign:'center'}}>User Bids</h2>
+                  <ul className='flex1'>
+                    {userBids.map((bid) => (
+                      <li key={bid._id}>
+                        <div className='biddetails' style={{marginTop:"30px" ,marginBottom:"10px"}}>
+                        <p>Name: {bid.name}</p>
+                        <p>Description: {bid.description}</p>
+                        <p>Starting Bid: {bid.startingBid}</p>
+                        <p>Current Bid: {bid.currentBid}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+              </div>
+              )}
         </div>
-      )}
-      {userBids.length > 0 && (
-        <div>
-          <h2>User Bids</h2>
-          <ul>
-            {userBids.map((bid) => (
-              <li key={bid._id}>
-                <p>Name: {bid.name}</p>
-                <p>Description: {bid.description}</p>
-                <p>Starting Bid: {bid.startingBid}</p>
-                <p>Current Bid: {bid.currentBid}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        )}
+      </div>
+    </section>
       {errorMessage && <p>{errorMessage}</p>}
-     
-    </div>
+  </section>
   );
 };
 

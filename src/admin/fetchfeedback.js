@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
+import './feedbackc.css';
 
 function FettchFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -32,30 +33,34 @@ function FettchFeedback() {
 
     return filteredFeedbacks.map(feedback => (
       <div key={feedback._id} className="feedback">
+        <div className='feedbackbox' style={{margin:"20px auto",width:"500px"}}>
         <p><strong>Rating:</strong> {feedback.rating}</p>
         <p><strong>Comment:</strong> {feedback.comment}</p>
-        <p><strong>User:</strong> {feedback.userId}</p>
+        <p><strong>User:</strong> {feedback.userId}</p> 
+        </div>
+        
       </div>
     ));
   };
 
   return (
-    <div className="App">
-        
-      <h1>Feedbacks</h1>
-      <div>
-        <label htmlFor="filter">Filter by:</label>
-        <select id="filter" onChange={(e) => setFilter(e.target.value)}>
-          <option value="recent">Top Recent</option>
-          <option value="worst">Worst Rating</option>
-          <option value="all">All</option>
-        </select>
-      </div>
-      <div className="feedbacks">
-        {renderFeedbacks()}
-      </div>
-      
-    </div>
+      <section className="feedbackform">
+        <section className="feedback-form card feed-c" style={{ margin: "50px 400px", padding: "0px", border: "none", height: "800px",width:"700px" }}>
+          <h2 className="card-title ch-t" style={{ marginBottom: "0px", border: "none" }}>Feedback</h2>
+          <section className='flt' style={{ display: "flex", justifyContent: "flex-end"}}>
+            <label htmlFor="filter" style={{padding:"10px 10px 0px"}}>Filter by:
+            <select id="filter" onChange={(e) => setFilter(e.target.value)}>
+              <option value="recent">Top Recent</option>
+              <option value="worst">Worst Rating</option>
+              <option value="all">All</option>
+            </select>
+            </label>
+          </section>
+          <section className="feedbacks" style={{ overflow: "auto"}}>
+            {renderFeedbacks()}
+          </section>
+        </section>
+      </section>
   );
 }
 

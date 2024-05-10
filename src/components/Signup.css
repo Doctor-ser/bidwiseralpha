@@ -12,8 +12,11 @@
 
 .signup-page:hover{ 
      box-shadow: 1px 8px 20px  grey;
-    
   }
+
+.alac:hover{
+  color:#002288;
+}
 
 .dark-mode {
   background-color: #333;

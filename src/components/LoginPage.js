@@ -103,10 +103,10 @@ const handleForgotPassword = async () => {
 
   return (
     <div className={`login-page ${darkMode ? 'dark-mode' : ''}`}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h2 class="rad card-title " style={{marginBottom: "30px", border: "none"}}>Login</h2>
+      <form onSubmit={handleLogin} style={{ textAlign: "center" }}>
         <div className="form-group">
-          <label>Email:</label>
+          <label style={{ textAlign: "Start" }}>Email</label>
           <input
             type="email"
             value={email}
@@ -115,7 +115,7 @@ const handleForgotPassword = async () => {
           />
         </div>
         <div className="form-group">
-          <label>Password:</label>
+          <label  style={{ textAlign: "Start"}}>Password</label>
           <input
             type="password"
             value={password}
@@ -123,11 +123,11 @@ const handleForgotPassword = async () => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button className="my-profile-btn-primary l-bt" style={{margin:"0px auto", padding:"0px 105px",Color:"#333333",fontWeight:"bold"}} type="submit">Login</button>
       </form>
-      <p>New user? <Link to="/signup">Signup</Link></p>
-      <p>  
-      <span className={`forgot-password ${darkMode ? 'dark-mode' : ''}`} onClick={handleForgotPassword}>
+      <p ><Link to="/signup"  className="my-profile-btn-primary l-bt sg" style={{margin:"20px 50px", padding:"15px 100px",fontWeight:"bold",textAlign:"center"}}>Signup</Link></p>
+      <p style={{textAlign:"center"}}>  
+      <span style={{color:"#b30000",textDecoration:"none",fontWeight:"bold"}} onMouseOver={(e) => e.target.style.color = "#b30000" } onMouseOut={(e) => e.target.style.color = "#e53637"} className={`forgot-password ${darkMode ? 'dark-mode' : ''}`} onClick={handleForgotPassword}>
           Forgot Password?
         </span>
       </p>

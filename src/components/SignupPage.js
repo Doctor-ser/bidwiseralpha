@@ -52,10 +52,10 @@ const SignupPage = ({ darkMode }) => {
 
   return (
     <div className={`signup-page ${darkMode ? 'dark-mode' : ''}`}>
-      <h2>Signup</h2>
+      <h2 class="rad card-title " style={{marginBottom: "30px", border: "none"}}>SignUp</h2>
       <form onSubmit={handleSignup}>
         <div className="form-group">
-          <label>Username:</label>
+          <label>Username</label>
           <input
             type="text"
             value={username}
@@ -64,7 +64,7 @@ const SignupPage = ({ darkMode }) => {
           />
         </div>
         <div className="form-group">
-          <label>Email:</label>
+          <label>Email</label>
           <input
             type="email"
             value={email}
@@ -73,7 +73,7 @@ const SignupPage = ({ darkMode }) => {
           />
         </div>
         <div className="form-group">
-          <label>Password:</label>
+          <label>Password</label>
           <input
             type="password"
             value={password}
@@ -81,9 +81,9 @@ const SignupPage = ({ darkMode }) => {
             required
           />
         </div>
-        <button type="submit">Signup</button>
+        <button className="my-profile-btn-primary l-bt" style={{margin:"0px 45px", padding:"0px 105px",Color:"#333333",fontWeight:"bold"}} type="submit">Signup</button>
       </form><pre></pre>
-      <p>Already have an account? <Link to="/login">Login</Link></p> {/* Link to Login Page */}
+      <p style={{margin:"0px 60px"}}>Already have an account? <Link to="/login" className='alac' style={{color:"#b30000",textDecoration:"none",fontWeight:"bold"}} onMouseOver={(e) => e.target.style.color = "#b30000" } onMouseOut={(e) => e.target.style.color = "#e53637"}>Login</Link></p> {/* Link to Login Page */}
     </div>
   );
 };

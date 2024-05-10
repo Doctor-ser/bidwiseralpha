@@ -1,43 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './chat.css';
-import { useParams } from 'react-router-dom'; // Import useParams hook
-import { useAuth } from './AuthContext'; // Import the useAuth hook
+import { useParams } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { ReactComponent as Plane } from '../svg/paper_plane.svg';
+import { colors } from '@mui/material';
 
-
-function Chat({loadMessage,setLoadMessage}) {
-  const { userId } = useAuth(); // Get userId from useAuth
-
+function Chat({ loadMessage, setLoadMessage }) {
+  const { userId } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState({
-    email: userId, // Set email to userId obtained from useAuth
+    email: userId,
   });
-  
-
-  // Use useParams hook to access product ID from route
   const { productId } = useParams();
-  const [proid, setProid] = useState(productId); // State to store product ID
+  const [proid, setProid] = useState(productId);
 
-  // Function to fetch messages from MongoDB (adjust API endpoint)
+  // Define chatContainerRef using useRef
+  const chatContainerRef = useRef(null);
+
   const fetchMessages = async () => {
     try {
       console.log("fetching messages for product ID:", proid);
-      const response = await fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`); // Include product ID in query string
-      const data = await response.json();
-      if (data.length === 0) {
+      // Fetch product data along with messages
+      const [messagesResponse, productResponse] = await Promise.all([
+        fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`),
+        fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`)
+      ]);
+      const [messagesData, productData] = await Promise.all([
+        messagesResponse.json(),
+        productResponse.json()
+      ]);
+
+      if (messagesData.length === 0) {
         setMessages(['No messages to display']);
       } else {
-        setMessages(data);
-        console.log(data)
+        const messagesWithSellerInfo = messagesData.map(message => ({
+          ...message,
+          isCurrentUser: message.senderEmail === currentUser.email, // Add a flag to identify messages sent by the current user
+          isSeller: message.senderEmail === productData.seller.userId
+        }));
+        setMessages(messagesWithSellerInfo);
       }
-      
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
   };
-  
 
-  // Function to send a new message and store it in MongoDB
+  const checkSeller = async () => {
+    try {
+      const productResponse = await fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`);
+      const productData = await productResponse.json();
+  
+      if (productData && productData.seller.userId === currentUser.email) {
+        setCurrentUser(prevState => ({ ...prevState, isSeller: true }));
+      }
+    } catch (error) {
+      console.error('Error checking seller:', error);
+    }
+  };
+
   const sendMessage = async () => {
     if (newMessage.trim()) {
       const newMessageData = {
@@ -45,24 +68,16 @@ function Chat({loadMessage,setLoadMessage}) {
         user: currentUser,
         productId: proid,
       };
-      console.log(newMessageData);
-  
+
       try {
-        console.log("sending message 2");
         const response = await fetch('http://127.0.0.1:5500/api/send-message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessageData),
         });
-        console.log("sending message 3");
-  
+
         if (response.ok) {
-          console.log("sending message 4");
-          console.log(response);
-          // Clear input field after successful message sending
           setNewMessage('');
-  
-          // Fetch updated messages after sending a new message
           fetchMessages();
         } else {
           console.error('Error sending message:', response.statusText);
@@ -73,55 +88,106 @@ function Chat({loadMessage,setLoadMessage}) {
     }
   };
 
-  // Handle keyboard press for Enter key
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       sendMessage();
     }
   };
 
-  // Fetch messages on component mount and set proid based on productId in route
   useEffect(() => {
     fetchMessages();
-    setProid(productId); // Extract product ID from route and store in state
-  }, [productId,loadMessage]); // Update proid only when productId changes
-  
+    setProid(productId);
+    checkSeller();
+  }, [productId, loadMessage]);
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat container when messages update
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className="chat-container">
-      <h2>Global Chat</h2>
-      <div className="message-list">
-        {/* Map through messages, conditionally render a placeholder for empty state */}
-        {messages.map((message, index) => (
-          <div className="message" key={index}>
-            {message === 'No messages to display' ? (
-              <p className="no-messages">No messages yet!</p>
-            ) : (
-              // Render regular message content here
-              <>
-                <div className="profile-container">
-                  <p className="profile-info">{message.senderEmail}</p>
-                </div>
-                <p className="message-content">{message.message}</p>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <h2 className='card-title ch-t'>Global Chat</h2>
+      <p style={{marginBottom:"0px"}} className="message-list" ref={chatContainerRef}>
+        {messages.length === 0 ? (
+          <p className="no-messages">No messages yet!</p>
+        ) : (
+          <>
+            {messages.map((message, index) => (
+              <MessageItem key={index} message={message} />
+            ))}
+          </>
+        )}
+      </p>
 
-
-      <div className="input-container">
-        <input
-          type="text"
+      <span className="input-container">
+        <input style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '0px', borderBottomLeftRadius: '10px', borderBottomRightRadius: '0' , border:"none",borderTop:" 1px solid #ccc"}}
+          className='cht-i'
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
+          placeholder="Write your message..."
         />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+        <span style={{borderTop:" 1px solid #ccc",padding:"20px"}} onClick={sendMessage}><Plane width="25" height="25" /></span> 
+      </span>
     </div>
   );
 }
+
+const MessageItem = ({ message }) => {
+  const [senderName, setSenderName] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSenderName = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5500/api/fetchchatusername/${message.senderEmail}`);
+        if (response.ok) {
+          const userData = await response.json();
+          const senderName = userData.username; // Adjust the property name based on your API response
+          setSenderName(senderName);
+        } else {
+          console.error('Failed to fetch sender data');
+        }
+      } catch (error) {
+        console.error('Error fetching sender data:', error);
+      } finally {
+        setLoading(false); // Set loading to false once data fetching is complete
+      }
+    };
+
+    fetchSenderName();
+  }, [message.senderEmail]);
+
+  return (
+      <span style={{ display: 'flex', flexDirection: 'column' }}>
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: message.isCurrentUser ? 'flex-end' : 'flex-start' }}>
+        {!message.isCurrentUser && (
+          <span style={{ marginRight: '5px' }}>
+            <FontAwesomeIcon icon={faUserCircle} className="c-ic left-icon" />
+          </span>
+        )}
+        <span className={`message ${message.isCurrentUser ? 'sent-message' : 'regular-message'}`}>
+          <span className={`message-content ${message.isCurrentUser ? 'right-align' : ''}`} style={{ overflowWrap: 'break-word', wordWrap: 'break-word', wordBreak: 'break-word' }}>
+            {message.message}
+          </span>
+        </span>
+        {message.isCurrentUser && (
+          <span style={{ marginLeft: '5px' }}>
+            <FontAwesomeIcon icon={faUserCircle} className="c-ic right-icon" />
+          </span>
+        )}
+      </span>
+      <span style={{ display: 'flex', justifyContent: message.isCurrentUser ? 'flex-end' : 'flex-start' ,  marginLeft: "5px"}}>
+        <span>
+        <span className="c-un" style={{ textTransform: "uppercase",fontSize:"13px"}}>{senderName}</span>
+        {message.isSeller && <span className="seller-tag" style={{fontSize:"13px"}}>&nbsp;(SELLER)</span>}
+      </span>
+      </span>
+    </span>
+  );
+};
 
 export default Chat;

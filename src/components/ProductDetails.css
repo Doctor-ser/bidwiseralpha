@@ -1,0 +1,178 @@
+/* ProductDetails.css */
+
+.det-img-thumbnail {
+    border: none;
+    height: 670px;
+    width: 1000px;
+  }
+  
+  .pro-img {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
+    border-radius: 10px;
+    margin: 50px 0px 0px 40px;
+    background-color: #eeeeee;
+    max-width: 1000px; /* Same as image width */
+    max-height: 670px; /* Same as image height */
+  }
+  .ic{
+    border-bottom: 1px solid #e3e3e3;
+    padding-bottom: 10px;
+  }
+  .pro-details {
+    display: flex;
+    margin: 0 ;
+    margin-top: 25px;
+    border-bottom: #e8e8e8 1px solid;
+  }
+  
+  .pro-info {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+    flex: 1;
+    margin: 50px 80px 30px 30px;
+    color: #3D3D4E; /* Change the color to black */
+  }
+  .c{
+    padding: 25px 15px;
+    border: #e8e8e8 solid 1px;
+    border-radius: 10px;
+  }
+  .description {
+    text-align: justify;
+  }
+
+  
+  .highest-bid {
+    margin: 5px 0;
+  }
+  
+  .end-time {
+
+    margin: 5px 0;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  
+
+  
+  .suggested-post{
+    display: flex;
+    margin-left: 20px;
+  }
+  .conatiner-suggestedposts{
+    display: block;
+  }
+
+  .box-suggestedposts{
+    border: 1px #e3e3e3 solid;
+    padding: 20px 0px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    margin-left: 25px;
+  }
+
+  .imagecontainer{
+    width: 400px; /* Adjust the width and height as per your requirement */
+      height: 225px;
+      overflow: hidden; /* This will hide any part of the image that exceeds the container */
+      display: flex;
+      justify-content: center; /* Centers the content horizontally */
+      align-items: center;
+  }
+  .imagecontainer img{
+    max-width: 100%; /* Ensures the image doesn't exceed the container width */
+      max-height: 100%; /* Ensures the image doesn't exceed the container height */
+      display: block; 
+  }
+  .hn{
+    font-weight: bold;
+    font-size: 45px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .p-de{
+    margin: 30px 10px 10px 10px;
+    line-height: 40px;
+  }
+  .sel{
+    position: relative; /* Make the container positioned relative */
+    border: 1px solid #e8e8e8;
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .sel:hover{
+    background-color: #e8e8e8;
+  }
+  .us-ic{
+    font-size: 50px;
+    color: #3D3D4E; /* Change the color of the icon to black */
+  }
+  .f-c{
+    text-align: center;
+    border: none;
+    border-bottom: 1px #e3e3e3 solid;
+    margin-bottom: 25px;
+    background-color: #ffffff;
+  }
+  .id{
+    position: absolute; /* Position the span absolutely */
+    top: 45%; /* Move the top of the element to the middle of its parent */
+    transform: translateY(-50%); /* Center the element vertically */
+    color: #3D3D4E; /* Change the color to black */
+  }
+  .b-cb{
+    width: 170px;
+  }
+  .bc {
+    display: flex;
+    flex-direction: column; /* Align buttons vertically */
+    align-items: center; /* Center-align buttons horizontally */
+    margin-bottom: 10px;
+    margin-top: 35px;
+  }
+  .cur{
+    font-size: 30px;
+  }
+ .bp{
+  padding: 6px 20px;
+    margin-top: 18px;
+    border: #3665f3 1px solid;
+    color: #3665f3;
+    font-size:20px;
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 50px;
+    font-weight: 100;
+  }
+  .bp:hover {
+    background-color: #eeeeee; /* Change background color on hover */
+    color: #3665f3; /* Change text color on hover */
+  }
+
+  .conatiner-suggestedposts{
+    margin: 40px 40px 0px 40px;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+  }
+  .sug{
+    margin:30px 0px 40px 50px;
+    font-size: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .post-details{
+    margin-left: 25px;
+    margin-top: 25px;
+    font-size: 18px;
+    color: #3D3D4E;
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .no-underline {
+      text-decoration: none;
+    }

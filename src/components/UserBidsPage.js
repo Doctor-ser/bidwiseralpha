@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import './homepage.css';
+import Buynow from './Buynow';
+import { height, margin } from '@mui/system';
 
 const UserBidsPage = () => {
   const [userBids, setUserBids] = useState([]);
@@ -25,9 +27,7 @@ const UserBidsPage = () => {
       }
     };
     fetchUserBids();
-    const intervalId = setInterval(fetchUserBids, 5000); // Refresh every 5 seconds
-
-    return () => clearInterval(intervalId); // Clear interval on component unmount
+    
   }, [userId, filterOption]);
 
   const filterBids = (bids) => {
@@ -61,6 +61,9 @@ const UserBidsPage = () => {
   const goToProductFeedback = (prodId) => {
     window.location.href = `/ProductFeedback/${prodId}`;
   };
+  // const goToBuyNow = (prodId) => {
+  //   window.location.href = `/BuyNow/${prodId}`;
+  // };
 
   return (
     <div className="container mt-4">
@@ -68,8 +71,9 @@ const UserBidsPage = () => {
       <Row className="mb-4">
         <Col md={8}>
           <Form>
-            <Form.Group controlId="searchInput">
+            <Form.Group controlId="searchInput" >
               <Form.Control
+                style={{height:"45px",marginTop:"5px"}}
                 type="text"
                 placeholder="Search by product name or bid amount"
                 value={searchInput}
@@ -77,16 +81,17 @@ const UserBidsPage = () => {
               />
             </Form.Group>
           </Form>
+          
         </Col>
         <Col md={2}>
-          <Button variant="primary" className="btn-search" onClick={handleSearch}>
+          <Button variant="primary" style={{height:"45px",border:"none"}} className="btn-search" onClick={handleSearch}>
             Search
           </Button>
         </Col>
         <Col md={2}>
-          <Form>
+          <Form >
             <Form.Group controlId="filterDropdown">
-              <Form.Select onChange={(e) => handleFilterChange(e.target.value)} value={filterOption}>
+              <Form.Select style={{height:"45px", marginTop:"5px"}} onChange={(e) => handleFilterChange(e.target.value)} value={filterOption}>
                 <option value="all">All bids</option>
                 <option value="winning">Winning bids</option>
                 <option value="won">Won bids</option>
@@ -98,8 +103,8 @@ const UserBidsPage = () => {
 
       <div className="row">
         {filteredBids.map((bid) => (
-          <div key={bid._id} className="col-md-4 mb-4">
-            <Card>
+          <div key={bid._id} className="win card-body text-center mx-auto col-md-4 mb-4">
+            <Card className='card-f'>
               <Card.Body>
                 <Card.Title>{bid.productName}</Card.Title>
                 <Card.Text>
@@ -118,12 +123,17 @@ const UserBidsPage = () => {
                   <strong>Winning Bid:</strong> {bid.isWinningBid ? 'Yes' : 'No'}
                 </Card.Text>
                 {bid.isWinningBid && bid.mailsend && (
-  <Button variant="primary" className="feedback-btn" onClick={() => goToProductFeedback(bid.productId)}>
-    Product Feedback
-  </Button>
-)}
-
-
+                  <div className="text-center btx">
+                    <Button variant="primary" className="btn btn-view x" onClick={() => goToProductFeedback(bid.productId)}>
+                    Product Feedback
+                    </Button>
+                  </div>
+                )}
+                {bid.isWinningBid && bid.mailsend && (
+                  <div className='gpay'>
+                    <Buynow/>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </div>
