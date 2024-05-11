@@ -57,7 +57,7 @@ const SellerInfoPage = () => {
               <p key={index}><h3 style={{textAlign:"center",marginTop:"30px",fontWeight:"bold",padding:"25px",backgroundColor:"#ededed"}}>Review {index+1}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;<strong>{feedback.feedback}</strong></h3></p>
             ))
           ) : (
-            <p style={{textAlign: 'center', marginTop: '20px'}}>No reviews added so far</p>
+            <p style={{textAlign: 'center', marginTop: '20px'}}>No Reviews Yet !!! </p>
           )}
         </p>
       </div>
