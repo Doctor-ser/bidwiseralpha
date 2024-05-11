@@ -579,16 +579,19 @@ app.post('/api/forgotPassword', async (req, res) => {
     from: 'bidwiser.help@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
-    text: `Dear ${username}, 
+    html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+            <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: black; width: 100%; height: 40px;">Password Reset</h1>
+          	<p style="font-family: Arial, sans-serif; font-size: 16px; font-weight:bold;">Dear ${username},</p><pre></pre>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Your account has been notified of a <strong>Forgotten Password</strong> request.</p>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">The New Password for your account is: <strong>${newPassword}</strong>.<br/>You can change your password once you have logged into your account.</p>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Please do not share your password with third parties.</p>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you for using our Online Auction System BidWiser.</p><pre>
+      </pre>
+            <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
+            <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">BidWiser Team</p>
+          </div>`,
+};
 
-    We have received a Forgot Password request for your account. 
-    Your New Password is : ${newPassword}. Please do not share your password with anyone.
-    
-    We thank you for using our Online Auction System BidWiser.
-    
-    Thankyou 
-    BidWiser Team`,
-  };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -1057,9 +1060,17 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     const mailOptions = {
       from: 'bidwiser.help@gmail.com',
       to: winnerEmail,
-      subject: 'Congratulations! You are the winning bidder',
-      text: `Dear ${username},\n\nCongratulations! You have won the bid for "${productName}" with a bid amount of ₹${winningBid}.\n\nThank you for participating in the auction.\n\nSincerely,\nBidWiser`
-    };
+      subject: 'Congratulations! You Won the Bid',
+      html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+              <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color:black; width: 100%; height: 40px;">Congratulations!</h1>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Dear ${username},</p><pre> </pre>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;"><strong>Congratulations! </strong><br/>You have won the bid that you put on &nbsp;<strong>"${productName}"&nbsp;</strong> with the bid amount of&nbsp; <strong>₹${winningBid}</strong>.
+              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you for participating in the auction.</p><pre> </pre>
+              <p style="font-weight: bold;font-family: Arial, sans-serif; font-size: 16px; color: #333;">Sincerely,</p>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #333;">BidWiser Team</p>
+            </div>`,
+  };
+  
 
     await transporter.sendMail(mailOptions);
     // console.log('Email sent to winner:', winnerEmail);
@@ -1195,21 +1206,30 @@ app.post('/api/placeBid', async (req, res) => {
       const previousWinningBidAmount = previousWinningBid.bidAmount;
       const productName = previousWinningBid.productName;
 
-      // Send email to the previous winner
-      // const mailOptions = {
-      //   from: 'bidwiser.help@gmail.com',
-      //   to: previousWinnerUserId, // Assuming userId contains the email
-      //   subject: 'You have been outbid!',
-      //   text: `Hello '${username}',\n\nYou have been outbid for the product '${productName}'. Your previous bid amount: ${previousWinningBidAmount}, New bid amount: ${bidAmount}`,
-      // };
+      const mailOptions = {
+        from: 'bidwiser.help@gmail.com',
+        to: previousWinnerUserId, // Assuming userId contains the email
+        subject: 'You have been outbid!',
+        html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+                <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: #FF0000; width: 100%; height: 40px;">You have been OUTBIDDED!</h1>
+                <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Hello '${username}',</p>
+                <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">You have been outbid for the product &nbsp;<strong>'${productName}'</strong>.<br/> Your Previous Bid Amount:&nbsp; <strong>${previousWinningBidAmount}</strong>, <br/>New Bid Amount: &nbsp;<strong>${bidAmount}</strong></p>
+                 <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you for choosing BidWiser!</p>
+    <pre>
+          </pre>
+                <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
+                <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">BidWiser Team</p>
+              </div>`,
+    };
+    
 
-      // transporter.sendMail(mailOptions, (error, info) => {
-      //   if (error) {
-      //     console.error('Error sending email:', error);
-      //   } else {
-      //     console.log('Email sent:', info.response);
-      //   }
-      // });
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
 
       // Mark the previous winning bid as not winning
       previousWinningBid.isWinningBid = false;
@@ -1348,8 +1368,17 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
     from: 'bidwiser.help@gmail.com',
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
-    text: `Dear '${username}', Welcome to BidWiser, the ultimate online auction system. Explore exciting features and start bidding on your favorite items. Thank you for choosing BidWiser!`,
-  };
+    html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+            <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: black; width: 100%; height: 40px;">Welcome to BidWiser</h1>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Dear '${username}',</p>
+            <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Welcome to BidWiser, the epitome of online auctions. Unleash excitement with innovative features.<br/>Bid confidently on your favorite items, as every click opens a gateway to unparalleled bidding experiences. <br/><strong>Let the journey begin!</strong></p>
+            <p style="font-family: Arial, sans-serif; font-size: 18px; color: #333;font-weight:bold">Thank you for choosing BidWiser!</p>
+            <pre>
+      </pre>
+            <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
+            <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">BidWiser Team</p>
+          </div>`,
+};
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
