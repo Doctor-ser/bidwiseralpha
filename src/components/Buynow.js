@@ -2,9 +2,9 @@ import GooglePayButton from "@google-pay/button-react";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-function Buynow() {
+function Buynow({ bidAmount }) {
   const { proid } = useParams();
-  
+
   return (
     <div className="App">
       <GooglePayButton
@@ -35,9 +35,9 @@ function Buynow() {
           transactionInfo: {
             totalPriceStatus: "FINAL",
             totalPriceLabel: "Total",
-            totalPrice: "1",
-            currencyCode: "USD",
-            countryCode: "US",
+            totalPrice: bidAmount.toString(), // Set bidAmount as totalPrice
+            currencyCode: "INR", // Adjust currency code if needed
+            countryCode: "IN",
           },
           shippingAddressRequired: true,
           callbackIntents: ["PAYMENT_AUTHORIZATION"],
@@ -45,9 +45,9 @@ function Buynow() {
         onLoadPaymentData={(paymentRequest) => {
           console.log(paymentRequest);
         }}
-        onPaymentAuthorized={paymentData =>{
+        onPaymentAuthorized={(paymentData) => {
           console.log('paymentData ' + paymentData);
-          return { transactionState: 'SUCCESS'}
+          return { transactionState: 'SUCCESS' };
         }}
         existingPaymentMethodRequired='false'
         buttonColor="black"

@@ -61,9 +61,6 @@ const UserBidsPage = () => {
   const goToProductFeedback = (prodId) => {
     window.location.href = `/ProductFeedback/${prodId}`;
   };
-  // const goToBuyNow = (prodId) => {
-  //   window.location.href = `/BuyNow/${prodId}`;
-  // };
 
   return (
     <div className="container mt-4">
@@ -131,7 +128,7 @@ const UserBidsPage = () => {
                 )}
                 {bid.isWinningBid && bid.mailsend && (
                   <div className='gpay'>
-                    <Buynow/>
+                    <Buynow bidAmount={bid.bidAmount} />
                   </div>
                 )}
               </Card.Body>
