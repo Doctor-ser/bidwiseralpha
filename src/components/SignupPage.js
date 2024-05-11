@@ -8,24 +8,47 @@ const SignupPage = ({ darkMode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const validatePassword = () => {
+    // Password should contain at least 8 characters
+    if (password.length < 8) {
+      alert('Password must contain at least 8 characters.');
+      return false;
+    }
+    // Password should contain at least one uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      alert('Password must contain at least one uppercase letter.');
+      return false;
+    }
+    // Password should contain at least one special character
+    if (!/[$&+,:;=?@#|'<>.^*()%!-]/.test(password)) {
+      alert('Password must contain at least one special character.');
+      return false;
+    }
+    // Password should contain at least one digit
+    if (!/\d/.test(password)) {
+      alert('Password must contain at least one digit.');
+      return false;
+    }
+    return true;
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
-  
+
+    if (!validatePassword()) return; // Validate password before submitting
+
     const obj = { username, email, password };
-    //console.log(obj);
     const url = "http://127.0.0.1:5500/api/signup";
-    
-  
+
     try {
-      
-      const res = await axios.post(url,obj);
-     
+      const res = await axios.post(url, obj);
+
       if (res.status === 200) {
         sendWelcomeEmail(email);
         alert("User added successfully");
         window.location.href = "/login";
       } else {
-        console.log("promise rejected")
+        console.log("promise rejected");
         Promise.reject();
       }
     } catch (err) {
@@ -39,7 +62,7 @@ const SignupPage = ({ darkMode }) => {
 
   // Function to send a welcome email
   const sendWelcomeEmail = async (userEmail) => {
-    const welcomeEmailUrl = "http://127.0.0.1:5500/api/sendWelcomeEmail"; // Create this endpoint on your server
+    const welcomeEmailUrl = "http://127.0.0.1:5500/api/sendWelcomeEmail";
 
     try {
       await axios.post(welcomeEmailUrl, { email: userEmail });
@@ -49,10 +72,9 @@ const SignupPage = ({ darkMode }) => {
     }
   };
 
-
   return (
     <div className={`signup-page ${darkMode ? 'dark-mode' : ''}`}>
-      <h2 class="rad card-title " style={{marginBottom: "30px", border: "none"}}>SignUp</h2>
+      <h2 className="rad card-title" style={{ marginBottom: "30px", border: "none" }}>SignUp</h2>
       <form onSubmit={handleSignup}>
         <div className="form-group">
           <label>Username</label>
@@ -81,9 +103,9 @@ const SignupPage = ({ darkMode }) => {
             required
           />
         </div>
-        <button className="my-profile-btn-primary l-bt" style={{margin:"0px 45px", padding:"0px 105px",Color:"#333333",fontWeight:"bold"}} type="submit">Signup</button>
+        <button className="my-profile-btn-primary l-bt" style={{ margin: "0px 45px", padding: "0px 105px", Color: "#333333", fontWeight: "bold" }} type="submit">Signup</button>
       </form><pre></pre>
-      <p style={{margin:"0px 60px"}}>Already have an account? <Link to="/login" className='alac' style={{color:"#b30000",textDecoration:"none",fontWeight:"bold"}} onMouseOver={(e) => e.target.style.color = "#b30000" } onMouseOut={(e) => e.target.style.color = "#e53637"}>Login</Link></p> {/* Link to Login Page */}
+      <p style={{ margin: "0px 60px" }}>Already have an account? <Link to="/login" className='alac'>Login</Link></p>
     </div>
   );
 };
