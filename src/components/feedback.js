@@ -101,7 +101,7 @@ const FeedbackForm = ({ darkMode }) => {
                     </div>
                     <br />
                     <div >
-                        <button style={{margin:"0px 277px"}} className='btn btn-primary1' type="submit">Submit</button>
+                        <button style={{margin:"0px 277px 30px"}} className='btn btn-primary1' type="submit">Submit</button>
                     </div>
                 </form>
             </span>

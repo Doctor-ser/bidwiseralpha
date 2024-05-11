@@ -27,15 +27,11 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        console.log("fetching products");
         const response = await axios.get(`http://127.0.0.1:5500/api/products/${productId}`);
-        console.log("products fetched");
-        console.log("waiting for image");
         const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${response.data.product.imageUrl}`);
-        console.log("imagefetched");
-
-      
+        // console.log(imageResponse)
         const data = await imageResponse.json()
+        // const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer.buffer)));
         const base64String = Buffer.from(data.buffer.data).toString('base64')
         const image = `data:${data.contentType};base64,${base64String}`;     
         setImageStream(image)
@@ -49,10 +45,9 @@ const ProductDetails = () => {
 
           if (ended) {
             try {
-              console.log("winner fetching");
               const winnerResponse = await axios.get(`http://127.0.0.1:5500/api/products/${productId}/winner`);
               const winner = winnerResponse.data.winner;
-              console.log("winner fetched");
+
               setProduct(prevProduct => ({
                 ...prevProduct,
                 currentBid: winner.bidAmount,
@@ -72,9 +67,7 @@ const ProductDetails = () => {
         const category = response.data.product.category;
         const productId= response.data.product._id;
         //console.log(category)
-        console.log("suggestedpost api req");
         const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category ,productId});
-        console.log("suggestedpost fetched");
         setSuggestedPosts(response1.data);
         }
         catch(error){
@@ -92,7 +85,7 @@ const ProductDetails = () => {
 
     fetchProductDetails();
 
-    const intervalId = setInterval(fetchProducts, 1000);
+    const intervalId = setInterval(fetchProducts, 500000);
 
     return () => clearInterval(intervalId);
   }, [productId]);
@@ -208,34 +201,36 @@ const ProductDetails = () => {
       {product ? (
         <div className='pro-details'>
           {productImage && (
-             
+           
              <img
               src={imageStream}
               alt={product.name}
               className="pro-img det-img-thumbnail"
             />
+          
+          
           )}
 
           <div className='pro-info'>
             <div className='c'>
             <h2 className='hn'>{product.name}</h2>
             <div className='p-de'>
-              <p className="description">{product.description}</p>
+              <div className="description">{product.description}</div>
               <div className="sel">
                 <Link to={`/sellerinfo/${product.userId}`}>
                   <FontAwesomeIcon icon={faUserCircle} className="us-ic" />
                   <span className='id'>&nbsp;{product.userId}</span>
                 </Link>
               </div>
-              <p className="bid-details cur">Current Bid:&nbsp;&#8377;<strong>{product.currentBid}</strong></p>
-              <p className="bid-details">Starting Bid: &#8377;{product.startingBid}</p>
+              <div className="bid-details cur">Current Bid:&nbsp;&#8377;<strong>{product.currentBid}</strong></div>
+              <div className="bid-details">Starting Bid: &#8377;{product.startingBid}</div>
               {product.winnerEmail && <p className="winner-email">Winner Email: {product.winnerEmail}</p>}
               {product.winnerEmail && <p className="highest-bid">Highest Bid: &#8377;{product.currentBid}</p>}
               {winnerMessage && <p className="winner-message">{winnerMessage}</p>}
               {product.endTime && (
-                <p className="end-time">
+                <div className="end-time">
                   {remainingTime ? remainingTime : "Bidding for this product has ended."}
-                </p>
+                </div>
               )}
 
               {/* Conditionally render buttons if there is remaining time or no winner */}
@@ -260,7 +255,7 @@ const ProductDetails = () => {
       )}
       
       {/* Suggested Post */}
-      <div className='conatiner-suggestedposts'> 
+      <div className='conatiner-suggestedposts' style={{paddingBottom:"40px"}}> 
         <h3 className='sug'>Similar products</h3>
         <div className="suggested-post">
        {suggestedPosts.map((post) => (

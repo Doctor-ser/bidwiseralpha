@@ -5,6 +5,8 @@ import './productfeedback.css';
 import { useAuth } from './AuthContext';
 import RatingReview from './star.jsx';
 import RatingStar from "./RatingStar" // add you floder path properly
+import { text } from '@fortawesome/fontawesome-svg-core';
+import { Cursor } from 'mongoose';
 
 
 const Productfeedback = () => {
@@ -138,7 +140,15 @@ const Productfeedback = () => {
       setFeedback(existingFeedback[0].feedback);
     }
   };
+  const handleCloseFeedback = () => {
+    setShowUpdateForm(false);
+    setRating(0);
+    setFeedback('');
+  };
 
+  const handle1CloseFeedback = ()=> {
+    navigate(-1); // Navigate back to the previous page
+  }
   return (
     <div className='feedback-container'>
       <div class="feedback-form card feed-c" style={{margin:"0px", padding: "0px", border: "none", height:"600px"}}><h2 class="card-title ch-t" style={{marginBottom:" 0px", border:"none"}}>Product Feedback</h2>
@@ -196,7 +206,8 @@ const Productfeedback = () => {
           {showUpdateForm && (
           <div class="modal" style={{display:"block"}}>
             <div className="modal-dialog change-password-form ff1">
-              <span class="modal-content ff" style={{padding:"50px"}}>
+            <span class="modal-content ff" style={{padding:"10px 15px 50px 60px", cursor:"pointer"}}>
+              <div style={{textAlign:"end"}} className="close-btn" onClick={handleCloseFeedback}>X</div>
                 <form onSubmit={handleUpdateSubmit}>
                   {/* Add input fields for rating and feedback */}
                   <label htmlFor="rating"  style={{marginTop:"30px"}}>Rating:</label>
