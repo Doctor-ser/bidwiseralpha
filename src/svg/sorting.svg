@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoa" x1="36.5" x2="36.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="23" height="2" x="25" y="20" fill="url(#yA0P7uJ5ZMgI7EVokMUEoa)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEob" x1="32.5" x2="32.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="15" height="2" x="25" y="24" fill="url(#yA0P7uJ5ZMgI7EVokMUEob)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoc" x1="19" x2="19" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <path fill="url(#yA0P7uJ5ZMgI7EVokMUEoc)" d="M21,20h-4c-0.552,0-1,0.447-1,1v4c0,0.553,0.448,1,1,1h4c0.552,0,1-0.447,1-1v-4 C22,20.447,21.552,20,21,20z M20,24h-2v-2h2V24z" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEod" x1="36.5" x2="36.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="23" height="2" x="25" y="29" fill="url(#yA0P7uJ5ZMgI7EVokMUEod)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoe" x1="32.5" x2="32.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="15" height="2" x="25" y="33" fill="url(#yA0P7uJ5ZMgI7EVokMUEoe)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEof" x1="19" x2="19" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <path fill="url(#yA0P7uJ5ZMgI7EVokMUEof)" d="M21,29h-4c-0.552,0-1,0.447-1,1v4c0,0.553,0.448,1,1,1h4c0.552,0,1-0.447,1-1v-4 C22,29.447,21.552,29,21,29z M20,33h-2v-2h2V33z" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEog" x1="36.5" x2="36.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="23" height="2" x="25" y="38" fill="url(#yA0P7uJ5ZMgI7EVokMUEog)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoh" x1="32.5" x2="32.5" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <rect width="15" height="2" x="25" y="42" fill="url(#yA0P7uJ5ZMgI7EVokMUEoh)" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoi" x1="19" x2="19" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <path fill="url(#yA0P7uJ5ZMgI7EVokMUEoi)" d="M21,38h-4c-0.552,0-1,0.447-1,1v4c0,0.553,0.448,1,1,1h4c0.552,0,1-0.447,1-1v-4 C22,38.447,21.552,38,21,38z M20,42h-2v-2h2V42z" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEoj" x1="32" x2="32" y1="6.362" y2="53.665" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#1a6dff" />
+    <stop offset="1" stop-color="#c822ff" />
+  </linearGradient>
+  <path fill="url(#yA0P7uJ5ZMgI7EVokMUEoj)" d="M51.023,8H12.977c-2.757,0-5,2.243-5,5v37c0,2.757,2.243,5,5,5h38.047c2.757,0,5-2.243,5-5 V13C56.023,10.243,53.78,8,51.023,8z M51.023,53H12.977c-1.654,0-3-1.346-3-3v-0.026c0.838,0.635,1.87,1.026,3,1.026h38.047 c1.13,0,2.162-0.391,3-1.026V50C54.023,51.654,52.678,53,51.023,53z M54.023,46c0,1.654-1.346,3-3,3H12.977c-1.654,0-3-1.346-3-3 v-2.404V13c0-1.654,1.346-3,3-3h38.047c1.654,0,3,1.346,3,3V46z" />
+  <linearGradient id="yA0P7uJ5ZMgI7EVokMUEok" x1="15.5" x2="15.5" y1="11.255" y2="18.532" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6dc7ff" />
+    <stop offset="1" stop-color="#e6abff" />
+  </linearGradient>
+  <path fill="url(#yA0P7uJ5ZMgI7EVokMUEok)" d="M12,19v-5c0-1.105,0.895-2,2-2h5L12,19z" />
+</svg>

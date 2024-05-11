@@ -5,17 +5,17 @@ import { faTools } from '@fortawesome/free-solid-svg-icons'; // Using a more adm
 
 const AdminFooter = ({ darkMode }) => {
   return (
-    <footer className={`footer mt-5 py-4 ${darkMode ? 'dark-mode' : ''}`}>
-      <div className="container">
-        <div className="row">
+    <footer className={`footer ${darkMode ? 'dark-mode' : ''}`}>
+      <section className="container">
+        <section className="row" >
           <div className="col-lg-12 text-center">
-            <hr className={`mb-4 ${darkMode ? 'dark-hr' : ''}`} />
-            <p>
+            <hr style={{margin:"0px"}} className={` ${darkMode ? 'dark-hr' : ''}`} />
+            <p style={{margin:"30px"}}>
               <FontAwesomeIcon icon={faTools} /> &nbsp; ADMIN PANEL &nbsp; <FontAwesomeIcon icon={faTools} />
             </p>
           </div>
-        </div>
-      </div>
+        </section>
+      </section>
     </footer>
   );
 };
