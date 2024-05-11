@@ -215,22 +215,22 @@ const ProductDetails = () => {
             <div className='c'>
             <h2 className='hn'>{product.name}</h2>
             <div className='p-de'>
-              <p className="description">{product.description}</p>
+              <div className="description">{product.description}</div>
               <div className="sel">
                 <Link to={`/sellerinfo/${product.userId}`}>
                   <FontAwesomeIcon icon={faUserCircle} className="us-ic" />
                   <span className='id'>&nbsp;{product.userId}</span>
                 </Link>
               </div>
-              <p className="bid-details cur">Current Bid:&nbsp;&#8377;<strong>{product.currentBid}</strong></p>
-              <p className="bid-details">Starting Bid: &#8377;{product.startingBid}</p>
+              <div className="bid-details cur">Current Bid:&nbsp;&#8377;<strong>{product.currentBid}</strong></div>
+              <div className="bid-details">Starting Bid: &#8377;{product.startingBid}</div>
               {product.winnerEmail && <p className="winner-email">Winner Email: {product.winnerEmail}</p>}
               {product.winnerEmail && <p className="highest-bid">Highest Bid: &#8377;{product.currentBid}</p>}
               {winnerMessage && <p className="winner-message">{winnerMessage}</p>}
               {product.endTime && (
-                <p className="end-time">
+                <div className="end-time">
                   {remainingTime ? remainingTime : "Bidding for this product has ended."}
-                </p>
+                </div>
               )}
 
               {/* Conditionally render buttons if there is remaining time or no winner */}
@@ -255,7 +255,7 @@ const ProductDetails = () => {
       )}
       
       {/* Suggested Post */}
-      <div className='conatiner-suggestedposts'> 
+      <div className='conatiner-suggestedposts' style={{paddingBottom:"40px"}}> 
         <h3 className='sug'>Similar products</h3>
         <div className="suggested-post">
        {suggestedPosts.map((post) => (

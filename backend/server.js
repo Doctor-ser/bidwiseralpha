@@ -111,20 +111,8 @@ app.get('/api/images/:imageUrl', async (req, res) => {
       return res.status(404).json({ message: 'Image not found' });
     }
 
-    // Assuming your image data is stored in the "image" field as Buffer data
-    // const imageData ="data:image/jpeg;png,base64," +imageDetails.image.toString('base64');
-    // const contentType = imageDetails.contentType;
-
-    // res.json({ imageUrl, imageData, contentType });
-    // const reader = new FileReader();
-    //     reader.readAsDataURL();
-    //     reader.onloadend = () => {
-    //       const imageData = reader.result;
-    // res.write(imageDetails.image)
-   
     res.json({buffer:imageDetails.image,contentType:imageDetails.contentType})
-    
-    
+
   } catch (error) {
     console.error('Error fetching image:', error);
     res.status(500).json({ message: 'Failed to fetch image' });
@@ -208,11 +196,6 @@ app.get('/api/topRatedComments', async (req, res) => {
   }
 });
 
-
-
-
-
-
 //chat
 
 const messageSchema = new mongoose.Schema({
@@ -240,8 +223,6 @@ app.post('/api/send-message', async (req, res) => {
     // Save the new message to the database
     await newMessage.save();
 
-    // console.log('Message saved:', newMessage);
-    
     // Respond with success message
     io.emit('new-message');
     res.json({ message: 'Message sent successfully' });
@@ -260,8 +241,6 @@ app.get('/api/get-messages', async (req, res) => {
     const { productId } = req.query;
 
     const messages = await Message.find({ productId }).sort({ createdAt: 1 }); // Filter by productId and sort by creation time
-    // console.log(messages);
-    // console.log("all messages printed");
 
     // Extract senderEmail and message from each message object
     const simplifiedMessages = messages.map(message => ({
@@ -297,9 +276,6 @@ app.get('/api/fetchchatusername/:senderEmail', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
 
 
 // Nodemailer configuration
@@ -539,8 +515,6 @@ app.post('/api/addAdmin', async (req, res) => {
 });
 
 
-
-
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -605,7 +579,15 @@ app.post('/api/forgotPassword', async (req, res) => {
     from: 'bidwiser.help@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
-    text: `Dear ${username}, we have received a forgot password request for your account. Your new password is: ${newPassword} Please do not share your password with anyone. We thank you for using our Online Auction System BidWiser.`,
+    text: `Dear ${username}, 
+
+    We have received a Forgot Password request for your account. 
+    Your New Password is : ${newPassword}. Please do not share your password with anyone.
+    
+    We thank you for using our Online Auction System BidWiser.
+    
+    Thankyou 
+    BidWiser Team`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
