@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import RatingReview from './star.jsx';
 import { Buffer } from 'buffer';
+
 const SellerInfoPage = () => {
   const { userId } = useParams();
   const [averageRating, setAverageRating] = useState(0);
@@ -48,14 +49,18 @@ const SellerInfoPage = () => {
           ))}
         </ul>
       </div>
-        <div class="feedback-form card feed-c" style={{padding:"0px",border:"none", display:"flex",marginLeft:"450px"}}>
-         <h2 class="card-title ch-t" style={{marginBottom: "0px", border: "none"}}>Top reviews for this Seller</h2>
-          <p>
-            {topFeedbacks.map((feedback, index) => (
+      <div class="feedback-form card feed-c" style={{padding:"0px",border:"none", display:"flex",marginLeft:"450px"}}>
+        <h2 class="card-title ch-t" style={{marginBottom: "0px", border: "none"}}>Top reviews for this Seller</h2>
+        <p>
+          {topFeedbacks.length > 0 ? (
+            topFeedbacks.map((feedback, index) => (
               <p key={index}><h3 style={{textAlign:"center",marginTop:"30px",fontWeight:"bold",padding:"25px",backgroundColor:"#ededed"}}>Review {index+1}&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;<strong>{feedback.feedback}</strong></h3></p>
-            ))}
-          </p>
-        </div>
+            ))
+          ) : (
+            <p style={{textAlign: 'center', marginTop: '20px'}}>No Reviews Yet !!! </p>
+          )}
+        </p>
+      </div>
     </div>
   );
 };

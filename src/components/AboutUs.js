@@ -82,8 +82,8 @@ const AboutUs = ({ darkMode }) => {
             <section className="card" style={{ background: darkMode ? '#343a40' : '',margin:"50px 300px 50px 300px",width:"560px",height:"220px",padding:"30px 60px"}} >
               <section className="card-body" >
                 <p className={`card-text ${darkMode ? 'text-light' : 'text-dark'}`}>
-                  <strong>Frontend: </strong>&nbsp;&nbsp;&nbsp; HTML,CSS, Bootstrap, JavaScript, React.js <br />
-                  <br/> <strong>Backend :</strong>&nbsp;&nbsp;&nbsp;&nbsp; Node.js, Express.js <br />
+                  <strong>Frontend: </strong>&nbsp;&nbsp;&nbsp; HTML,CSS, Bootstrap, JavaScript, React.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Socket.io Client <br />
+                  <br/> <strong>Backend :</strong>&nbsp;&nbsp;&nbsp;&nbsp; Node.js, Express.js ,Socket.io<br />
                   <br/> <strong>Database:</strong>&nbsp;&nbsp;&nbsp;&nbsp; MongoDB
                 </p>
               </section>
