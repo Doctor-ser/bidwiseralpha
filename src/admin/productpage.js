@@ -58,7 +58,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
     };
     fetchProducts();
     // Refresh products every 10 seconds
-    const intervalId = setInterval(fetchProducts, 10000);
+    const intervalId = setInterval(fetchProducts, 1000);
     // Clear interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);
   }, [bidChange]);
