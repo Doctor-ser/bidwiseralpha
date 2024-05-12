@@ -286,7 +286,7 @@ port:465,
 secure:true,
   auth: {
     user: "bidwiser.help@gmail.com", //  email address
-    pass: "golkxgygttxiftbi", //  Encrypted Password
+    pass: "golkxgygttxiftbi", //  Encrypted Password  app pass
   },
 });
 
@@ -738,6 +738,7 @@ app.get('/api/top-deal', async (req, res) => {
       // Sort products by bid count in descending order
       { $sort: { bidCount: -1 } }
     ]);
+   // console.log(topDeal);
 
     let topProductDetails;
     let i = 0;
@@ -763,6 +764,7 @@ app.get('/api/top-deal', async (req, res) => {
 
     if (i < topDeal.length && topProductDetails) {
       // Return the top deal details if found
+      //console.log(topProductDetails)
       res.json({ topDeal: topProductDetails});
     } else {
       // If no active top deal is found, return an empty response or handle the case as needed

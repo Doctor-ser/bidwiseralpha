@@ -16,9 +16,33 @@ import './styles.css';
 const ChangePasswordForm = ({ userId, onClose }) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const validatePassword = () => {
+    // Password should contain at least 8 characters
+    if (newPassword.length < 8) {
+      alert('Password must contain at least 8 characters.');
+      return false;
+    }
+    // Password should contain at least one uppercase letter
+    if (!/[A-Z]/.test(newPassword)) {
+      alert('Password must contain at least one uppercase letter.');
+      return false;
+    }
+    // Password should contain at least one special character
+    if (!/[$&+,:;=?@#|'<>.^*()%!-]/.test(newPassword)) {
+      alert('Password must contain at least one special character.');
+      return false;
+    }
+    // Password should contain at least one digit
+    if (!/\d/.test(newPassword)) {
+      alert('Password must contain at least one digit.');
+      return false;
+    }
+    return true;
+  };
 
   const handleChangePassword = async () => {
     try {
+      if (!validatePassword()) return;
       const response = await axios.post('http://127.0.0.1:5500/api/changePassword', {
         userId: userId,
         oldPassword: oldPassword,

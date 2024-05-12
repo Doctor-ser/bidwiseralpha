@@ -32,18 +32,7 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const userId = auth.userId 
   const location = useLocation();
 
-    // Fetch winning user details
-    // const fetchWinningUser = async (productId) => {
-    //   try {
-    //     const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
-    //     setWinningUsers((prevWinningUsers) => ({
-    //       ...prevWinningUsers,
-    //       [productId]: winningUserResponse.data.winningBid.userId,
-    //     }));
-    //   } catch (error) {
-    //     console.error('Error fetching winning user details:', error);
-    //   }
-    // };
+  
 
 
 const calculateRemainingTimeForCounter = (endTime) => {
@@ -107,11 +96,7 @@ useEffect(() => {
       setProducts(response.data.bids);
       console.log('Products:', response.data.bids);
 
-      // Call fetchWinningUser for each product
-      // const winningUserPromises = response.data.bids.map(async (product) => {
-      //   await fetchWinningUser(product._id);
-      // });
-      // await Promise.all(winningUserPromises);
+      
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log('Request aborted:', error.message);
@@ -129,19 +114,7 @@ useEffect(() => {
   
 }, [bidChange]);
 
-// const renderWinningUser = (productId) => {
-//   const winnerUserId = winningUsers[productId];
-//   return winnerUserId ? `Won By: ${winnerUserId}` : 'No Winner';
-// };
-// Trigger recalculation when products change // Fetch user bids whenever userId changes  // The empty dependency array ensures that this effect runs only once when the component mounts
 
-  // useEffect(() => {
-  
-  //   // Call fetchWinningUser when selectedProduct changes
-  //   if (selectedProduct) {
-  //     fetchWinningUser(selectedProduct.productId);
-  //   }
-  // }, [selectedProduct]);
 
   // Function to format date in "dd//mm/yyyy" format
   const formatDate = (dateString) => {
@@ -377,19 +350,9 @@ useEffect(() => {
 
 
 
-  // Function to save bids data to local storage
-  const saveBidsToLocalStorage = (bids) => {
-    localStorage.setItem('bids', JSON.stringify(bids));
-  };
-
-  // Function to get bids data from local storage
-  const getBidsFromLocalStorage = () => {
-    const bids = localStorage.getItem('bids');
-    return bids ? JSON.parse(bids) : [];
-  };
 
   //sort expired
-  const activeBidProducts = filteredProducts.filter((product) => !product.endTime || new Date(product.endTime) > new Date());
+  const activeBidProducts = filteredProducts.filter((product) => !product.endTime || new Date(product.endTime) > new Date()); //new date: timestamp
   const endedBidProducts = filteredProducts.filter((product) => product.endTime && new Date(product.endTime) <= new Date());
 
   // Sort active bid products based on remaining time
@@ -421,8 +384,8 @@ useEffect(() => {
         // console.log(imageResponse)
         const data = await imageResponse.json()
         
-        const base64String = Buffer.from(data.buffer.data).toString('base64')
-        const image = `data:${data.contentType};base64,${base64String}`;     
+        const base64String = Buffer.from(data.buffer.data).toString('base64') //string
+        const image = `data:${data.contentType};base64,${base64String}`;      //decode
         setImageStream(image)
        
           const topDeal = topDealResponse.data.topDeal;

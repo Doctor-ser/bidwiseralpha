@@ -220,35 +220,6 @@ const BiddingPage = ({ darkMode }) => {
     });
   };
   
-
-  const handlePlaceBid = (productId, currentBid) => {
-    if (bidAmount <= currentBid) {
-      alert('Bid amount must be greater than the current bid');
-      return;
-    }
-
-    axios
-      .post('http://127.0.0.1:5500/api/placeBid', {
-        productId,
-        userId: userId,
-        bidAmount,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          alert('Bid placed successfully');
-          fetchProducts();
-          setBidAmount('');
-          localStorage.removeItem('bidAmount');
-        } else {
-          alert('Failed to place bid');
-        }
-      })
-      .catch((err) => {
-        console.error('Error placing bid:', err);
-        alert('An error occurred while placing bid');
-      });
-  };
-
   return (
     <div className={`bidding-page ${darkMode ? 'dark-mode' : ''}`}>
       <h2 className='t1'>Add New Product</h2>
