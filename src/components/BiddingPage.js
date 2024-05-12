@@ -121,6 +121,7 @@ const BiddingPage = ({ darkMode }) => {
   
       try {
         const imageUrl = generateRandomString();
+        await  handleImageProduct(imageUrl);
         const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,
@@ -134,7 +135,7 @@ const BiddingPage = ({ darkMode }) => {
           const updatedProducts = [...products, { ...response.data.bid }];
           setProducts(updatedProducts);
           localStorage.setItem('products', JSON.stringify(updatedProducts)); // Store in localStorage
-          handleImageProduct(imageUrl);
+          
         }
       } catch (err) {
         console.error('Error adding bid:', err);
