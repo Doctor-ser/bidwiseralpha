@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../components/Product.css';
-import LazyLoad from 'react-lazyload';
 import axios from 'axios';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-
-import 'jquery-countdown';
+import { Buffer } from 'buffer';
 
 const ProductsPage = ({ darkMode, email, bidChange }) => {
   const [products, setProducts] = useState([]);
@@ -139,15 +137,12 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
               <div key={product._id} className="col-md-4 mb-4">
                 <div class='container-fluid'>
                   <div class="card mx-auto col-md-3 col-10 mt-5">
-                  <LazyLoad height={200} once>
+                 
                   <div className='imagecontainer'>
-                      <img
-                      src={`http://127.0.0.1:5500/api/images/${product.imageUrl}`}
-                      alt={product.name}
-                      className="mx-auto img-thumbnail"
-                      />
-                      </div>
-                      </LazyLoad>
+                      {/* Modified image rendering logic */}
+                      <ProductImage product={product} />
+                  </div>
+                      
                     <div class="card-body text-center mx-auto">
                       <div class='cvp'>
                         <h5 class="card-title font-weight-bold">{product.name}</h5>
@@ -178,6 +173,35 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
       </div>
       
     </div>
+  );
+};
+
+// Separate component for rendering product image
+const ProductImage = ({ product }) => {
+  const [imageStream, setImageStream] = useState(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${product.imageUrl}`);
+        const data = await imageResponse.json();
+        const base64String = Buffer.from(data.buffer.data).toString('base64');
+        const image = `data:${data.contentType};base64,${base64String}`;
+        setImageStream(image);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [product.imageUrl]);
+
+  return (
+    <img
+      src={imageStream}
+      alt={product.name}
+      className="mx-auto img-thumbnail"
+    />
   );
 };
 
