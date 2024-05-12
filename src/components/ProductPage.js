@@ -357,8 +357,23 @@ useEffect(() => {
 
   // Sort active bid products based on remaining time
   activeBidProducts.sort((a, b) => {
-    const remainingTimeA = calculateRemainingTime(a.endTime);
-    const remainingTimeB = calculateRemainingTime(b.endTime);
+    const remainingTimeA = new Date(a.endTime) - new Date();
+    const remainingTimeB = new Date(b.endTime) - new Date();
+    
+    // If both products have ended, sort based on their end time
+    if (remainingTimeA <= 0 && remainingTimeB <= 0) {
+      return new Date(b.endTime) - new Date(a.endTime);
+    }
+    
+    // If one of the products has ended, prioritize the one that hasn't
+    if (remainingTimeA <= 0) {
+      return 1;
+    }
+    if (remainingTimeB <= 0) {
+      return -1;
+    }
+    
+    // Otherwise, sort based on remaining time
     return remainingTimeA - remainingTimeB;
   });
   
