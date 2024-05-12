@@ -123,7 +123,7 @@ useEffect(() => {
   fetchProducts();
   // Refresh products every 5 seconds
    
-  const intervalId = setInterval(fetchProducts, 500000);
+  const intervalId = setInterval(fetchProducts, 100000);
   // Clear interval on component unmount to prevent memory leaks
   return () => clearInterval(intervalId);
   

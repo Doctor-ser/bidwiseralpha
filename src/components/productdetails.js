@@ -85,7 +85,7 @@ const ProductDetails = () => {
 
     fetchProductDetails();
 
-    const intervalId = setInterval(fetchProducts, 500000);
+    const intervalId = setInterval(fetchProducts, 100000);
 
     return () => clearInterval(intervalId);
   }, [productId]);
