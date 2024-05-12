@@ -519,8 +519,8 @@ app.post('/api/addAdmin', async (req, res) => {
           html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
               <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: black; width: 100%; height: 40px;">Welcome to BidWiser</h1>
               <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Dear '${username}',</p>
-              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">You Have Been Choosen An Admin For our Website BidWiser!</strong></p>
-              <p style="font-family: Arial, sans-serif; font-size: 18px; color: #333;font-weight:bold">Congragulations!</p>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">I am pleased to inform you that you have been selected as an administrator for our website BidWiser! </strong></p>
+              <p style="font-family: Arial, sans-serif; font-size: 18px; color: #333;font-weight:bold">Congratulations!</p>
               <pre>
           </pre>
               <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
