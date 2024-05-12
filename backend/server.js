@@ -686,19 +686,56 @@ app.post('/api/addBid', (req, res) => {
 app.put('/api/modifyBid/:id', async (req, res) => {
   const bidId = req.params.id;
   const { newBid, currentBid } = req.body;
-
+  console.log("newBid",newBid);
+  console.log("currentBid",currentBid);
   try {
     // Fetch the bid
     const bid = await Bid.findById(bidId);
-
     if (!bid) {
       return res.status(404).json({ message: 'Bid not found' });
     }
-
     // Check if bidding has ended
     if (bid.endTime && new Date(bid.endTime) < new Date()) {
       return res.status(400).json({ message: 'Bidding for this product has already ended. Modification not allowed.' });
     }
+    const userbids = await UserBid.find({ productId: bidId, isWinningBid: true });
+
+if (userbids.length > 0) {
+  for (const userbid of userbids) {
+    const userId = userbid.userId;
+    const user = await User.find({email : userId});
+    const username = user[0].username;
+    
+    // Mail the winner
+    const mailOptions = {
+      from: 'bidwiser.help@gmail.com',
+      to: userId, // Assuming userId contains the email
+      subject: 'Modification By Seller!',
+      html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+              <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: #FF0000; width: 100%; height: 40px;">Product Price Modified!</h1>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Hello '${username}',</p>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">The Seller have changed Starting value to &nbsp;<strong>${currentBid}</strong> for product &nbsp;<strong>'${userbids[0].productName}'</strong>.<br/></p>
+               <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you for choosing BidWiser!</p>
+  <pre>
+        </pre>
+              <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
+              <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">BidWiser Team</p>
+            </div>`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
+    // Update isWinningBid to false for this userbid
+    userbid.isWinningBid = false;
+    await userbid.save();
+  }
+}
 
     // Update startingBid and currentBid
     bid.startingBid = newBid;
