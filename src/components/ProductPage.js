@@ -442,7 +442,7 @@ useEffect(() => {
 
         {/* cart banner section */}
         {/* {console.log(topDeal)} */}
-        {topDeal && (
+        {searchTerm === '' && topDeal && (
   <section className="cart-banner pt-100 pb-100">
     <div className="container">
       <div className="row clearfix">
