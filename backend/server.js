@@ -510,9 +510,36 @@ app.post('/api/addAdmin', async (req, res) => {
       if (err) {
           return res.status(500).send(err);
       }
+
+      //mail on adding
+      const mailOptions = {
+          from: 'bidwiser.help@gmail.com',
+          to: email,
+          subject: 'Welcome to BidWiser - Online Auction System',
+          html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
+              <h1 style="margin-bottom: 40px; padding: 20px 0; font-family: Arial, sans-serif; color: white; text-align: center; background-color: black; width: 100%; height: 40px;">Welcome to BidWiser</h1>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">Dear '${username}',</p>
+              <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">You Have Been Choosen An Admin For our Website BidWiser!</strong></p>
+              <p style="font-family: Arial, sans-serif; font-size: 18px; color: #333;font-weight:bold">Congragulations!</p>
+              <pre>
+          </pre>
+              <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">Thank you,</p>
+              <p style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px; color: #333;">BidWiser Team</p>
+          </div>`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              // console.error('Error sending welcome email:', error);
+              return res.status(500).json({ message: 'Internal server error' });
+          }
+      });
+
+      // Send the response with the admin object included
       res.status(200).json({ message: 'Admin successfully added!', admin });
   });
 });
+
 
 
 app.post('/api/login', async (req, res) => {
