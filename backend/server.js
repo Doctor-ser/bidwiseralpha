@@ -39,6 +39,12 @@ userBidsChangeStream.on('change', (change) => {
   io.emit('userBidChange'); // You can customize the event name and data as per your requirement
 });
 
+const bidsChangeStream =  mongoose.connection.collection('bids').watch();
+  // Listen for change events in the userbids collection
+bidsChangeStream.on('change', (change) => {
+  // Emit a Socket.IO event when a change is detected
+  io.emit('bidChange'); // You can customize the event name and data as per your requirement
+});
 })
 
 
@@ -795,6 +801,7 @@ app.get('/api/active-products', async (req, res) => {
 //fetching topdeal
 app.get('/api/top-deal', async (req, res) => {
   try {
+    
     // Aggregation pipeline to find the product with the most bids
     const topDeal = await UserBid.aggregate([
       // Group by productId and count the number of bids for each product
@@ -802,7 +809,7 @@ app.get('/api/top-deal', async (req, res) => {
       // Sort products by bid count in descending order
       { $sort: { bidCount: -1 } }
     ]);
-   // console.log(topDeal);
+    console.log(topDeal);
 
     let topProductDetails;
     let i = 0;
@@ -828,7 +835,7 @@ app.get('/api/top-deal', async (req, res) => {
 
     if (i < topDeal.length && topProductDetails) {
       // Return the top deal details if found
-      //console.log(topProductDetails)
+      console.log(topProductDetails)
       res.json({ topDeal: topProductDetails});
     } else {
       // If no active top deal is found, return an empty response or handle the case as needed

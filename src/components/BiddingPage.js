@@ -121,7 +121,7 @@ const BiddingPage = ({ darkMode }) => {
   
       try {
         const imageUrl = generateRandomString();
-        await  handleImageProduct(imageUrl);
+        await handleImageProduct(imageUrl);
         const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,

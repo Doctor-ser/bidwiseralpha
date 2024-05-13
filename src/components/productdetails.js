@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'; // Importing the user-circle icon
 
 
-const ProductDetails = () => {
+const ProductDetails = ({bidChange}) => {
   const [product, setProduct] = useState(null);
   const [suggestedPosts, setSuggestedPosts] = useState([]);
   const [remainingTime, setRemainingTime] = useState(null);
@@ -23,19 +23,17 @@ const ProductDetails = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const { productId } = useParams(); // Get productId from URL params
+  const [remainingTimeDetail, setRemainingTimeDetail] = useState('');
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:5500/api/products/${productId}`);
-        const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${response.data.product.imageUrl}`);
-        // console.log(imageResponse)
-        const data = await imageResponse.json()
-        // const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer.buffer)));
-        const base64String = Buffer.from(data.buffer.data).toString('base64')
-        const image = `data:${data.contentType};base64,${base64String}`;     
-        setImageStream(image)
-       
+        const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${response.data.product.imageUrl}`);
+        const data = await imageResponse.json();
+        const base64String = Buffer.from(data.buffer.data).toString('base64');
+        const image = `data:${data.contentType};base64,${base64String}`;
+        setImageStream(image);
 
         setProduct(response.data.product);
         setProductImage(response.data.product.imageUrl);
@@ -54,41 +52,44 @@ const ProductDetails = () => {
                 winnerEmail: winner.email
               }));
 
-
             } catch (error) {
               console.error('Error fetching winner:', error);
               setWinnerMessage('No winner found for this product.');
             }
-
-            clearInterval(intervalId);
           }
         }
-        try{
-        const category = response.data.product.category;
-        const productId= response.data.product._id;
-        //console.log(category)
-        const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category ,productId});
-        setSuggestedPosts(response1.data);
+        try {
+          const category = response.data.product.category;
+          const productId = response.data.product._id;
+          const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category, productId });
+          setSuggestedPosts(response1.data);
+        } catch (error) {
+          console.error('Error fetching suggested posts:', error);
         }
-        catch(error){
-          //alert('no response');
-        }
-        
+
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
     };
 
-    const fetchProducts = () => {
-      fetchProductDetails();
-    };
-
     fetchProductDetails();
 
-    const intervalId = setInterval(fetchProducts, 1000);
+  }, [productId, bidChange]);
 
-    return () => clearInterval(intervalId);
-  }, [productId]);
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      if (product && product.endTime) {
+        const { ended, message } = calculateRemainingTime(product.endTime);
+        setRemainingTimeDetail(ended ? message : `Bid ends in: ${message}`);
+      }
+    };
+  
+    const intervalID = setInterval(updateRemainingTime, 1000);
+  
+    // Clean up the interval
+    return () => clearInterval(intervalID);
+  }, [product]);
+  
 
  
 
@@ -229,7 +230,7 @@ const ProductDetails = () => {
               {winnerMessage && <p className="winner-message">{winnerMessage}</p>}
               {product.endTime && (
                 <div className="end-time">
-                  {remainingTime ? remainingTime : "Bidding for this product has ended."}
+                  {remainingTime ? remainingTimeDetail : "Bidding for this product has ended."}
                 </div>
               )}
 
@@ -255,14 +256,17 @@ const ProductDetails = () => {
       )}
       
       {/* Suggested Post */}
-      <div className='conatiner-suggestedposts' style={{paddingBottom:"40px"}}> 
-        <h3 className='sug'>Similar products</h3>
-        <div className="suggested-post">
-       {suggestedPosts.map((post) => (
-            <SuggestedPost key={post._id} post={post} />
-          ))}
-        </div>
-      </div>
+      { suggestedPosts.length > 0 && (
+  <div className='conatiner-suggestedposts' style={{paddingBottom:"40px"}}> 
+    <h3 className='sug'>Similar products</h3>
+    <div className="suggested-post">
+      {suggestedPosts.map((post) => (
+        <SuggestedPost key={post._id} post={post} />
+      ))}
+    </div>
+  </div>
+)}
+
       
 
       {showBidModal && (
