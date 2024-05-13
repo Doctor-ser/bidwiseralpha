@@ -291,8 +291,8 @@ const BiddingPage = ({ darkMode }) => {
               <div className="product det1">
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
-                <p>Starting Bid: ${product.startingBid}</p>
-                <p>Current Bid: ${product.currentBid}</p>
+                <p>Starting Bid: ₹{product.startingBid}</p>
+                <p>Current Bid: ₹{product.currentBid}</p>
                 {modifyProductId === product._id ? (
                   <div>
                     <label>Enter Your Modified Bid:</label>
