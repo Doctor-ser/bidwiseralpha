@@ -45,6 +45,11 @@ const App = () => {
     setBidChange(prev => !prev)
   })
 
+  socket.on('bidChange',()=>{
+    console.log('changed')
+    setBidChange(prev => !prev)
+  })
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -86,10 +91,10 @@ const App = () => {
           <Route path="/sellerinfo/:userId" element={<SellerInfo darkMode={darkMode} email={email} />} />
           <Route path="/chat/:productId" element={<Chat darkMode={darkMode} loadMessage={loadMessage} setLoadMessage={setLoadMessage} email={email} />} />
           <Route path="/admin" element={<AdminPage darkMode={darkMode} email={email} />} />
-          <Route path="/admin/products" element={<ProductsPage darkMode={darkMode} email={email} />} />
+          <Route path="/admin/products" element={<ProductsPage darkMode={darkMode} email={email}  bidChange={bidChange}/>} />
           <Route path="/admin/users" element={<Userpage darkMode={darkMode} email={email} />} />
           <Route path="/admin/feedbacks" element={<Feedbackadmin darkMode={darkMode} email={email} />} />
-          <Route path="/products/:productId" element={<ProductDetails darkMode={darkMode} email={email} />} />
+          <Route path="/products/:productId" element={<ProductDetails darkMode={darkMode} email={email} bidChange={bidChange} />} />
         </Routes>
         {/* Conditionally render the Footer */}
         {userType == 'user'? <Footer/> : <Fouter/>}   

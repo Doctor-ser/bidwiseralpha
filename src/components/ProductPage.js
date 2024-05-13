@@ -23,7 +23,13 @@ const ProductsPage = ({ darkMode, email,bidChange }) => {
   const [topDeal, setTopDeal] = useState(null);
   const [reloadPage, setReloadPage] = useState(false);
   const [imageStream,setImageStream] =useState(null)
-  
+  const [remainingTime, setRemainingTime] = useState({
+    ended: false,
+    days: '00',
+    hours: '00',
+    minutes: '00',
+    seconds: '00'
+  });
 
   
   
@@ -63,56 +69,75 @@ const calculateRemainingTimeForCounter = (endTime) => {
     seconds: seconds.toString().padStart(2, '0')
   };
 };
-useEffect(() => {
-  // Function to reload the page only once
-  const reloadPageOnce = () => {
-    // Check if the page has already been reloaded
-    
-      console.log("Reloaded");
-      window.location.reload();
-    
-  };
-
-  // If the reloadPage flag is true, reload the page
-  if (reloadPage) {
-    reloadPageOnce();
-    console.log("fun called");
-    setReloadPage(false);
-  }
-}, [reloadPage]);
 
 useEffect(() => {
-  // Check if the route changed and if the current location is this page
-  if (location.pathname === '/products') {
-    console.log("Reloadset");
-    setReloadPage(true);
-  }
-}, [location.pathname]);
+  const intervalID = setInterval(() => {
+    // Check if topDeal is not null before accessing endTime
+    const calculated = topDeal?.endTime ? calculateRemainingTimeForCounter(topDeal.endTime) : null;
+    setRemainingTime(calculated);
+  }, 1000);
+  return () => clearInterval(intervalID);
+}, [topDeal?.endTime]); // Ensure you only update the effect when topDeal.endTime changes
+
 
 useEffect(() => {
-  const fetchProducts = async () => {
+  console.log("use effect");
+
+  const fetchData = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:5500/api/getBids');
-      setProducts(response.data.bids);
-      console.log('Products:', response.data.bids);
+      const productsPromise = axios.get('http://127.0.0.1:5500/api/getBids');
+      const activeProductsPromise = axios.get('http://127.0.0.1:5500/api/active-products');
+      const [productsResponse, activeProductsResponse] = await Promise.all([productsPromise, activeProductsPromise]);
 
-      
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log('Request aborted:', error.message);
+      // Set products state
+      setProducts(productsResponse.data.bids);
+      console.log('Products:', productsResponse.data.bids);
+
+      // Set active products state
+      const activeProducts = activeProductsResponse.data.activeProducts;
+      setActiveProducts(activeProducts);
+      console.log("activeProducts:", activeProducts);
+
+      // Fetch top deal if there are multiple active products
+      if (activeProducts.length > 1) {
+        const topDealResponse = await axios.get('http://127.0.0.1:5500/api/top-deal');
+        const topDeal = topDealResponse.data.topDeal;
+        console.log('Top Deal:', topDeal);
+
+        // Fetch image for top deal
+        if (topDeal.imageUrl) {
+          const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${topDeal.imageUrl}`);
+          const data = await imageResponse.json();
+          const base64String = Buffer.from(data.buffer.data).toString('base64');
+          const image = `data:${data.contentType};base64,${base64String}`;
+          setImageStream(image);
+        }
+
+        setTopDeal(topDeal);
+      } else if (activeProducts.length === 1) {
+        // Set top deal if there's only one active product
+        const singleActiveProduct = activeProducts[0];
+        setTopDeal(singleActiveProduct);
+
+        // Fetch image for single active product
+        if (singleActiveProduct.imageUrl) {
+          const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${singleActiveProduct.imageUrl}`);
+          const data = await imageResponse.json();
+          const base64String = Buffer.from(data.buffer.data).toString('base64');
+          const image = `data:${data.contentType};base64,${base64String}`;
+          setImageStream(image);
+        }
       } else {
-        console.error('Error fetching bids:', error);
+        setTopDeal(null); // No top deal if there's only one active product
       }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   };
-  fetchProducts();
-  // Refresh products every 5 seconds
-   
-  const intervalId = setInterval(fetchProducts, 1000);
-  // Clear interval on component unmount to prevent memory leaks
-  return () => clearInterval(intervalId);
-  
+
+  fetchData();
 }, [bidChange]);
+
 
 
 
@@ -377,51 +402,8 @@ useEffect(() => {
     return remainingTimeA - remainingTimeB;
   });
   
-  //top deal
-  useEffect(() => {
-    const fetchActiveProductsAndTopDeal = async () => {
-      try {
-        console.log("entry")
-        const activeProductsResponse = await axios.get('http://127.0.0.1:5500/api/active-products');
-        const activeProducts = activeProductsResponse.data.activeProducts;
-        
-        setActiveProducts(activeProducts);
   
-        // Check if there are multiple active products
-        if (activeProducts.length > 1) {
-          console.log("if block")
-          const topDealResponse = await axios.get('http://127.0.0.1:5500/api/top-deal');
-         // console.log(topDealResponse.data.topDeal.imageUrl)
-          
-        
-        
-        const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${topDealResponse.data.topDeal.imageUrl}`);
-        // console.log(imageResponse)
-        const data = await imageResponse.json()
-        
-        const base64String = Buffer.from(data.buffer.data).toString('base64') //string
-        const image = `data:${data.contentType};base64,${base64String}`;      //decode
-        setImageStream(image)
-       
-          const topDeal = topDealResponse.data.topDeal;
-          console.log('Top Deal:', topDeal);
-          setTopDeal(topDeal);
-          console.log("topdealsetupped")
-        }
-        else if (activeProducts.length === 1) {
-          const singleActiveProduct = activeProducts[0];
-          setTopDeal(singleActiveProduct);
-          console.log('Top Deal:', singleActiveProduct.imageUrl);
-        }
-         else {
-          setTopDeal(null); // No top deal if there's only one active product
-        }
-      } catch (error) {
-        console.error('Error fetching active products and top deal:', error);
-      }
-    }; 
-    fetchActiveProductsAndTopDeal();
-  }, []);
+  
 
   return (
     <div className={`products-page ${darkMode ? 'dark-mode' : ''}`}>
@@ -487,35 +469,33 @@ useEffect(() => {
           <div className="text">{topDeal.description}</div>
           
           {/* counter */}
-{topDeal.endTime && (() => {
-    const remainingTimec = calculateRemainingTimeForCounter(topDeal.endTime);
-    return (
-        <div className="time-counter">
-            <div className="time-countdown clearfix" data-countdown="" id="countdown">
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="days">{remainingTimec.days}</span>Days
-                    </div>
-                </div>
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="hours">{remainingTimec.hours}</span>Hours
-                    </div>
-                </div>  
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="minutes">{remainingTimec.minutes}</span>Mins
-                    </div>
-                </div>  
-                <div className="counter-column">
-                    <div className="inner">
-                        <span className="count" id="seconds">{remainingTimec.seconds}</span>Secs
-                    </div>
-                </div>
-            </div>
+          {topDeal && topDeal.endTime && remainingTime && (
+  <div className="time-counter">
+    <div className="time-countdown clearfix" data-countdown="" id="countdown">
+      <div className="counter-column">
+        <div className="inner">
+          <span className="count" id="days">{remainingTime.days}</span>Days
         </div>
-    );
-})()}
+      </div>
+      <div className="counter-column">
+        <div className="inner">
+          <span className="count" id="hours">{remainingTime.hours}</span>Hours
+        </div>
+      </div>  
+      <div className="counter-column">
+        <div className="inner">
+          <span className="count" id="minutes">{remainingTime.minutes}</span>Mins
+        </div>
+      </div>  
+      <div className="counter-column">
+        <div className="inner">
+          <span className="count" id="seconds">{remainingTime.seconds}</span>Secs
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
 
           <Link to={`/products/${topDeal._id}`} className="cart-btn mt-3">

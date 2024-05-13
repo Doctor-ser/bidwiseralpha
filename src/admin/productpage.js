@@ -9,32 +9,14 @@ import { Buffer } from 'buffer';
 const ProductsPage = ({ darkMode, email, bidChange }) => {
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState('all'); // Default to sorting by all
-  const [bidAmount, setBidAmount] = useState(0);
-  const [showBidModal, setShowBidModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [userBids, setUserBids] = useState([]);
-  const [modifyProductId, setModifyProductId] = useState(null);
-  const [winningUsers, setWinningUsers] = useState({});
-  const [productDetails, setProductDetails] = useState({});
-  const [flag, setFlag] = useState(0);
+  const [remainingTime,setRemainingTime] = useState('');
   const navigate = useNavigate();
 
   // Use the userId from the context
   const auth = useAuth();
   const userId = auth.userId;
 
-  // Fetch winning user details
-  const fetchWinningUser = async (productId) => {
-    try {
-      const winningUserResponse = await axios.get(`http://127.0.0.1:5500/api/getWinningBid/${productId}`);
-      setWinningUsers((prevWinningUsers) => ({
-        ...prevWinningUsers,
-        [productId]: winningUserResponse.data.winningBid.userId,
-      }));
-    } catch (error) {
-      console.error('Error fetching winning user details:', error);
-    }
-  };
+ 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,12 +24,6 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
         const response = await axios.get('http://127.0.0.1:5500/api/getBids');
         setProducts(response.data.bids);
         console.log('Products:', response.data.bids);
-
-        // Call fetchWinningUser for each product
-        const winningUserPromises = response.data.bids.map(async (product) => {
-          await fetchWinningUser(product._id);
-        });
-        await Promise.all(winningUserPromises);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request aborted:', error.message);
@@ -57,11 +33,26 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
       }
     };
     fetchProducts();
-    // Refresh products every 10 seconds
-    const intervalId = setInterval(fetchProducts, 1000);
-    // Clear interval on component unmount to prevent memory leaks
-    return () => clearInterval(intervalId);
+    
+    // const intervalId = setInterval(fetchProducts, 1000);
+    // return () => clearInterval(intervalId);
   }, [bidChange]);
+
+  useEffect(() => {
+    const intervalID = setInterval(calculateTime, 1000);
+    return () => clearInterval(intervalID);
+  }, [products]);
+
+  function calculateTime() {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        return {
+          ...product,
+          remainingTime: calculateRemainingTime(product.endTime),
+        };
+      })
+    );
+  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -128,48 +119,44 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
           </select>
         </div>
         {/* Display sorted products */}
-        <div className="row">
-          {products.map((product) => (
-            // Check if product should be displayed based on sorting option
-            ((sortBy === 'all') ||
-            (sortBy === 'live' && !calculateRemainingTime(product.endTime).ended) ||
-            (sortBy === 'ended' && calculateRemainingTime(product.endTime).ended)) && (
-              <div key={product._id} className="col-md-4 mb-4">
-                <div class='container-fluid'>
-                  <div class="card mx-auto col-md-3 col-10 mt-5">
-                 
-                  <div className='imagecontainer'>
-                      {/* Modified image rendering logic */}
-                      <ProductImage product={product} />
-                  </div>
-                      
-                    <div class="card-body text-center mx-auto">
-                      <div class='cvp'>
-                        <h5 class="card-title font-weight-bold">{product.name}</h5>
-                        <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
-                        <p className="card-text">{product.endTime &&
-                          (() => {
-                            const remainingTime = calculateRemainingTime(product.endTime);
-                            if (remainingTime.ended) {
-                              const winnerUserId = winningUsers[product._id];
-                              const winningBid = product.currentBid;
-                              return `Bid has ended`;
-                            } else {
-                              return `${remainingTime.message}`;
-                            }
-                          })()
-                        }</p>
-                        <button className="btn btn-danger" onClick={() => deleteBid(product._id)}>
-                          Delete Bid
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+<div className="row">
+  {products.map((product) => (
+    ((sortBy === 'all') ||
+    (sortBy === 'live' && !calculateRemainingTime(product.endTime).ended) ||
+    (sortBy === 'ended' && calculateRemainingTime(product.endTime).ended)) && (
+      <div key={product._id} className="col-md-4 mb-4">
+        <div class='container-fluid'>
+          <div class="card mx-auto col-md-3 col-10 mt-5">
+            <div className='imagecontainer'>
+              <ProductImage product={product} />
+            </div>
+            <div class="card-body text-center mx-auto">
+              <div class='cvp'>
+                <h5 class="card-title font-weight-bold">{product.name}</h5>
+                <p class="card-text">Current Bid: &#8377;{product.currentBid}</p>
+                {/* Display the remaining time */}
+                <p className="card-text">{product.endTime &&
+                  (() => {
+                    const remainingTime = calculateRemainingTime(product.endTime);
+                    if (remainingTime.ended) {
+                      return `Bid has ended`;
+                    } else {
+                      return `${remainingTime.message}`;
+                    }
+                  })()
+                }</p>
+                <button className="btn btn-danger" onClick={() => deleteBid(product._id)}>
+                  Delete Bid
+                </button>
               </div>
-            )
-          ))}
+            </div>
+          </div>
         </div>
+      </div>
+    )
+  ))}
+</div>
+
       </div>
       
     </div>
