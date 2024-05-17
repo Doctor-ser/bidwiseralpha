@@ -2,6 +2,7 @@ About Us
 --------
 
 WE ARE GROUP 8, WORKING ON PROJECT ONLINE AUCTION SYSTEM.
+MERN STACK
 
 Team Members:
 -------------
