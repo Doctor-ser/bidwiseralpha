@@ -25,8 +25,8 @@ function Chat({ loadMessage, setLoadMessage }) {
       console.log("fetching messages for product ID:", proid);
       // Fetch product data along with messages
       const [messagesResponse, productResponse] = await Promise.all([
-        fetch(`http://127.0.0.1:5500/api/get-messages?productId=${proid}`),
-        fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`)
+        fetch(`https://bidwiser.onrender.com/api/get-messages?productId=${proid}`),
+        fetch(`https://bidwiser.onrender.com/api/fetchsellerbyproid/${proid}`)
       ]);
       const [messagesData, productData] = await Promise.all([
         messagesResponse.json(),
@@ -50,7 +50,7 @@ function Chat({ loadMessage, setLoadMessage }) {
 
   const checkSeller = async () => {
     try {
-      const productResponse = await fetch(`http://127.0.0.1:5500/api/fetchsellerbyproid/${proid}`);
+      const productResponse = await fetch(`https://bidwiser.onrender.com/api/fetchsellerbyproid/${proid}`);
       const productData = await productResponse.json();
   
       if (productData && productData.seller.userId === currentUser.email) {
@@ -70,7 +70,7 @@ function Chat({ loadMessage, setLoadMessage }) {
       };
 
       try {
-        const response = await fetch('http://127.0.0.1:5500/api/send-message', {
+        const response = await fetch('https://bidwiser.onrender.com/api/send-message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessageData),
@@ -143,7 +143,7 @@ const MessageItem = ({ message }) => {
   useEffect(() => {
     const fetchSenderName = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5500/api/fetchchatusername/${message.senderEmail}`);
+        const response = await fetch(`https://bidwiser.onrender.com/api/fetchchatusername/${message.senderEmail}`);
         if (response.ok) {
           const userData = await response.json();
           const senderName = userData.username; // Adjust the property name based on your API response

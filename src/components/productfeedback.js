@@ -23,7 +23,7 @@ const Productfeedback = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5500/api/product/${productId}`);
+        const response = await axios.get(`https://bidwiser.onrender.com/api/product/${productId}`);
         setProduct(response.data);
       } catch (error) {
         console.error('Error fetching product details:', error);
@@ -44,7 +44,7 @@ const Productfeedback = () => {
   useEffect(() => {
     const fetchProductFeedback = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5500/api/productfeedbacksfetch/${productId}`);
+        const response = await axios.get(`https://bidwiser.onrender.com/api/productfeedbacksfetch/${productId}`);
         if (response.data) {
           // Extract rating and feedback from response data and set in state
           setExistingFeedback(response.data);
@@ -82,7 +82,7 @@ const Productfeedback = () => {
     // }
 
     try {
-      const response = await axios.post('http://127.0.0.1:5500/api/productfeedbacks', {
+      const response = await axios.post('https://bidwiser.onrender.com/api/productfeedbacks', {
         productId,
         productName: product.name,
         userId: product.userId,
@@ -111,7 +111,7 @@ const Productfeedback = () => {
     }
   
     try {
-      const response = await axios.put(`http://127.0.0.1:5500/api/productfeedbacks/${productId}`, {
+      const response = await axios.put(`https://bidwiser.onrender.com/api/productfeedbacks/${productId}`, {
         rating,
         feedback,
       });

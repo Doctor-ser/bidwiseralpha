@@ -38,7 +38,7 @@ const SignupPage = ({ darkMode }) => {
     if (!validatePassword()) return; // Validate password before submitting
 
     const obj = { username, email, password };
-    const url = "http://127.0.0.1:5500/api/signup";
+    const url = "https://bidwiser.onrender.com/api/signup";
 
     try {
       const res = await axios.post(url, obj);
@@ -62,7 +62,7 @@ const SignupPage = ({ darkMode }) => {
 
   // Function to send a welcome email
   const sendWelcomeEmail = async (userEmail) => {
-    const welcomeEmailUrl = "http://127.0.0.1:5500/api/sendWelcomeEmail";
+    const welcomeEmailUrl = "https://bidwiser.onrender.com/api/sendWelcomeEmail";
 
     try {
       await axios.post(welcomeEmailUrl, { email: userEmail });

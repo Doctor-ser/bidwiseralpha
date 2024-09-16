@@ -28,8 +28,8 @@ const ProductDetails = ({bidChange}) => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5500/api/products/${productId}`);
-        const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${response.data.product.imageUrl}`);
+        const response = await axios.get(`https://bidwiser.onrender.com/api/products/${productId}`);
+        const imageResponse = await fetch(`https://bidwiser.onrender.com/api/images/${response.data.product.imageUrl}`);
         const data = await imageResponse.json();
         const base64String = Buffer.from(data.buffer.data).toString('base64');
         const image = `data:${data.contentType};base64,${base64String}`;
@@ -43,7 +43,7 @@ const ProductDetails = ({bidChange}) => {
 
           if (ended) {
             try {
-              const winnerResponse = await axios.get(`http://127.0.0.1:5500/api/products/${productId}/winner`);
+              const winnerResponse = await axios.get(`https://bidwiser.onrender.com/api/products/${productId}/winner`);
               const winner = winnerResponse.data.winner;
 
               setProduct(prevProduct => ({
@@ -61,7 +61,7 @@ const ProductDetails = ({bidChange}) => {
         try {
           const category = response.data.product.category;
           const productId = response.data.product._id;
-          const response1 = await axios.post(`http://127.0.0.1:5500/api/products/by-category`, { category, productId });
+          const response1 = await axios.post(`https://bidwiser.onrender.com/api/products/by-category`, { category, productId });
           setSuggestedPosts(response1.data);
         } catch (error) {
           console.error('Error fetching suggested posts:', error);
@@ -145,7 +145,7 @@ const ProductDetails = ({bidChange}) => {
         return;
       }
 
-      const response = await axios.post('http://127.0.0.1:5500/api/placeBid', {
+      const response = await axios.post('https://bidwiser.onrender.com/api/placeBid', {
         productId,
         userId,
         bidAmount: Number(bidAmount),
