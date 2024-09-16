@@ -1,6 +1,5 @@
 import React from 'react';
 import "./AboutUS.css";
-import { padding } from '@mui/system';
 
 const AboutUs = ({ darkMode }) => {
   
@@ -25,7 +24,7 @@ const AboutUs = ({ darkMode }) => {
                     <section className="team__item"  style={{textAlign:"center"}}>
                         <img className='imgx'
                             style={{ width: "273px", height: "300px", marginTop:"30px"}} 
-                            src="https://media.licdn.com/dms/image/D5603AQGuMKQmywjDCQ/profile-displayphoto-shrink_800_800/0/1711382864122?e=1720656000&v=beta&t=xt4rFoVtHKyCaI5TKvLfHr84OerbD1zr07Zez0f89yM" 
+                            src="https://media.licdn.com/dms/image/v2/D5603AQEUODLCXroe6g/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1724874781935?e=1732147200&v=beta&t=_buNQti6r2SIGR8ID2Fg8uOYRS1MHvGv_Qqk-Xjo5ZY" 
                             alt="Alfin Joji" 
                         />
                         <h4 className='h4-ab'>Alfin Joji</h4>
@@ -38,7 +37,7 @@ const AboutUs = ({ darkMode }) => {
                     <section className="team__item"  style={{textAlign:"center"}}>
                         <img className='imgx'
                             style={{ width: "273px", height: "300px" , marginTop:"30px"}} 
-                            src="https://media.licdn.com/dms/image/D5603AQFaQ4LD7OgxxQ/profile-displayphoto-shrink_800_800/0/1715161151175?e=1720656000&v=beta&t=R_Qc0oXf8FPDWFDk-uZzEpdMIZOKr7M77V10VuQ1cCA" 
+                            src="https://media.licdn.com/dms/image/v2/D5603AQGETxW8qvxMcg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1720236129027?e=1732147200&v=beta&t=zo3Jv9b-LCW8PzUoNWchChF3QVLZCDfwlIWtq9h6zs0" 
                             alt="Ashwin V Mathew" 
                         />
                         <h4 className='h4-ab'>Ashwin V Mathew</h4>
@@ -51,7 +50,7 @@ const AboutUs = ({ darkMode }) => {
                     <section className="team__item"  style={{textAlign:"center"}}>
                         <img className='imgx'
                             style={{ width: "273px", height: "300px" , marginTop:"30px"}} 
-                            src="https://media.licdn.com/dms/image/D5603AQH87fLTla68SA/profile-displayphoto-shrink_800_800/0/1710759633365?e=1720656000&v=beta&t=BT4VHIO5WUc2I_LyXbNF3_fRgM0kaThjd-1c0SzedAc" 
+                            src="https://media.licdn.com/dms/image/v2/D4E03AQHLrKaSjGai6w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718784736184?e=1732147200&v=beta&t=hfALodGqFQEnb2DQqNv1Quxbd3kwz-jk5WeS-C7P9w8" 
                             alt="Johan George" 
                         />
                         <h4 className='h4-ab'>Johan George Kuruvilla</h4>
@@ -64,7 +63,7 @@ const AboutUs = ({ darkMode }) => {
                     <section className="team__item"  style={{textAlign:"center"}}>
                         <img className='imgx'
                             style={{ width: "273px", height: "300px" , marginTop:"30px"}} 
-                            src="https://media.licdn.com/dms/image/C5603AQEUC0o3D0actw/profile-displayphoto-shrink_800_800/0/1658586743446?e=1720656000&v=beta&t=IbAXsilLO92DpEkGSlwCL4QSpaiv380T58UKxbkHxdo" 
+                            src="https://media.licdn.com/dms/image/v2/D5635AQH1gz5FryWUEw/profile-framedphoto-shrink_400_400/profile-framedphoto-shrink_400_400/0/1719451770096?e=1727096400&v=beta&t=o111oFesEdR0Nn1VA11hW6E4b63M4H3Uav4owQiNFtU" 
                             alt="Evan T Abraham" 
                         />
                         <h4 className='h4-ab'>Evan T Abraham</h4>

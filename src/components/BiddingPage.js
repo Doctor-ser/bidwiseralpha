@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import './Bidding.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { border, borderRadius, padding } from '@mui/system';
+
 
 
 const BiddingPage = ({ darkMode }) => {
@@ -23,22 +23,22 @@ const BiddingPage = ({ darkMode }) => {
   const navigate = useNavigate();
   const [bidAmount, setBidAmount] = useState(localStorage.getItem('bidAmount') || '');
   const [modifyProductId, setModifyProductId] = useState(null);
-  const [currentBid, setCurrentBid] = useState(localStorage.getItem('currentBid') || '');
+  
   const [file, setFile] = useState(null);
  
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:5500/api/getBids?userId=${userId}`);
       setProducts(response.data.bids);
     } catch (error) {
       console.error('Error fetching bids:', error);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   function generateRandomString() {
     return Math.random().toString(36).substring(7);
