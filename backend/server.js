@@ -291,8 +291,8 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: "bidwiser.help@gmail.com", //  email address
-    pass: "golkxgygttxiftbi", //  Encrypted Password  app pass
+    user: process.env.USER, //  email address
+    pass: process.env.PASS, //  Encrypted Password  app pass
   },
 });
 
@@ -519,7 +519,7 @@ app.post('/api/addAdmin', async (req, res) => {
 
       //mail on adding
       const mailOptions = {
-          from: 'bidwiser.help@gmail.com',
+          from: process.env.USER,
           to: email,
           subject: 'Welcome to BidWiser - Online Auction System',
           html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -609,7 +609,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   const username = user.username;
   // Send an email with the new password
   const mailOptions = {
-    from: 'bidwiser.help@gmail.com', // Sender email address
+    from: process.env.USER, // Sender email address
     to: email,
     subject: 'Password Reset',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -714,7 +714,7 @@ if (userbids.length > 0) {
     
     // Mail the winner
     const mailOptions = {
-      from: 'bidwiser.help@gmail.com',
+      from: process.env.USER,
       to: userId, // Assuming userId contains the email
       subject: 'Modification By Seller!',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1131,7 +1131,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     }
 
     const mailOptions = {
-      from: 'bidwiser.help@gmail.com',
+      from: process.env.USER,
       to: winnerEmail,
       subject: 'Congratulations! You Won the Bid',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1280,7 +1280,7 @@ app.post('/api/placeBid', async (req, res) => {
       const productName = previousWinningBid.productName;
 
       const mailOptions = {
-        from: 'bidwiser.help@gmail.com',
+        from: process.env.USER,
         to: previousWinnerUserId, // Assuming userId contains the email
         subject: 'You have been outbid!',
         html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1438,7 +1438,7 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   const username =user.username;
   // Send welcome email logic here
   const mailOptions = {
-    from: 'bidwiser.help@gmail.com',
+    from: process.env.USER,
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
