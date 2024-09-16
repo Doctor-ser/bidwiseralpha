@@ -48,7 +48,7 @@ bidsChangeStream.on('change', (change) => {
 
 
 const corsOptions = {//for localhost on local machine use http://localhost:3000
-  origin: 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
+  origin: 'https://bidwiser-1po.onrender.com', // Replace with your React app's domain //use for deployed frontend
   credentials: true,
 };
 app.use(express.json());
