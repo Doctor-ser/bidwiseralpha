@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer'); 
-const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { Server } = require('socket.io');
 const Grid = require('gridfs-stream');
@@ -599,7 +598,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   const newPassword = crypto.randomBytes(8).toString('hex'); // Implement this function
 
   // Hash the new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
 
   // Update the user's password in the database
   user.password = newPassword;
