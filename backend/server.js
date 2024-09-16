@@ -17,7 +17,7 @@ const path = require('path');
 const app = express();
 mongoose.set("strictQuery", true)
 //mongo uri
-mongoose.connect("mongodb+srv://johangeorge2002:johan14_1@cluster0.fzep1k0.mongodb.net/bidwiser?retryWrites=true&w=majority&appName=Cluster0", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 
 
