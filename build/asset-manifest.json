@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a608b758.css",
+    "main.js": "/static/js/main.2403170d.js",
+    "static/media/Car banner.jpg": "/static/media/Car banner.2d786f083339fba4489a.jpg",
+    "static/media/bidwiser.png": "/static/media/bidwiser.0247aad993c3293f083d.png",
+    "static/media/handshake.svg": "/static/media/handshake.12e309b349fb5650769fc5283a46c858.svg",
+    "static/media/total_sales.svg": "/static/media/total_sales.d60823210c31b137bd2450727886e328.svg",
+    "static/media/sorting.svg": "/static/media/sorting.ebab8270fa3a46f56699c7db904ef9a6.svg",
+    "static/media/sell.svg": "/static/media/sell.32515d237c4f13837bd8aac6cdc31760.svg",
+    "static/media/cash_receipt.svg": "/static/media/cash_receipt.2e9ba5d5c96424b0c364372e31764084.svg",
+    "static/media/auction.svg": "/static/media/auction.791e42c7113a48a830179bad76c4eeaa.svg",
+    "static/media/paper_plane.svg": "/static/media/paper_plane.829d729cba88a216d25c38452dc64a22.svg",
+    "index.html": "/index.html",
+    "main.a608b758.css.map": "/static/css/main.a608b758.css.map",
+    "main.2403170d.js.map": "/static/js/main.2403170d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a608b758.css",
+    "static/js/main.2403170d.js"
+  ]
+}
