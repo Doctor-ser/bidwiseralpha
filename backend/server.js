@@ -47,8 +47,8 @@ bidsChangeStream.on('change', (change) => {
 })
 
 
-const corsOptions = {//for localhost on local machine use http://localhost:3000
-  origin: 'https://bidwiser-1po.onrender.com', // Replace with your React app's domain //use for deployed frontend
+const corsOptions = {//for localhost on local machine use http://localhost:3000 , in the front end now it listens for deployed api instead use http://localhost:5500 so that 5500(backend port) listents t port 3000 deployed in the frontend
+  origin: 'https://bidwiser-1po.onrender.com', // Replace with your React app's domain ,use for deployed frontend
   credentials: true,
 };
 app.use(express.json());
