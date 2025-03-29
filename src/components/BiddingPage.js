@@ -86,7 +86,7 @@ const BiddingPage = ({ darkMode }) => {
       formData.append('image', file);
       formData.append('imageUrl', imageUrl);
   
-      const response = await axios.post('https://bidwiser.onrender.com/api/upload', formData, {
+      const response = await axios.post('http://127.0.0.1:5500/api/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -122,7 +122,7 @@ const BiddingPage = ({ darkMode }) => {
       try {
         const imageUrl = generateRandomString();
         await handleImageProduct(imageUrl);
-        const response = await axios.post('https://bidwiser.onrender.com/api/addBid', {
+        const response = await axios.post('http://127.0.0.1:5500/api/addBid', {
           ...newProduct,
           userId,
           currentBid: numericStartingBid, // Pass startingBid as the current bid
@@ -151,7 +151,7 @@ const BiddingPage = ({ darkMode }) => {
   const handleDeleteProduct = async (productId) => {
     if (loggedIn) {
         try {
-            const response = await axios.delete(`https://bidwiser.onrender.com/api/deleteBid/${productId}`);
+            const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
             console.log('Response from server:', response);
             if (response.status === 200) {
                 alert('Bid deleted successfully');
@@ -179,7 +179,7 @@ const BiddingPage = ({ darkMode }) => {
 
   const handleConfirmModifyBid = (productId, newBid) => {
     axios
-      .put(`https://bidwiser.onrender.com/api/modifyBid/${productId}`, {
+      .put(`http://127.0.0.1:5500/api/modifyBid/${productId}`, {
         newBid,
         currentBid: bidAmount,
       })

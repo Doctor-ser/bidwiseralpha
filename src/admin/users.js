@@ -11,7 +11,7 @@ const AdminPage = () => {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await axios.get(`https://bidwiser.onrender.com/api/getUserDetails/${email}`);
+      const response = await axios.get(`http://127.0.0.1:5500/api/getUserDetails/${email}`);
       setUserDetails(response.data.userDetails);
       setErrorMessage('');
       // Fetch bids by the user after fetching user details
@@ -26,7 +26,7 @@ const AdminPage = () => {
 
   const fetchUserBids = async () => {
     try {
-      const response = await axios.get(`https://bidwiser.onrender.com/api/getBidsByUser/${email}`);
+      const response = await axios.get(`http://127.0.0.1:5500/api/getBidsByUser/${email}`);
       setUserBids(response.data.userBids);
       setErrorMessage('');
     } catch (error) {
@@ -38,7 +38,7 @@ const AdminPage = () => {
 
   const deleteUser = async () => {
     try {
-      const response = await axios.delete(`https://bidwiser.onrender.com/api/users/${email}`);
+      const response = await axios.delete(`http://127.0.0.1:5500/api/users/${email}`);
       setUserDetails(null);
       setUserBids([]);
       setErrorMessage('');

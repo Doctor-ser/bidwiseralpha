@@ -45,7 +45,7 @@ const FeedbackForm = ({ darkMode }) => {
       try {
           // Use userId obtained from useAuth
           console.log('Submitting feedback:', feedback);
-          await axios.post('https://bidwiser.onrender.com/api/feedback', { ...feedback, userId });
+          await axios.post('http://127.0.0.1:5500/api/feedback', { ...feedback, userId });
           alert('Feedback submitted successfully');
           setFeedback({ rating: '', comment: '' });
           // Fetch average rating again after submitting feedback
@@ -62,7 +62,7 @@ const FeedbackForm = ({ darkMode }) => {
     const fetchAverageRating = async () => {
         try {
             // Fetch average rating from server
-            const response = await axios.get('https://bidwiser.onrender.com/api/feedback/average');
+            const response = await axios.get('http://127.0.0.1:5500/api/feedback/average');
             setAverageRating(response.data.averageRating);
         } catch (error) {
             console.error('Error fetching average rating:', error);
@@ -72,7 +72,7 @@ const FeedbackForm = ({ darkMode }) => {
     const fetchTopRatedComments = async () => {
         try {
             // Fetch top-rated comments from server
-            const response = await axios.get('https://bidwiser.onrender.com/api/topRatedComments');
+            const response = await axios.get('http://127.0.0.1:5500/api/topRatedComments');
             setTopRatedComments(response.data.topRatedComments);
         } catch (error) {
             console.error('Error fetching top-rated comments:', error);
