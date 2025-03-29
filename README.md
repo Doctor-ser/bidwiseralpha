@@ -24,4 +24,4 @@ feel free to contact via linkedin for anydoubts
 
 Experience the live demo of BidWiser: https://bidwiser-1po.onrender.com
 
-ThankYou Team BidWiser
+ThankYou Team BidWiser# bidwiseralpha
