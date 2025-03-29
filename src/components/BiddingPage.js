@@ -29,7 +29,7 @@ const BiddingPage = ({ darkMode }) => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get(`https://bidwiser.onrender.com/api/getBids?userId=${userId}`);
+      const response = await axios.get(`http://127.0.0.1:5500/api/getBids?userId=${userId}`);
       setProducts(response.data.bids);
     } catch (error) {
       console.error('Error fetching bids:', error);
