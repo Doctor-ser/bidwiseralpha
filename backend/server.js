@@ -16,7 +16,7 @@ const path = require('path');
 const app = express();
 mongoose.set("strictQuery", true)
 //mongo uri
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://alpha:Alpha%402004@cluster0.qui0b.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 
 
@@ -47,8 +47,8 @@ bidsChangeStream.on('change', (change) => {
 })
 
 
-const corsOptions = {//for localhost on local machine use http://localhost:3000 , in the front end now it listens for deployed api instead use http://localhost:5500 so that 5500(backend port) listents t port 3000 deployed in the frontend
-  origin: 'https://bidwiser-1po.onrender.com', // Replace with your React app's domain ,use for deployed frontend
+const corsOptions = {//for localhost on local machine use http://localhost:3000
+  origin: 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
   credentials: true,
 };
 app.use(express.json());
@@ -290,8 +290,8 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: process.env.USER, //  email address
-    pass: process.env.PASS, //  Encrypted Password  app pass
+    user: "managebuseg@gmail.com", //  email address
+    pass: "shxilsicekmlyjie", //  Encrypted Password  app pass
   },
 });
 
@@ -518,7 +518,7 @@ app.post('/api/addAdmin', async (req, res) => {
 
       //mail on adding
       const mailOptions = {
-          from: process.env.USER,
+          from: 'managebuseg@gmail.com',
           to: email,
           subject: 'Welcome to BidWiser - Online Auction System',
           html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -608,7 +608,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   const username = user.username;
   // Send an email with the new password
   const mailOptions = {
-    from: process.env.USER, // Sender email address
+    from: 'managebuseg@gmail.com', // Sender email address
     to: email,
     subject: 'Password Reset',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -713,7 +713,7 @@ if (userbids.length > 0) {
     
     // Mail the winner
     const mailOptions = {
-      from: process.env.USER,
+      from: 'managebuseg@gmail.com',
       to: userId, // Assuming userId contains the email
       subject: 'Modification By Seller!',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1130,7 +1130,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     }
 
     const mailOptions = {
-      from: process.env.USER,
+      from: 'managebuseg@gmail.com',
       to: winnerEmail,
       subject: 'Congratulations! You Won the Bid',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1279,7 +1279,7 @@ app.post('/api/placeBid', async (req, res) => {
       const productName = previousWinningBid.productName;
 
       const mailOptions = {
-        from: process.env.USER,
+        from: 'managebuseg@gmail.com',
         to: previousWinnerUserId, // Assuming userId contains the email
         subject: 'You have been outbid!',
         html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1437,7 +1437,7 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   const username =user.username;
   // Send welcome email logic here
   const mailOptions = {
-    from: process.env.USER,
+    from: 'managebuseg@gmail.com',
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">

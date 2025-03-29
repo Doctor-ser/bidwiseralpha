@@ -14,7 +14,7 @@ const LoginPage = ({ darkMode, userType, setUserType }) => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('https://bidwiser.onrender.com/api/login', {
+      const response = await axios.post('http://127.0.0.1:5500/api/login', {
         email,
         password
       });
