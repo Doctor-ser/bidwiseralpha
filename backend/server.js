@@ -10,14 +10,27 @@ const { Server } = require('socket.io');
 const Grid = require('gridfs-stream');
 const multer =require('multer')
 const path = require('path');
-
+require("dotenv").config();
 
 
 const app = express();
-mongoose.set("strictQuery", true)
-//mongo uri
-mongoose.connect("mongodb+srv://alpha:Alpha%402004@cluster0.qui0b.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true });
-const conn = mongoose.connection;
+const PORT = process.env.PORT || 5500;
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// Example test route
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected ✅"))
+  .catch(err => console.error("MongoDB connection error ❌", err));
+
+
+
 
 
 
@@ -48,7 +61,7 @@ bidsChangeStream.on('change', (change) => {
 
 
 const corsOptions = {//for localhost on local machine use http://localhost:3000
-  origin: 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
   credentials: true,
 };
 app.use(express.json());
@@ -290,8 +303,8 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: "managebuseg@gmail.com", //  email address
-    pass: "shxilsicekmlyjie", //  Encrypted Password  app pass
+    user: process.env.EMAIL_USER, //  email address
+    pass: process.env.EMAIL_PASS, //  Encrypted Password  app pass
   },
 });
 
@@ -1469,7 +1482,7 @@ const port = process.env.PORT || 5500;
 
 const server = createServer(app);
 
-  const io = new Server(server, { cors: { origin: 'http://localhost:3000' } }); 
+  const io = new Server(server, { cors: { origin: process.env.FRONTEND_URL || 'http://localhost:3000' } });
 
 server.listen(port, () => {
   console.log("Server is started on port " + port);
