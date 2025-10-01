@@ -25,3 +25,5 @@ yarn-error.log*
 # Ignore environment variables
 backend/.env
 
+# Python virtual environment
+venv/
