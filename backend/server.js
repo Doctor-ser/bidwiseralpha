@@ -1477,26 +1477,24 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
 });
 
 const { createServer } = require('node:http');
-const { create } = require('domain');
 const port = process.env.PORT || 5500;
 
-const server = createServer(app);
-
+if (require.main === module) {
+  const server = createServer(app);
   const io = new Server(server, { cors: { origin: process.env.FRONTEND_URL || 'http://localhost:3000' } });
 
-server.listen(port, () => {
-  console.log("Server is started on port " + port);
-});
-
-
-
-//socket.io server side events
-io.on('connection', (socket) => {
-  //console.log('A user connected with id : ' + socket.id);
-
-  socket.on('disconnect', () => {
-   // console.log('User disconnected');
+  server.listen(port, () => {
+    console.log("Server is started on port " + port);
   });
 
-  
-});
+  //socket.io server side events
+  io.on('connection', (socket) => {
+    //console.log('A user connected with id : ' + socket.id);
+
+    socket.on('disconnect', () => {
+     // console.log('User disconnected');
+    });
+  });
+} else {
+  module.exports = app;
+}

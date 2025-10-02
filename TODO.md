@@ -8,25 +8,12 @@
 ## 2. Push Changes to GitHub
 - [x] Commit and push the updated code to bidwiseralpha repo
 
-## 3. Deploy Backend to Render
-- [ ] Go to render.com, create account if needed
-- [ ] Connect GitHub repo
-- [ ] Create new Web Service for backend
-- [ ] Set build command: npm install
-- [ ] Set start command: npm start
-- [ ] Add environment variables: MONGO_URI, EMAIL_USER, EMAIL_PASS, FRONTEND_URL
-- [ ] Deploy
-
-## 4. Deploy Frontend to Vercel
+## 3. Deploy to Vercel
 - [ ] Go to vercel.com, create account if needed
 - [ ] Connect GitHub repo
-- [ ] Deploy the root directory (React app)
-- [ ] Set build command: npm run build
-- [ ] Get the deployed URL
-
-## 5. Update Backend CORS
-- [ ] Update FRONTEND_URL env var in Render with Vercel URL
-- [ ] Redeploy backend
+- [ ] Deploy the root directory (includes both frontend and backend as serverless)
+- [ ] Add environment variables: MONGO_URI, EMAIL_USER, EMAIL_PASS, FRONTEND_URL
+- [ ] Get the deployed URLs for frontend and backend
 
 ## 6. Test
 - [x] Test the live site
