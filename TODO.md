@@ -1,4 +1,4 @@
-# Deployment TODO
+ # Deployment TODO
 
 ## 1. Secure the Code
 - [x] Update backend/server.js to use environment variables
@@ -6,7 +6,7 @@
 - [x] Update README.md with deployment instructions
 
 ## 2. Push Changes to GitHub
-- [ ] Commit and push the updated code to bidwiseralpha repo
+- [x] Commit and push the updated code to bidwiseralpha repo (attempted, but failed due to large files in venv; need to remove from git history or use git-lfs)
 
 ## 3. Deploy Backend to Render
 - [ ] Go to render.com, create account if needed
