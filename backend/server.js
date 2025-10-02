@@ -76,8 +76,8 @@ app.use((req, res, next) => {
 });
 
 let gfs;
-conn.once('open', () => {
-  gfs = Grid(conn.db, mongoose.mongo);
+mongoose.connection.once('open', () => {
+  gfs = Grid(mongoose.connection.db, mongoose.mongo);
   gfs.collection('images'); // Name of the collection (you can change it as needed)
 });
 
