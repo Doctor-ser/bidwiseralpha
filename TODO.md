@@ -6,7 +6,7 @@
 - [x] Update README.md with deployment instructions
 
 ## 2. Push Changes to GitHub
-- [x] Commit and push the updated code to bidwiseralpha repo (attempted, but failed due to large files in venv; need to remove from git history or use git-lfs)
+- [x] Commit and push the updated code to bidwiseralpha repo (code committed locally, push blocked by GitHub due to secrets in history; AI related files removed from tracking)
 
 ## 3. Deploy Backend to Render
 - [ ] Go to render.com, create account if needed
