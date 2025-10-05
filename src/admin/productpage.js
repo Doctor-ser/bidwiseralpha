@@ -21,7 +21,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5500/api/getBids');
+        const response = await axios.get('https://bidwiseralpha.onrender.com/api/getBids');
         setProducts(response.data.bids);
         console.log('Products:', response.data.bids);
       } catch (error) {
@@ -91,7 +91,7 @@ const ProductsPage = ({ darkMode, email, bidChange }) => {
   const deleteBid = async (productId) => {
     try {
       // Send a DELETE request to the backend to delete the bid
-      const response = await axios.delete(`http://127.0.0.1:5500/api/deleteBid/${productId}`);
+      const response = await axios.delete(`https://bidwiseralpha.onrender.com/api/deleteBid/${productId}`);
       if (response.status === 200) {
         // Update the UI by removing the deleted bid from the products state
         setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
@@ -170,7 +170,7 @@ const ProductImage = ({ product }) => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const imageResponse = await fetch(`http://127.0.0.1:5500/api/images/${product.imageUrl}`);
+        const imageResponse = await fetch(`https://bidwiseralpha.onrender.com/api/images/${product.imageUrl}`);
         const data = await imageResponse.json();
         const base64String = Buffer.from(data.buffer.data).toString('base64');
         const image = `data:${data.contentType};base64,${base64String}`;

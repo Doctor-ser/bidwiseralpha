@@ -14,7 +14,7 @@ const LoginPage = ({ darkMode, userType, setUserType }) => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('http://127.0.0.1:5500/api/login', {
+      const response = await axios.post('https://bidwiseralpha.onrender.com/api/login', {
         email,
         password
       });
@@ -31,7 +31,7 @@ const LoginPage = ({ darkMode, userType, setUserType }) => {
         localStorage.setItem('userId', email);
         localStorage.setItem('username', response.data.username);
   
-        const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${email}`);
+        const userBidsResponse = await axios.get(`https://bidwiseralpha.onrender.com/api/getUserBids/${email}`);
         console.log('User Bids:', userBidsResponse.data.userBids);
   
         setUserBids(userBidsResponse.data.userBids);
@@ -73,7 +73,7 @@ const handleForgotPassword = async () => {
   try {
 
     
-    const response = await axios.post('http://127.0.0.1:5500/api/forgotPassword', { email });
+    const response = await axios.post('https://bidwiseralpha.onrender.com/api/forgotPassword', { email });
 
     if (response.data.message === 'Email sent successfully') {
       alert('An email with the new password has been sent to your email address.');

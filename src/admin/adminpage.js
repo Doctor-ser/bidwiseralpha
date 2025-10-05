@@ -18,7 +18,7 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchAdminDetails = async () => {
             try {
-                const adminResponse = await axios.get(`http://127.0.0.1:5500/api/getUserByEmail/${userId}`);
+                const adminResponse = await axios.get(`https://bidwiseralpha.onrender.com/api/getUserByEmail/${userId}`);
                 setUsername(adminResponse.data.username);
             } catch (err) {
                 console.error('Error fetching admin details:', err);
@@ -75,7 +75,7 @@ const AdminPage = () => {
             if (!validateEmail(newAdminData.email)) return;
             if (!validatePassword(newAdminData.password)) return;
 
-            const response = await axios.post('http://127.0.0.1:5500/api/addAdmin', newAdminData);
+            const response = await axios.post('https://bidwiseralpha.onrender.com/api/addAdmin', newAdminData);
             setNewAdminData({ username: '', email: '', password: '' });
             alert(response.data.message);
             if(response.data.message ==='Email already exists in the database'){
@@ -91,7 +91,7 @@ const AdminPage = () => {
         try {
             if (!validatePassword(changePasswordData.newPassword)) return;
 
-            const response = await axios.post('http://127.0.0.1:5500/api/changePassword', {
+            const response = await axios.post('https://bidwiseralpha.onrender.com/api/changePassword', {
                 userId: userId,
                 oldPassword: changePasswordData.oldPassword,
                 newPassword: changePasswordData.newPassword

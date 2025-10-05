@@ -12,7 +12,7 @@ export function ActiveBid({product,sendEmailToWinner,handleBid,calculateRemainin
   const [remainingTime,setRemainingTime] = useState('');
 
   useEffect(()=>{
-    (async ()=>{const imageResponse =  await fetch(`http://127.0.0.1:5500/api/images/${product.imageUrl}`);
+    (async ()=>{const imageResponse =  await fetch(`https://bidwiseralpha.onrender.com/api/images/${product.imageUrl}`);
         // console.log(imageResponse)
         const data = await imageResponse.json()
         // const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer.buffer)));

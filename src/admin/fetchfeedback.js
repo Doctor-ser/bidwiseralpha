@@ -14,7 +14,7 @@ function FettchFeedback() {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5500/api/feedbacks');
+      const response = await fetch('https://bidwiseralpha.onrender.com/api/feedbacks');
       const data = await response.json();
       setFeedbacks(data);
     } catch (error) {

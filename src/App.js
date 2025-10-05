@@ -34,7 +34,7 @@ const App = () => {
   const [userType,setUserType] = useState('user');
   
   const { email } = useAuth(); // Get the user's email from useAuth
-  const socket = io(process.env.REACT_APP_BACKEND_URL || 'http://localhost:5500');
+  const socket = io('http://localhost:5500');
   socket.on('connect', () => { console.log("Connected to server"); });
   socket.on('new-message',()=>{
     setLoadMessage(prev => !prev);

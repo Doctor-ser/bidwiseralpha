@@ -10,7 +10,7 @@ const SuggestedPost = ({ post }) => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/images/${post.imageUrl}`);
+        const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/images/${post.imageUrl}`);
         const data = await imageResponse.json();
         const base64String = Buffer.from(data.buffer.data).toString('base64');
         const image = `data:${data.contentType};base64,${base64String}`;

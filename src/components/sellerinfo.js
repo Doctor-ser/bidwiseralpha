@@ -17,8 +17,8 @@ const SellerInfoPage = () => {
     const fetchSellerData = async () => {
       try {
         const [ratingsResponse, productsResponse] = await Promise.all([
-          axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/userratings/${userId}`),
-          axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/getProductFeedback/${userId}`)
+          axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/userratings/${userId}`),
+          axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/getProductFeedback/${userId}`)
         ]);
 
         setAverageRating(ratingsResponse.data.averageRating);
@@ -72,7 +72,7 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/images/${product.imageUrls}`);
+        const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/images/${product.imageUrls}`);
         const data = await imageResponse.json();
         const base64String = Buffer.from(data.buffer.data).toString('base64');
         const image = `data:${data.contentType};base64,${base64String}`;

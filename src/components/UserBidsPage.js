@@ -18,7 +18,7 @@ const UserBidsPage = () => {
     const fetchUserBids = async () => {
       try {
         if (userId) {
-          const userBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
+          const userBidsResponse = await axios.get(`https://bidwiseralpha.onrender.com/api/getUserBids/${userId}`);
           setUserBids(userBidsResponse.data.userBids);
           filterBids(userBidsResponse.data.userBids);
         }

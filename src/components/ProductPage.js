@@ -85,8 +85,8 @@ useEffect(() => {
 
   const fetchData = async () => {
     try {
-      const productsPromise = axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/getBids`);
-      const activeProductsPromise = axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/active-products`);
+      const productsPromise = axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/getBids`);
+      const activeProductsPromise = axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/active-products`);
       const [productsResponse, activeProductsResponse] = await Promise.all([productsPromise, activeProductsPromise]);
 
       // Set products state
@@ -100,13 +100,13 @@ useEffect(() => {
 
       // Fetch top deal if there are multiple active products
       if (activeProducts.length > 1) {
-        const topDealResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/top-deal`);
+        const topDealResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/top-deal`);
         const topDeal = topDealResponse.data.topDeal;
         console.log('Top Deal:', topDeal);
 
         // Fetch image for top deal
         if (topDeal.imageUrl) {
-          const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/images/${topDeal.imageUrl}`);
+          const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/images/${topDeal.imageUrl}`);
           const data = await imageResponse.json();
           const base64String = Buffer.from(data.buffer.data).toString('base64');
           const image = `data:${data.contentType};base64,${base64String}`;
@@ -121,7 +121,7 @@ useEffect(() => {
 
         // Fetch image for single active product
         if (singleActiveProduct.imageUrl) {
-          const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/images/${singleActiveProduct.imageUrl}`);
+          const imageResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/images/${singleActiveProduct.imageUrl}`);
           const data = await imageResponse.json();
           const base64String = Buffer.from(data.buffer.data).toString('base64');
           const image = `data:${data.contentType};base64,${base64String}`;
@@ -179,7 +179,7 @@ useEffect(() => {
   //mail to winner of each product
   const sendEmailToWinner = async (productName, winningBid, productId) => {
     try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/sendEmailToWinner`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/sendEmailToWinner`, {
             productName,
             winningBid,
             productId
@@ -269,7 +269,7 @@ useEffect(() => {
       }
       //window.location.href="/product";
 
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/placeBid`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/placeBid`, {
         productId: selectedProduct.productId,
         userId:userId,// Use userId consistently
         bidAmount: Number(bidAmount),
@@ -292,7 +292,7 @@ useEffect(() => {
         setProducts(updatedProducts); // Update product state with new bid amount
   
         // Fetch user bids after placing a bid
-        const updatedUserBidsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5500'}/api/getUserBids/${userId}`);
+        const updatedUserBidsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL || 'https://bidwiseralpha.onrender.com'}/api/getUserBids/${userId}`);
         setUserBids(updatedUserBidsResponse.data.userBids);
   
         // Clear the bid modal
@@ -316,7 +316,7 @@ useEffect(() => {
   
   const handleConfirmModifyBid = async (productId, newBid) => {
     try {
-      const res = await axios.put(`http://127.0.0.1:5500/api/modifyBid/${productId}`, {
+      const res = await axios.put(`https://bidwiseralpha.onrender.com/api/modifyBid/${productId}`, {
         newBid,
       });
   
@@ -330,7 +330,7 @@ useEffect(() => {
         setModifyProductId(null);
   
         // Fetch user bids after modifying a bid
-        const updatedUserBidsResponse = await axios.get(`http://127.0.0.1:5500/api/getUserBids/${userId}`);
+        const updatedUserBidsResponse = await axios.get(`https://bidwiseralpha.onrender.com/api/getUserBids/${userId}`);
         setUserBids(updatedUserBidsResponse.data.userBids);
       } else {
         console.error('Failed to modify bid');

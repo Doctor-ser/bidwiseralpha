@@ -10,27 +10,14 @@ const { Server } = require('socket.io');
 const Grid = require('gridfs-stream');
 const multer =require('multer')
 const path = require('path');
-require("dotenv").config();
+
 
 
 const app = express();
-const PORT = process.env.PORT || 5500;
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Example test route
-app.get("/", (req, res) => {
-  res.send("Backend is running ✅");
-});
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected ✅"))
-  .catch(err => console.error("MongoDB connection error ❌", err));
-
-
-
+mongoose.set("strictQuery", true)
+//mongo uri
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
 
 
 
@@ -60,8 +47,8 @@ bidsChangeStream.on('change', (change) => {
 })
 
 
-const corsOptions = {//for localhost on local machine use http://localhost:3000
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Replace with your React app's domain //use for deployed frontend
+const corsOptions = {//for localhost on local machine use http://localhost:3000 , in the front end now it listens for deployed api instead use http://localhost:5500 so that 5500(backend port) listents t port 3000 deployed in the frontend
+  origin: 'https://bidwiseralpha-front.onrender.com', // Replace with your React app's domain ,use for deployed frontend
   credentials: true,
 };
 app.use(express.json());
@@ -76,8 +63,8 @@ app.use((req, res, next) => {
 });
 
 let gfs;
-mongoose.connection.once('open', () => {
-  gfs = Grid(mongoose.connection.db, mongoose.mongo);
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('images'); // Name of the collection (you can change it as needed)
 });
 
@@ -303,8 +290,8 @@ const transporter = nodemailer.createTransport({
 port:465,
 secure:true,
   auth: {
-    user: process.env.EMAIL_USER, //  email address
-    pass: process.env.EMAIL_PASS, //  Encrypted Password  app pass
+    user: process.env.USER, //  email address
+    pass: process.env.PASS, //  Encrypted Password  app pass
   },
 });
 
@@ -531,7 +518,7 @@ app.post('/api/addAdmin', async (req, res) => {
 
       //mail on adding
       const mailOptions = {
-          from: 'managebuseg@gmail.com',
+          from: process.env.USER,
           to: email,
           subject: 'Welcome to BidWiser - Online Auction System',
           html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -621,7 +608,7 @@ app.post('/api/forgotPassword', async (req, res) => {
   const username = user.username;
   // Send an email with the new password
   const mailOptions = {
-    from: 'managebuseg@gmail.com', // Sender email address
+    from: process.env.USER, // Sender email address
     to: email,
     subject: 'Password Reset',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -726,7 +713,7 @@ if (userbids.length > 0) {
     
     // Mail the winner
     const mailOptions = {
-      from: 'managebuseg@gmail.com',
+      from: process.env.USER,
       to: userId, // Assuming userId contains the email
       subject: 'Modification By Seller!',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1143,7 +1130,7 @@ app.post('/api/sendEmailToWinner', async (req, res) => {
     }
 
     const mailOptions = {
-      from: 'managebuseg@gmail.com',
+      from: process.env.USER,
       to: winnerEmail,
       subject: 'Congratulations! You Won the Bid',
       html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1292,7 +1279,7 @@ app.post('/api/placeBid', async (req, res) => {
       const productName = previousWinningBid.productName;
 
       const mailOptions = {
-        from: 'managebuseg@gmail.com',
+        from: process.env.USER,
         to: previousWinnerUserId, // Assuming userId contains the email
         subject: 'You have been outbid!',
         html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1450,7 +1437,7 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
   const username =user.username;
   // Send welcome email logic here
   const mailOptions = {
-    from: 'managebuseg@gmail.com',
+    from: process.env.USER,
     to: email,
     subject: 'Welcome to BidWiser - Online Auction System',
     html: `<div style="border: 1px solid #ccc; padding: 20px; max-width: 500px; margin: 0 auto; ">
@@ -1477,24 +1464,26 @@ app.post('/api/sendWelcomeEmail', async (req, res) => {
 });
 
 const { createServer } = require('node:http');
+const { create } = require('domain');
 const port = process.env.PORT || 5500;
 
-if (require.main === module) {
-  const server = createServer(app);
-  const io = new Server(server, { cors: { origin: process.env.FRONTEND_URL || 'http://localhost:3000' } });
+const server = createServer(app);
 
-  server.listen(port, () => {
-    console.log("Server is started on port " + port);
+  const io = new Server(server, { cors: { origin: 'http://localhost:3000' } }); 
+
+server.listen(port, () => {
+  console.log("Server is started on port " + port);
+});
+
+
+
+//socket.io server side events
+io.on('connection', (socket) => {
+  //console.log('A user connected with id : ' + socket.id);
+
+  socket.on('disconnect', () => {
+   // console.log('User disconnected');
   });
 
-  //socket.io server side events
-  io.on('connection', (socket) => {
-    //console.log('A user connected with id : ' + socket.id);
-
-    socket.on('disconnect', () => {
-     // console.log('User disconnected');
-    });
-  });
-} else {
-  module.exports = app;
-}
+  
+});
