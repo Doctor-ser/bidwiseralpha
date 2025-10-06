@@ -1,0 +1,203 @@
+/* App.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa; /* Light gray background */
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+.container {
+  margin: 0 auto;
+  max-width: 1200px; /* Adjust as needed */
+}
+.nav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+.dark-mode body {
+  background-color: #333;
+  color: white;
+}
+
+.dark-mode {
+  background-color: #333;
+  color: white;
+}
+
+.dark-mode .nav a {
+  color: #fff;
+}
+
+.dark-mode .nav a:hover {
+  background-color: #222;
+}
+
+.dark-mode .nav button {
+  background-color: #888;
+}
+
+.nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.nav li {
+  float: left;
+}
+
+.nav a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background-color: #555; /* Darker background color on hover */
+}
+
+.nav button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dark-mode .nav a {
+  color: #fff;
+}
+
+.dark-mode .nav a:hover {
+  background-color: #222;
+}
+
+.dark-mode .nav button {
+  background-color: #888;
+}
+
+.logo-image {
+  max-width: 160px;  /* Adjust the max-width as needed */
+  height: auto;
+  transition: transform 0.4s ease-in-out; /* Smooth transition */
+  margin: 0 auto; /* Center the logo horizontally */
+  display: block; /* Make it a block element */
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.logo-image:hover {
+  transform: scale(1.2); /* Increase size by 50% on hover */
+  transform-origin: 50% 50%; /* Set origin for zoom at image center */
+}
+
+
+
+/* Navbar.css */
+
+.navbar {
+  background-color: #f7f7f7;
+  color: white;
+  border-bottom: 1px solid #e5e7eb; /* Adding a separating line */
+  display: flex; /* Use flexbox layout */
+  justify-content: space-between; /* Align items to the start and end of the navbar */
+  align-items: center; /* Align items vertically centered */
+
+}
+
+
+.navbar-nav .nav-item .nav-link {
+  font-family: 'DM Sans', sans-serif; /* Use DM Sans font */
+  transition: background-color 0.4s ease; /* Smooth transition for hover effect */
+  position: relative; /* Position relative for pseudo-element */
+  margin-top: 20px;
+  margin-right: 20px;
+
+}
+
+.navbar-nav .nav-item .nav-link::after {
+  content: ''; /* Add an empty pseudo-element for the underline */
+  position: absolute;
+  left: 0;
+  bottom: -3px; /* Adjust as needed */
+  width: 0;
+  height: 2px;
+  background-color: transparent;
+  transition: width 0.4s ease; /* Smooth transition for underline effect */
+}
+
+
+.navbar-nav .nav-item .nav-link:hover::after,
+.navbar-nav .nav-item .nav-link:active::after,
+.navbar-nav .nav-item .nav-link:focus::after {
+  background-color: #555; /* Change background color on hover */
+  width: 100%;
+} 
+
+.navbar-toggler-icon {
+  background-color: #262626; /* Color of the toggle icon */
+  
+}
+
+
+.navbar-nav .nav-link {
+  color: #767676;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #262626; /* Lighter text color on hover */
+}
+
+.navbar-toggler {
+  border: none;
+  
+}
+.nav-item-dark{
+  margin-top: 20px;
+}
+
+.btn-toggle-dark {
+  background-color: #2f2e2e;
+  color: #fff;
+}
+
+.btn-toggle-dark:hover {
+  background-color: #444;
+}
+
+.dark-mode .navbar {
+  background-color: #333;
+  color: white;
+  border-bottom-color: #444; /* Adjusting border color for dark mode */
+}
+
+.dark-mode .navbar-toggler-icon {
+  background-color: #fff;
+}
+
+/* Add these styles to your existing CSS */
+
+.btn-toggle-dark {
+  background-color: #555;
+  color: #fff;
+}
+
+.btn-toggle-dark:hover {
+  background-color: #444;
+}
+
+.dark-mode .btn-toggle-dark {
+  background-color: #888; /* Adjust as needed */
+  color: #fff;
+}
+
+.dark-mode .btn-toggle-dark:hover {
+  background-color: #777; /* Adjust as needed */
+}

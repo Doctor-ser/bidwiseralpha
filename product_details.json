@@ -1,0 +1,18 @@
+{
+    "MacBook Pro 2021": {
+        "price": "$2000",
+        "description": "Apple MacBook Pro with M1 chip and 16GB RAM."
+    },
+    "iPhone 14 Pro": {
+        "price": "$1200",
+        "description": "Latest Apple iPhone 14 Pro with A16 Bionic chip."
+    },
+    "Rolex Submariner": {
+        "price": "$10,000",
+        "description": "Luxury Rolex watch, water-resistant and automatic."
+    },
+    "Sony WH-1000XM5": {
+        "price": "$400",
+        "description": "Premium noise-canceling headphones from Sony."
+    }
+}

@@ -1,0 +1,74 @@
+.star{
+ margin-bottom: 0px;
+ margin-left: auto; 
+ padding-right: 30px;
+ color: white;
+}
+.stxt{
+    font-size: 15px;
+    padding-left: 2px;
+}
+.nb-txt{
+    text-transform: uppercase;
+
+    color: white;
+    padding: 20px;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.u-ic{
+    font-size: 80px;
+    color: white;
+    margin: 20px;
+    margin-right: 0px;
+    margin-left: 30px;
+}
+.name-bar {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    background-color:#333333;
+
+}
+.f-det {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    padding: 0; /* Remove default padding */
+  }
+.card1{
+    flex: 1; /* Make the card grow to fill available space */
+    border-color: black;
+    padding: 20px;
+    margin: 10px; /* Add some margin between cards */
+    padding: 10px; /* Add padding for spacing */
+    border: 1px solid #ccc; /* Add border for card */
+    display: flex;
+    flex-direction: row;
+   }
+   .card1 img {
+    width: 300px; /* Adjust image width as needed */
+    height: 200px;
+    margin-right: 10px; /* Add margin between image and text */
+  }
+  
+.product-details {
+    flex: 1; /* Allow the product details to grow and fill the available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 10px; /* Add margin to separate product details */
+  }
+  
+  .product-details div {
+    margin-bottom: 5px; /* Add margin between product details */
+  }
+  .ccx{
+    width: 1500px;
+    margin: 30px 0px 50px ;
+  }
+
+  .ig-mar{
+        margin: 10px 25px;
+  }

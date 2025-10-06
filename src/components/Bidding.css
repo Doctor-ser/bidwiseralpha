@@ -1,0 +1,248 @@
+/* Bidding.css */
+.cont {
+  display: inline-block;
+  width: 30%; /* Adjust as needed */
+  margin: 10px; /* Add margin between products */
+}
+.product-container{
+  margin-left: 50px;
+}
+
+.bidding-page {
+  font-family: 'Mona Sans', sans-serif;;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative; /* Ensure the parent is positioned */
+    overflow: hidden; /* This will hide anything that overflows the boundary of this container */
+  }
+  
+  .t1{
+    padding-bottom: 40px;
+    font-weight: bold;
+    font-size: 45px;
+    padding: 30px;
+    border-bottom: none;
+  }
+  .t2{
+    background-color: #333333;
+    color: white;
+    border-bottom: #b2b2b2 solid 1px;
+    margin: 10px;
+    padding: 40px;
+    padding-left: 160px;
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 80px;
+    text-underline-offset: 10px; /* Adjusts the space between text and underline */
+    text-align: start;
+    border-top: 1px solid #ddd;
+  }
+  .details {
+    display: flex; /* Enables Flexbox */
+    flex-wrap: wrap; /* Allows items to wrap to the next line if needed */
+    align-items: flex-start; /* Aligns items to the top of the container */
+    justify-content: space-between; /* Distributes space between the flex items */
+    margin-left: 90px;
+    margin-bottom: 80px;
+    border-radius: 25px;
+    padding: 100px;
+    padding-bottom: 0px;
+    max-width: 90%;
+    background-color: #f1f1f1;
+
+  }
+ 
+  .file-upload .file-label {
+    height: 300px;
+    width: 80%;
+    display: inline-block;
+    padding: 20px; /* Adjust padding to control the size of the box */
+    background-color: #ffffff;
+    border: #cccccc solid 1px;
+    color: #000000;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  .file-label{
+    font-size: 50px;
+    cursor: pointer;
+  }
+  .file-upload .file-label:hover {
+    background-color: #b2b2b2; /* Darker shade on hover for better interaction feedback */
+  }
+
+  .btn-pub{
+    display: inline-block;
+	  font-size: 15px;
+	  font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background: #000000;
+    letter-spacing: 2px;
+    border-radius: 0;
+    width: 170px;
+    height: 50px;
+    margin-top: 30px;
+    margin-left: 130px;
+  }
+  .input-img{
+    display: none
+  }  
+
+  .info, .img {
+    flex: 1; /* Each takes half of the space available */
+    background-color: #e7e7e7;
+    border: 1px solid #ececec;
+    padding: 50px;
+    border-radius: 10px;
+    }
+  
+  .img {
+    /* Optional: additional styling to push it to the right if not fully positioned as desired */
+    margin-left:50px; /* Ensures some space between the .info and .img sections */
+  }
+  
+  .info {
+    max-width: calc(50% - 0px); /* Adjust width considering margin */
+    margin-bottom: 80px;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #ffffff;
+  }
+  .desc{
+    height: 100px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .product {
+    margin: 10px;
+    padding: 10px;
+    margin-left: 70px;
+    text-transform: uppercase;
+    line-height: 2.5;
+  }
+.product h3{
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  font-weight: bold;
+}
+/* Button.css */
+.btn-card {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.btn-card:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-card:active {
+  transform: translateY(1px);
+}
+
+.btn-card:focus {
+  outline: none;
+}
+
+  .det1 {
+    border: 1.5px solid grey;
+    color: #212121;
+    width: 100%;
+    height: auto;
+    box-shadow: 0px 0px 10px #212121;
+    border-radius: 0;
+    margin-bottom: 40px;
+    margin-left: 90px;
+}
+
+
+  .bor{
+    border-top: #b2b2b2 solid 1px;
+    margin-top: 60px;
+  }
+  .product h3 {
+    
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+  
+  .product p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .product input {
+    width: 80px;
+    padding: 5px;
+    font-size: 1rem;
+  }
+  
+  .product button {
+    font-size: 1rem;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .product button:hover {
+    background-color: #c82333;
+  }
+  
+  .product {
+    position: relative;
+  }
+  
+  .imagecontainer{
+    width: 400px; /* Adjust the width and height as per your requirement */
+      height: 400px;
+      overflow: hidden; /* This will hide any part of the image that exceeds the container */
+      display: flex;
+      justify-content: center; /* Centers the content horizontally */
+      align-items: center;
+  }
+  .imagecontainer img{
+    max-width: 100%; /* Ensures the image doesn't exceed the container width */
+      max-height: 100%; /* Ensures the image doesn't exceed the container height */
+      display: block; 
+  }
+  .remove-image{
+    height: 20px;
+    width: 100px;
+    margin-top: 0;
+  }
+  

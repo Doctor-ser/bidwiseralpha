@@ -1,0 +1,148 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif; /* Choose your preferred font family */
+}
+
+.right-align {
+  justify-content: flex-end;
+  align-self: flex-end;
+}
+
+
+.chat-container {
+  width: 600px; /* Adjust width as needed */
+  margin: 50px auto; /* Center the chat container */
+  border: 1px solid #ddd; /* Add a thin border */
+  background-color: #fff; /* Set background color */
+  border-radius: 10px;
+}
+h2 {
+  padding: 20px; /* Add some padding to the header */
+  border-bottom: 1px solid #ddd; /* Add a border below the header */
+  text-align: center; /* Center the header text */
+}
+.message-list {
+  height: 400px; /* Set the height of the message list */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  padding: 20px;
+}
+
+/* Hide scrollbar for Firefox */
+.message-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.message-list {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  border: 1px solid #d9d9d9; /* Specify border style, width, and color */
+  transition: box-shadow 0.3s; /* Add transition for smooth hover effect */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left:5px;
+  padding-right:5px; 
+}
+
+.message:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box-shadow effect on hover */
+}
+
+.message p {
+  margin: 0; /* Remove default margin from paragraph */
+  font-size: 16px; /* Set font size for messages */
+}
+.input-container {
+  display: flex; /* Arrange input and button horizontally */
+  justify-content: space-between; /* Space items evenly */
+  padding: 20px 0px 0px 0px;
+}
+.cht-i{
+  margin: 0px;
+  width: 100%;
+  padding: 20px;
+  display: inline-block;
+  border-top: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.ch-t{
+  background-color: #333333;
+  color: #ddd;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+}
+
+button {
+  padding: 10px 20px;
+  border: none; /* Remove default button border */
+  cursor: pointer; /* Indicate clickable behavior */
+}
+.message {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  margin: 10px;
+}
+
+.profile-container {
+  margin-right: 10px;
+}
+
+.profile-image {
+  width: 20px; /* Adjust the width as needed */
+  height: 20px /* Adjust the height as needed */
+   /* Create a circular profile image */
+}
+
+.profile-info {
+  margin: 0;
+  font-size: 14px;
+  color: gray;
+  display: block;
+}
+
+.message-content {
+  margin: 0;
+  display: block;
+  word-wrap: break-word; /* Allow long words to be broken and wrap onto the next line */
+}
+.c-ic{
+  font-size: 30px;
+  margin: 30px 3px 0px 0px;
+}
+
+.left-icon{
+  margin: 40px 5px 0px 0px;
+
+}
+.sent-message {
+  justify-content: flex-end; /* Align contents to the right side */
+  align-self: flex-end; /* Align message to the right side */
+  margin-left: 100px;
+  margin-right: 0px;
+  border-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 15px;
+  background-color: #333333;
+  color: white;
+}
+.regular-message {
+  margin-right: 100px; /* Adjust the margin for regular messages */
+  margin-left: 0px;
+  margin-top: 20px;
+  margin: 20px 100px 7px 0px;
+  border-radius: 20px;
+  border-bottom-left-radius: 0px;
+  padding: 15px;
+  background-color: #165f41;
+  color: white;
+}
